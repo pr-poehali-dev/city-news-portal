@@ -36,8 +36,8 @@ export const NewsEditDialog = ({
   if (!news) return null;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+    <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>Редактировать новость</DialogTitle>
         </DialogHeader>
@@ -54,11 +54,12 @@ export const NewsEditDialog = ({
           <div>
             <Label>Категория</Label>
             <Select
+              key={news.id || 'select-key'}
               value={news.category || ''}
               onValueChange={(value) => updateField('category', value)}
             >
               <SelectTrigger>
-                <SelectValue />
+                <SelectValue placeholder="Выберите категорию" />
               </SelectTrigger>
               <SelectContent>
                 {categories.map((cat) => (
