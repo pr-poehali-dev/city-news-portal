@@ -20,18 +20,18 @@ export const SiteHeader = ({ weather, sections, activeSection, onSectionChange }
             </h1>
             <p className="text-sm text-muted-foreground font-medium">Краснодар</p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             {weather && (
-              <Card className="bg-primary/5 border-primary/20">
-                <CardContent className="p-3 flex items-center gap-3">
+              <Card className="bg-primary/5 border-primary/20 hidden sm:block">
+                <CardContent className="p-2 md:p-3 flex items-center gap-2">
                   <img 
                     src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
                     alt={weather.description}
-                    className="w-12 h-12"
+                    className="w-10 h-10 md:w-12 md:h-12"
                   />
                   <div>
-                    <div className="text-2xl font-bold">{weather.temp}°C</div>
-                    <div className="text-xs text-muted-foreground">{weather.description}</div>
+                    <div className="text-xl md:text-2xl font-bold">{weather.temp}°C</div>
+                    <div className="text-xs text-muted-foreground capitalize">{weather.description}</div>
                   </div>
                 </CardContent>
               </Card>

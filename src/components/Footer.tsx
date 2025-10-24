@@ -19,14 +19,11 @@ export const Footer = ({ sections, onSectionChange }: FooterProps) => {
               Ваш источник актуальных новостей и событий Краснодара
             </p>
             <div className="flex gap-3">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Icon name="Facebook" size={20} />
+              <a href="https://vk.com/club233389110" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" title="ВКонтакте">
+                <Icon name="Users" size={20} />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Icon name="Twitter" size={20} />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Icon name="Instagram" size={20} />
+              <a href="https://dzen.ru/govoritkrasnodar" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" title="Яндекс Дзен">
+                <Icon name="BookOpen" size={20} />
               </a>
             </div>
           </div>
@@ -51,21 +48,15 @@ export const Footer = ({ sections, onSectionChange }: FooterProps) => {
             <h4 className="font-semibold mb-4">Социальные сети</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="https://vk.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                <a href="https://vk.com/club233389110" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
                   <Icon name="Users" size={16} />
                   ВКонтакте
                 </a>
               </li>
               <li>
-                <a href="https://t.me" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                  <Icon name="Send" size={16} />
-                  Telegram
-                </a>
-              </li>
-              <li>
-                <a href="https://ok.ru" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                  <Icon name="MessageCircle" size={16} />
-                  Одноклассники
+                <a href="https://dzen.ru/govoritkrasnodar" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                  <Icon name="BookOpen" size={16} />
+                  Яндекс Дзен
                 </a>
               </li>
             </ul>
