@@ -9,6 +9,7 @@ import { NewsArticle } from '@/components/NewsArticle';
 import { EventsSection } from '@/components/EventsSection';
 import { MiniNewsCard } from '@/components/MiniNewsCard';
 import { Separator } from '@/components/ui/separator';
+import { Footer } from '@/components/Footer';
 
 const FUNCTIONS_URL = {
   news: 'https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe',
@@ -213,6 +214,8 @@ const Index = () => {
           </>
         )}
       </main>
+
+      <Footer sections={sections} onSectionChange={setActiveSection} />
     </div>
   );
 };

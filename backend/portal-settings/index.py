@@ -32,27 +32,27 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     conn = psycopg2.connect(dsn)
     
     try:
-        conn.cursor().execute('''
-            CREATE TABLE IF NOT EXISTS authors (
-                id SERIAL PRIMARY KEY,
-                name VARCHAR(255) NOT NULL,
-                position VARCHAR(255),
-                bio TEXT,
-                photo_url TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-        conn.cursor().execute('''
-            CREATE TABLE IF NOT EXISTS about_portal (
-                id SERIAL PRIMARY KEY,
-                title VARCHAR(255) NOT NULL,
-                content TEXT NOT NULL,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-        conn.commit()
-        
         with conn.cursor() as cur:
+            cur.execute('''
+                CREATE TABLE IF NOT EXISTS authors (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL,
+                    position VARCHAR(255),
+                    bio TEXT,
+                    photo_url TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+            cur.execute('''
+                CREATE TABLE IF NOT EXISTS about_portal (
+                    id SERIAL PRIMARY KEY,
+                    title VARCHAR(255) NOT NULL,
+                    content TEXT NOT NULL,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+            conn.commit()
+            
             cur.execute('SELECT COUNT(*) FROM authors')
             count = cur.fetchone()[0]
             if count == 0:
@@ -61,8 +61,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     ('Никита Москвин', 'Главный редактор', 'Основатель портала "Город говорит: Краснодар"')
                 )
                 conn.commit()
-        
-        with conn.cursor() as cur:
+            
             cur.execute('SELECT COUNT(*) FROM about_portal')
             count = cur.fetchone()[0]
             if count == 0:
@@ -71,8 +70,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     ('О портале', 'Портал "Город говорит: Краснодар" - ваш источник актуальных новостей и событий города.')
                 )
                 conn.commit()
-    except:
-        pass
+    except Exception as e:
+        print(f"Init error: {e}")
+        conn.rollback()
     
     if resource == 'authors':
         if method == 'GET':

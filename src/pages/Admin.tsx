@@ -514,7 +514,7 @@ const Admin = () => {
                 {newsList.length === 0 ? (
                   <p className="text-muted-foreground">Новостей пока нет</p>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
                     {newsList.map((news: any) => (
                       <NewsCard
                         key={news.id}
@@ -581,7 +581,7 @@ const Admin = () => {
                 {eventsList.length === 0 ? (
                   <p className="text-muted-foreground">События пока не добавлены</p>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
                     {eventsList.map((event: any) => (
                       <EventCard
                         key={event.id}
@@ -610,7 +610,7 @@ const Admin = () => {
                 {authorsList.length === 0 ? (
                   <p className="text-muted-foreground">Авторы пока не добавлены</p>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
                     {authorsList.map((author: any) => (
                       <AuthorCard
                         key={author.id}
