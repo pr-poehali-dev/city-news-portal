@@ -21,19 +21,12 @@ export const EventsManagement = ({
 }: EventsManagementProps) => {
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Добавить событие</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <EventForm
-            form={eventForm}
-            setForm={setEventForm}
-            onSubmit={onEventSubmit}
-            loading={loading}
-          />
-        </CardContent>
-      </Card>
+      <EventForm
+        eventForm={eventForm}
+        loading={loading}
+        onFormChange={(field, value) => setEventForm({ ...eventForm, [field]: value })}
+        onSubmit={onEventSubmit}
+      />
 
       <Card>
         <CardHeader>
