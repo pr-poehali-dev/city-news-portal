@@ -6,7 +6,7 @@ from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Manage news articles - get all, get by id, create, update
+    Business: Manage news articles - get all, get by id, create, update, delete
     Args: event with httpMethod, body, queryStringParameters
           context with request_id
     Returns: HTTP response with news data
@@ -18,7 +18,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'statusCode': 200,
             'headers': {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Max-Age': '86400'
             },
@@ -46,6 +46,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             params = event.get('queryStringParameters') or {}
             news_id = params.get('id')
             category = params.get('category')
+            status = params.get('status', 'published')
             
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 if news_id:
@@ -83,16 +84,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         SELECT n.*, a.name as author_name 
                         FROM news n 
                         LEFT JOIN authors a ON n.author_id = a.id 
-                        WHERE n.category = %s
+                        WHERE n.category = %s AND n.status = %s
                         ORDER BY n.published_at DESC
-                    ''', (category,))
+                    ''', (category, status))
                 else:
                     cur.execute('''
                         SELECT n.*, a.name as author_name 
                         FROM news n 
                         LEFT JOIN authors a ON n.author_id = a.id 
+                        WHERE n.status = %s
                         ORDER BY n.published_at DESC
-                    ''')
+                    ''', (status,))
                 
                 news_list = cur.fetchall()
                 
@@ -116,6 +118,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             image_url = body.get('image_url', '')
             author_id = body.get('author_id', 1)
             read_time = body.get('read_time', '5 мин')
+            status = body.get('status', 'published')
             
             if not title or not category or not excerpt:
                 return {
@@ -130,10 +133,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute('''
-                    INSERT INTO news (title, category, excerpt, content, image_url, author_id, read_time)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO news (title, category, excerpt, content, image_url, author_id, read_time, status)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING *
-                ''', (title, category, excerpt, content, image_url, author_id, read_time))
+                ''', (title, category, excerpt, content, image_url, author_id, read_time, status))
                 
                 new_news = cur.fetchone()
                 conn.commit()
@@ -184,6 +187,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if 'read_time' in body:
                 fields.append('read_time = %s')
                 values.append(body['read_time'])
+            if 'status' in body:
+                fields.append('status = %s')
+                values.append(body['status'])
             
             fields.append('updated_at = CURRENT_TIMESTAMP')
             values.append(news_id)
@@ -217,6 +223,46 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'Access-Control-Allow-Origin': '*'
                     },
                     'body': json.dumps(dict(updated_news), default=str),
+                    'isBase64Encoded': False
+                }
+        
+        elif method == 'DELETE':
+            params = event.get('queryStringParameters') or {}
+            news_id = params.get('id')
+            
+            if not news_id:
+                return {
+                    'statusCode': 400,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({'error': 'News ID required'}),
+                    'isBase64Encoded': False
+                }
+            
+            with conn.cursor() as cur:
+                cur.execute('UPDATE news SET status = %s WHERE id = %s', ('deleted', news_id))
+                conn.commit()
+                
+                if cur.rowcount == 0:
+                    return {
+                        'statusCode': 404,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'body': json.dumps({'error': 'News not found'}),
+                        'isBase64Encoded': False
+                    }
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({'success': True, 'message': 'News deleted'}),
                     'isBase64Encoded': False
                 }
         

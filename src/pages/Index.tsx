@@ -415,7 +415,7 @@ const Index = () => {
               <h4 className="font-semibold mb-4">Контакты</h4>
               <ul className="space-y-2 text-sm opacity-80">
                 <li>Email: info@gorodgovorit.ru</li>
-                <li>Телефон: +7 (XXX) XXX-XX-XX</li>
+                <li>Телефон: +7 (911) 126-96-39</li>
                 <li>Краснодар</li>
               </ul>
             </div>
