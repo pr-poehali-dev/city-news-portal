@@ -49,8 +49,9 @@ const Admin = () => {
   if (!authenticated) {
     return (
       <LoginForm
-        form={loginForm}
-        setForm={setLoginForm}
+        loginForm={loginForm}
+        loading={loading}
+        onLoginChange={(field, value) => setLoginForm({ ...loginForm, [field]: value })}
         onSubmit={handleLogin}
       />
     );
