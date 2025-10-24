@@ -206,9 +206,7 @@ export const NewsPage = () => {
                 {relatedNews.map((news) => (
                   <MiniNewsCard
                     key={news.id}
-                    title={news.title}
-                    date={news.date}
-                    image={news.image_url}
+                    news={news}
                     onClick={() => {
                       navigate(`/news/${news.id}`);
                       window.scrollTo(0, 0);
