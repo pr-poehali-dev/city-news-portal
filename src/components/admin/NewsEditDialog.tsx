@@ -25,6 +25,11 @@ export const NewsEditDialog = ({
   loading,
   onSave
 }: NewsEditDialogProps) => {
+  const updateField = (field: string, value: any) => {
+    if (!news) return;
+    setNews({ ...news, [field]: value });
+  };
+
   if (!news) return null;
 
   return (
@@ -38,16 +43,16 @@ export const NewsEditDialog = ({
           <div>
             <Label>Заголовок</Label>
             <Input
-              value={news.title}
-              onChange={(e) => setNews({ ...news, title: e.target.value })}
+              value={news.title || ''}
+              onChange={(e) => updateField('title', e.target.value)}
             />
           </div>
 
           <div>
             <Label>Категория</Label>
             <Select
-              value={news.category}
-              onValueChange={(value) => setNews({ ...news, category: value })}
+              value={news.category || ''}
+              onValueChange={(value) => updateField('category', value)}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -65,8 +70,8 @@ export const NewsEditDialog = ({
           <div>
             <Label>Краткое описание</Label>
             <Textarea
-              value={news.excerpt}
-              onChange={(e) => setNews({ ...news, excerpt: e.target.value })}
+              value={news.excerpt || ''}
+              onChange={(e) => updateField('excerpt', e.target.value)}
               rows={2}
             />
           </div>
@@ -74,8 +79,8 @@ export const NewsEditDialog = ({
           <div>
             <Label>Содержание</Label>
             <Textarea
-              value={news.content}
-              onChange={(e) => setNews({ ...news, content: e.target.value })}
+              value={news.content || ''}
+              onChange={(e) => updateField('content', e.target.value)}
               rows={6}
             />
           </div>
@@ -83,8 +88,8 @@ export const NewsEditDialog = ({
           <div>
             <Label>URL изображения</Label>
             <Input
-              value={news.image_url}
-              onChange={(e) => setNews({ ...news, image_url: e.target.value })}
+              value={news.image_url || ''}
+              onChange={(e) => updateField('image_url', e.target.value)}
               placeholder="https://example.com/image.jpg"
             />
           </div>
@@ -93,7 +98,7 @@ export const NewsEditDialog = ({
             <Label>URL видео (опционально)</Label>
             <Input
               value={news.video_url || ''}
-              onChange={(e) => setNews({ ...news, video_url: e.target.value })}
+              onChange={(e) => updateField('video_url', e.target.value)}
               placeholder="https://youtube.com/watch?v=..."
             />
           </div>
@@ -101,8 +106,8 @@ export const NewsEditDialog = ({
           <div>
             <Label>Время чтения</Label>
             <Input
-              value={news.read_time}
-              onChange={(e) => setNews({ ...news, read_time: e.target.value })}
+              value={news.read_time || ''}
+              onChange={(e) => updateField('read_time', e.target.value)}
               placeholder="5 мин"
             />
           </div>
@@ -110,7 +115,7 @@ export const NewsEditDialog = ({
           <div className="flex items-center gap-2">
             <Checkbox
               checked={news.is_featured || false}
-              onCheckedChange={(checked) => setNews({ ...news, is_featured: checked })}
+              onCheckedChange={(checked) => updateField('is_featured', checked)}
             />
             <Label>Закрепить в главной</Label>
           </div>
