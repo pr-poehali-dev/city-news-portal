@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
@@ -19,6 +20,7 @@ const FUNCTIONS_URL = {
 };
 
 const Index = () => {
+  const navigate = useNavigate();
   const [selectedArticle, setSelectedArticle] = useState<number | null>(null);
   const [commentName, setCommentName] = useState('');
   const [commentText, setCommentText] = useState('');
@@ -135,14 +137,7 @@ const Index = () => {
   };
 
   const handleArticleClick = (newsId: number) => {
-    if (selectedArticle === newsId) {
-      setSelectedArticle(null);
-    } else {
-      setSelectedArticle(newsId);
-      if (!comments[newsId]) {
-        loadComments(newsId);
-      }
-    }
+    navigate(`/news/${newsId}`);
   };
 
   return (
