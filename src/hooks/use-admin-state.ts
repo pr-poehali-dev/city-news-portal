@@ -187,7 +187,13 @@ export const useAdminState = () => {
   };
 
   const handleEditNewsOpen = (news: any) => {
-    setEditingNews(news);
+    setEditingNews({
+      ...news,
+      image_url: news.image_url || '',
+      video_url: news.video_url || '',
+      read_time: news.read_time || '5 мин',
+      is_featured: news.is_featured || false
+    });
     setEditDialogOpen(true);
   };
 
@@ -207,12 +213,20 @@ export const useAdminState = () => {
           title: 'Успешно!',
           description: 'Новость обновлена'
         });
+        await loadNews();
+        await loadDrafts();
         setEditDialogOpen(false);
-        setEditingNews(null);
-        loadNews();
-        loadDrafts();
+        setTimeout(() => setEditingNews(null), 300);
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        toast({
+          title: 'Ошибка',
+          description: errorData.error || 'Не удалось обновить',
+          variant: 'destructive'
+        });
       }
     } catch (error) {
+      console.error('Edit error:', error);
       toast({
         title: 'Ошибка',
         description: 'Не удалось обновить',
