@@ -1,0 +1,70 @@
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import Icon from '@/components/ui/icon';
+
+interface SiteHeaderProps {
+  weather: any;
+  sections: string[];
+  activeSection: string;
+  onSectionChange: (section: string) => void;
+}
+
+export const SiteHeader = ({ weather, sections, activeSection, onSectionChange }: SiteHeaderProps) => {
+  return (
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-primary/10 shadow-sm">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-4xl font-bold text-primary font-serif">
+              Город говорит
+            </h1>
+            <p className="text-sm text-muted-foreground font-medium">Краснодар</p>
+          </div>
+          <div className="flex items-center gap-4">
+            {weather && (
+              <Card className="bg-primary/5 border-primary/20">
+                <CardContent className="p-3 flex items-center gap-3">
+                  <img 
+                    src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
+                    alt={weather.description}
+                    className="w-12 h-12"
+                  />
+                  <div>
+                    <div className="text-2xl font-bold">{weather.temp}°C</div>
+                    <div className="text-xs text-muted-foreground">{weather.description}</div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+            <Button variant="ghost" size="sm">
+              <Icon name="Search" size={20} />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => window.location.href = '/admin'}
+            >
+              Админка
+            </Button>
+          </div>
+        </div>
+        
+        <nav className="flex gap-6 overflow-x-auto pb-2">
+          {sections.map((section) => (
+            <button
+              key={section}
+              onClick={() => onSectionChange(section)}
+              className={`text-sm font-medium whitespace-nowrap transition-colors ${
+                activeSection === section
+                  ? 'text-primary border-b-2 border-primary pb-2'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {section}
+            </button>
+          ))}
+        </nav>
+      </div>
+    </header>
+  );
+};
