@@ -7,10 +7,14 @@ import { NewsForm } from '@/components/admin/NewsForm';
 import { NewsCard } from '@/components/admin/NewsCard';
 import { EventForm } from '@/components/admin/EventForm';
 import { EventCard } from '@/components/admin/EventCard';
+import { AuthorForm } from '@/components/admin/AuthorForm';
+import { AuthorCard } from '@/components/admin/AuthorCard';
+import { AboutForm } from '@/components/admin/AboutForm';
 
 const FUNCTIONS_URL = {
   news: 'https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe',
-  events: 'https://functions.poehali.dev/383dd478-9fc2-4b12-bcc4-72b87c103a3d'
+  events: 'https://functions.poehali.dev/383dd478-9fc2-4b12-bcc4-72b87c103a3d',
+  settings: 'https://functions.poehali.dev/3df5293f-c779-41ac-9c87-49466251f502'
 };
 
 const CATEGORIES = [
@@ -58,6 +62,19 @@ const Admin = () => {
   const [newsList, setNewsList] = useState([]);
   const [draftsList, setDraftsList] = useState([]);
   const [eventsList, setEventsList] = useState([]);
+  const [authorsList, setAuthorsList] = useState([]);
+  
+  const [authorForm, setAuthorForm] = useState({
+    name: '',
+    position: '',
+    bio: '',
+    photo_url: ''
+  });
+
+  const [aboutForm, setAboutForm] = useState({
+    title: '',
+    content: ''
+  });
 
   useEffect(() => {
     const authStatus = localStorage.getItem('admin_auth');
@@ -71,6 +88,8 @@ const Admin = () => {
       loadNews();
       loadDrafts();
       loadEvents();
+      loadAuthors();
+      loadAbout();
     }
   }, [authenticated]);
 
@@ -350,6 +369,111 @@ const Admin = () => {
     }
   };
 
+  const loadAuthors = async () => {
+    try {
+      const response = await fetch(`${FUNCTIONS_URL.settings}?resource=authors`);
+      const data = await response.json();
+      setAuthorsList(data);
+    } catch (error) {
+      console.error('Failed to load authors:', error);
+    }
+  };
+
+  const loadAbout = async () => {
+    try {
+      const response = await fetch(`${FUNCTIONS_URL.settings}?resource=about`);
+      const data = await response.json();
+      if (data.title) {
+        setAboutForm({ title: data.title, content: data.content });
+      }
+    } catch (error) {
+      console.error('Failed to load about:', error);
+    }
+  };
+
+  const handleAuthorSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${FUNCTIONS_URL.settings}?resource=authors`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(authorForm)
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно!',
+          description: 'Автор добавлен'
+        });
+        setAuthorForm({ name: '', position: '', bio: '', photo_url: '' });
+        loadAuthors();
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось добавить автора',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteAuthor = async (authorId: number) => {
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${FUNCTIONS_URL.settings}?resource=authors&id=${authorId}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно!',
+          description: 'Автор удален'
+        });
+        loadAuthors();
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось удалить автора',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAboutSubmit = async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${FUNCTIONS_URL.settings}?resource=about`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(aboutForm)
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно!',
+          description: 'Раздел "О портале" обновлен'
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (!authenticated) {
     return (
       <LoginForm
@@ -367,10 +491,12 @@ const Admin = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="news" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
             <TabsTrigger value="news">Новости ({newsList.length})</TabsTrigger>
             <TabsTrigger value="drafts">Черновики ({draftsList.length})</TabsTrigger>
             <TabsTrigger value="events">События ({eventsList.length})</TabsTrigger>
+            <TabsTrigger value="authors">Авторы ({authorsList.length})</TabsTrigger>
+            <TabsTrigger value="about">О портале</TabsTrigger>
           </TabsList>
 
           <TabsContent value="news">
@@ -467,6 +593,46 @@ const Admin = () => {
                   </div>
                 )}
               </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="authors">
+            <div className="grid lg:grid-cols-2 gap-8">
+              <AuthorForm
+                authorForm={authorForm}
+                loading={loading}
+                onFormChange={(field, value) => setAuthorForm({ ...authorForm, [field]: value })}
+                onSubmit={handleAuthorSubmit}
+              />
+
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold">Список авторов</h3>
+                {authorsList.length === 0 ? (
+                  <p className="text-muted-foreground">Авторы пока не добавлены</p>
+                ) : (
+                  <div className="space-y-3">
+                    {authorsList.map((author: any) => (
+                      <AuthorCard
+                        key={author.id}
+                        author={author}
+                        loading={loading}
+                        onDelete={() => handleDeleteAuthor(author.id)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="about">
+            <div className="max-w-3xl mx-auto">
+              <AboutForm
+                aboutForm={aboutForm}
+                loading={loading}
+                onFormChange={(field, value) => setAboutForm({ ...aboutForm, [field]: value })}
+                onSubmit={handleAboutSubmit}
+              />
             </div>
           </TabsContent>
         </Tabs>

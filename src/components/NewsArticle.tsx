@@ -12,10 +12,12 @@ interface NewsArticleProps {
   comments: any[];
   commentName: string;
   commentText: string;
+  relatedNews?: any[];
   onToggle: () => void;
   onCommentNameChange: (value: string) => void;
   onCommentTextChange: (value: string) => void;
   onAddComment: () => void;
+  onRelatedClick?: (newsId: number) => void;
 }
 
 export const NewsArticle = ({
@@ -24,10 +26,12 @@ export const NewsArticle = ({
   comments,
   commentName,
   commentText,
+  relatedNews = [],
   onToggle,
   onCommentNameChange,
   onCommentTextChange,
-  onAddComment
+  onAddComment,
+  onRelatedClick
 }: NewsArticleProps) => {
   const getYouTubeEmbedUrl = (url: string) => {
     const videoId = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/)?.[1];
@@ -68,7 +72,7 @@ export const NewsArticle = ({
             {article.category}
           </Badge>
         )}
-        <h2 className="text-2xl font-serif font-bold mb-3 leading-tight hover:text-primary transition-colors cursor-pointer">
+        <h2 className="text-2xl font-serif font-bold mb-3 leading-tight hover:text-primary transition-colors cursor-pointer break-words">
           {article.title}
         </h2>
         <p className="text-muted-foreground mb-4 leading-relaxed">
@@ -179,6 +183,38 @@ export const NewsArticle = ({
                 Отправить комментарий
               </Button>
             </div>
+
+            {relatedNews.length > 0 && (
+              <>
+                <Separator className="my-6" />
+                <div>
+                  <h4 className="font-semibold mb-3">Читайте также</h4>
+                  <div className="space-y-2">
+                    {relatedNews.map((related) => (
+                      <div
+                        key={related.id}
+                        onClick={() => onRelatedClick?.(related.id)}
+                        className="flex gap-3 p-2 rounded hover:bg-accent cursor-pointer transition-colors"
+                      >
+                        {related.image_url && (
+                          <img 
+                            src={related.image_url} 
+                            alt={related.title}
+                            className="w-16 h-16 object-cover rounded flex-shrink-0"
+                          />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium line-clamp-2">{related.title}</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {new Date(related.created_at).toLocaleDateString('ru-RU')}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
       </CardContent>

@@ -98,7 +98,11 @@ export const NewsCard = ({
               Редактировать
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogContent 
+            className="max-w-2xl max-h-[80vh] overflow-y-auto"
+            onInteractOutside={(e) => e.preventDefault()}
+            onEscapeKeyDown={(e) => e.preventDefault()}
+          >
             <DialogHeader>
               <DialogTitle>Редактировать новость</DialogTitle>
             </DialogHeader>
@@ -166,9 +170,18 @@ export const NewsCard = ({
                     onChange={(e) => onEditingNewsChange({ ...editingNews, read_time: e.target.value })}
                   />
                 </div>
-                <Button onClick={onSaveEdit} className="w-full" disabled={loading}>
-                  {loading ? 'Сохранение...' : 'Сохранить изменения'}
-                </Button>
+                <div className="flex gap-2">
+                  <Button onClick={onSaveEdit} className="flex-1" disabled={loading}>
+                    {loading ? 'Сохранение...' : 'Сохранить изменения'}
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => onEditDialogChange(false)}
+                    disabled={loading}
+                  >
+                    Закрыть
+                  </Button>
+                </div>
               </div>
             )}
           </DialogContent>
