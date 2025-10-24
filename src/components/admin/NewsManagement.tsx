@@ -33,20 +33,13 @@ export const NewsManagement = ({
 }: NewsManagementProps) => {
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Добавить новость</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <NewsForm
-            form={newsForm}
-            setForm={setNewsForm}
-            categories={categories}
-            onSubmit={onNewsSubmit}
-            loading={loading}
-          />
-        </CardContent>
-      </Card>
+      <NewsForm
+        newsForm={newsForm}
+        categories={categories}
+        loading={loading}
+        onFormChange={(field, value) => setNewsForm({ ...newsForm, [field]: value })}
+        onSubmit={onNewsSubmit}
+      />
 
       <Card>
         <CardHeader>
