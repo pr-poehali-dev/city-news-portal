@@ -3,13 +3,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { LoginForm } from '@/components/admin/LoginForm';
 import { AdminHeader } from '@/components/admin/AdminHeader';
-import { NewsForm } from '@/components/admin/NewsForm';
-import { NewsCard } from '@/components/admin/NewsCard';
-import { EventForm } from '@/components/admin/EventForm';
-import { EventCard } from '@/components/admin/EventCard';
-import { AuthorForm } from '@/components/admin/AuthorForm';
-import { AuthorCard } from '@/components/admin/AuthorCard';
-import { AboutForm } from '@/components/admin/AboutForm';
+import { NewsManagement } from '@/components/admin/NewsManagement';
+import { EventsManagement } from '@/components/admin/EventsManagement';
+import { AuthorsManagement } from '@/components/admin/AuthorsManagement';
+import { SettingsManagement } from '@/components/admin/SettingsManagement';
+import { NewsEditDialog } from '@/components/admin/NewsEditDialog';
 
 const FUNCTIONS_URL = {
   news: 'https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe',
@@ -147,6 +145,31 @@ const Admin = () => {
     }
   };
 
+  const loadAuthors = async () => {
+    try {
+      const response = await fetch(`${FUNCTIONS_URL.settings}?type=authors`);
+      const data = await response.json();
+      setAuthorsList(data.authors || []);
+    } catch (error) {
+      console.error('Failed to load authors:', error);
+    }
+  };
+
+  const loadAbout = async () => {
+    try {
+      const response = await fetch(`${FUNCTIONS_URL.settings}?type=about`);
+      const data = await response.json();
+      if (data.about) {
+        setAboutForm({
+          title: data.about.title || '',
+          content: data.about.content || ''
+        });
+      }
+    } catch (error) {
+      console.error('Failed to load about:', error);
+    }
+  };
+
   const handleNewsSubmit = async (e: React.FormEvent, isDraft = false) => {
     e.preventDefault();
     setLoading(true);
@@ -189,6 +212,11 @@ const Admin = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEditNewsOpen = (news: any) => {
+    setEditingNews(news);
+    setEditDialogOpen(true);
   };
 
   const handleEditNews = async () => {
@@ -361,33 +389,11 @@ const Admin = () => {
     } catch (error) {
       toast({
         title: 'Ошибка',
-        description: 'Не удалось удалить событие',
+        description: 'Не удалось удалить',
         variant: 'destructive'
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const loadAuthors = async () => {
-    try {
-      const response = await fetch(`${FUNCTIONS_URL.settings}?resource=authors`);
-      const data = await response.json();
-      setAuthorsList(data);
-    } catch (error) {
-      console.error('Failed to load authors:', error);
-    }
-  };
-
-  const loadAbout = async () => {
-    try {
-      const response = await fetch(`${FUNCTIONS_URL.settings}?resource=about`);
-      const data = await response.json();
-      if (data.title) {
-        setAboutForm({ title: data.title, content: data.content });
-      }
-    } catch (error) {
-      console.error('Failed to load about:', error);
     }
   };
 
@@ -396,10 +402,13 @@ const Admin = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${FUNCTIONS_URL.settings}?resource=authors`, {
+      const response = await fetch(FUNCTIONS_URL.settings, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(authorForm)
+        body: JSON.stringify({
+          type: 'author',
+          data: authorForm
+        })
       });
 
       if (response.ok) {
@@ -407,7 +416,12 @@ const Admin = () => {
           title: 'Успешно!',
           description: 'Автор добавлен'
         });
-        setAuthorForm({ name: '', position: '', bio: '', photo_url: '' });
+        setAuthorForm({
+          name: '',
+          position: '',
+          bio: '',
+          photo_url: ''
+        });
         loadAuthors();
       }
     } catch (error) {
@@ -425,21 +439,21 @@ const Admin = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${FUNCTIONS_URL.settings}?resource=authors&id=${authorId}`, {
+      const response = await fetch(`${FUNCTIONS_URL.settings}?type=author&id=${authorId}`, {
         method: 'DELETE'
       });
 
       if (response.ok) {
         toast({
           title: 'Успешно!',
-          description: 'Автор удален'
+          description: 'Автор удалён'
         });
         loadAuthors();
       }
     } catch (error) {
       toast({
         title: 'Ошибка',
-        description: 'Не удалось удалить автора',
+        description: 'Не удалось удалить',
         variant: 'destructive'
       });
     } finally {
@@ -447,26 +461,30 @@ const Admin = () => {
     }
   };
 
-  const handleAboutSubmit = async () => {
+  const handleAboutSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
 
     try {
-      const response = await fetch(`${FUNCTIONS_URL.settings}?resource=about`, {
-        method: 'PUT',
+      const response = await fetch(FUNCTIONS_URL.settings, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(aboutForm)
+        body: JSON.stringify({
+          type: 'about',
+          data: aboutForm
+        })
       });
 
       if (response.ok) {
         toast({
           title: 'Успешно!',
-          description: 'Раздел "О портале" обновлен'
+          description: 'Информация сохранена'
         });
       }
     } catch (error) {
       toast({
         title: 'Ошибка',
-        description: 'Не удалось обновить',
+        description: 'Не удалось сохранить',
         variant: 'destructive'
       });
     } finally {
@@ -477,9 +495,8 @@ const Admin = () => {
   if (!authenticated) {
     return (
       <LoginForm
-        loginForm={loginForm}
-        loading={loading}
-        onLoginChange={(field, value) => setLoginForm({ ...loginForm, [field]: value })}
+        form={loginForm}
+        setForm={setLoginForm}
         onSubmit={handleLogin}
       />
     );
@@ -490,153 +507,72 @@ const Admin = () => {
       <AdminHeader onLogout={handleLogout} />
 
       <main className="container mx-auto px-4 py-8">
-        <Tabs defaultValue="news" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-8">
-            <TabsTrigger value="news">Новости ({newsList.length})</TabsTrigger>
-            <TabsTrigger value="drafts">Черновики ({draftsList.length})</TabsTrigger>
-            <TabsTrigger value="events">События ({eventsList.length})</TabsTrigger>
-            <TabsTrigger value="authors">Авторы ({authorsList.length})</TabsTrigger>
-            <TabsTrigger value="about">О портале</TabsTrigger>
+        <Tabs defaultValue="news" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="news">Новости</TabsTrigger>
+            <TabsTrigger value="events">События</TabsTrigger>
+            <TabsTrigger value="authors">Авторы</TabsTrigger>
+            <TabsTrigger value="settings">Настройки</TabsTrigger>
           </TabsList>
 
           <TabsContent value="news">
-            <div className="grid lg:grid-cols-2 gap-8">
-              <NewsForm
-                newsForm={newsForm}
-                categories={CATEGORIES}
-                loading={loading}
-                onFormChange={(field, value) => setNewsForm({ ...newsForm, [field]: value })}
-                onSubmit={handleNewsSubmit}
-              />
-
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold">Опубликованные новости</h3>
-                {newsList.length === 0 ? (
-                  <p className="text-muted-foreground">Новостей пока нет</p>
-                ) : (
-                  <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
-                    {newsList.map((news: any) => (
-                      <NewsCard
-                        key={news.id}
-                        news={news}
-                        isDraft={false}
-                        loading={loading}
-                        editingNews={editingNews}
-                        editDialogOpen={editDialogOpen}
-                        categories={CATEGORIES}
-                        onSetFeatured={() => handleSetFeatured(news.id)}
-                        onEdit={setEditingNews}
-                        onEditDialogChange={setEditDialogOpen}
-                        onEditingNewsChange={setEditingNews}
-                        onSaveEdit={handleEditNews}
-                        onDelete={() => handleDeleteNews(news.id)}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="drafts">
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold">Черновики</h3>
-              {draftsList.length === 0 ? (
-                <p className="text-muted-foreground">Черновиков пока нет</p>
-              ) : (
-                <div className="grid md:grid-cols-2 gap-3">
-                  {draftsList.map((draft: any) => (
-                    <NewsCard
-                      key={draft.id}
-                      news={draft}
-                      isDraft={true}
-                      loading={loading}
-                      editingNews={editingNews}
-                      editDialogOpen={editDialogOpen}
-                      categories={CATEGORIES}
-                      onPublishDraft={() => handlePublishDraft(draft)}
-                      onEdit={setEditingNews}
-                      onEditDialogChange={setEditDialogOpen}
-                      onEditingNewsChange={setEditingNews}
-                      onSaveEdit={handleEditNews}
-                      onDelete={() => handleDeleteNews(draft.id)}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+            <NewsManagement
+              newsForm={newsForm}
+              setNewsForm={setNewsForm}
+              newsList={newsList}
+              draftsList={draftsList}
+              categories={CATEGORIES}
+              loading={loading}
+              onNewsSubmit={handleNewsSubmit}
+              onDeleteNews={handleDeleteNews}
+              onSetFeatured={handleSetFeatured}
+              onPublishDraft={handlePublishDraft}
+              onEditNews={handleEditNewsOpen}
+            />
           </TabsContent>
 
           <TabsContent value="events">
-            <div className="grid lg:grid-cols-2 gap-8">
-              <EventForm
-                eventForm={eventForm}
-                loading={loading}
-                onFormChange={(field, value) => setEventForm({ ...eventForm, [field]: value })}
-                onSubmit={handleEventSubmit}
-              />
-
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold">Список событий</h3>
-                {eventsList.length === 0 ? (
-                  <p className="text-muted-foreground">События пока не добавлены</p>
-                ) : (
-                  <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
-                    {eventsList.map((event: any) => (
-                      <EventCard
-                        key={event.id}
-                        event={event}
-                        loading={loading}
-                        onDelete={() => handleDeleteEvent(event.id)}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
+            <EventsManagement
+              eventForm={eventForm}
+              setEventForm={setEventForm}
+              eventsList={eventsList}
+              loading={loading}
+              onEventSubmit={handleEventSubmit}
+              onDeleteEvent={handleDeleteEvent}
+            />
           </TabsContent>
 
           <TabsContent value="authors">
-            <div className="grid lg:grid-cols-2 gap-8">
-              <AuthorForm
-                authorForm={authorForm}
-                loading={loading}
-                onFormChange={(field, value) => setAuthorForm({ ...authorForm, [field]: value })}
-                onSubmit={handleAuthorSubmit}
-              />
-
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold">Список авторов</h3>
-                {authorsList.length === 0 ? (
-                  <p className="text-muted-foreground">Авторы пока не добавлены</p>
-                ) : (
-                  <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
-                    {authorsList.map((author: any) => (
-                      <AuthorCard
-                        key={author.id}
-                        author={author}
-                        loading={loading}
-                        onDelete={() => handleDeleteAuthor(author.id)}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
+            <AuthorsManagement
+              authorForm={authorForm}
+              setAuthorForm={setAuthorForm}
+              authorsList={authorsList}
+              loading={loading}
+              onAuthorSubmit={handleAuthorSubmit}
+              onDeleteAuthor={handleDeleteAuthor}
+            />
           </TabsContent>
 
-          <TabsContent value="about">
-            <div className="max-w-3xl mx-auto">
-              <AboutForm
-                aboutForm={aboutForm}
-                loading={loading}
-                onFormChange={(field, value) => setAboutForm({ ...aboutForm, [field]: value })}
-                onSubmit={handleAboutSubmit}
-              />
-            </div>
+          <TabsContent value="settings">
+            <SettingsManagement
+              aboutForm={aboutForm}
+              setAboutForm={setAboutForm}
+              loading={loading}
+              onAboutSubmit={handleAboutSubmit}
+            />
           </TabsContent>
         </Tabs>
       </main>
+
+      <NewsEditDialog
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        news={editingNews}
+        setNews={setEditingNews}
+        categories={CATEGORIES}
+        loading={loading}
+        onSave={handleEditNews}
+      />
     </div>
   );
 };
