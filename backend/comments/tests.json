@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "Get comments requires news_id",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

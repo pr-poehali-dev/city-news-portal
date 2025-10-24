@@ -1,0 +1,16 @@
+{
+  "tests": [
+    {
+      "name": "Get weather data",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "temp": 18,
+        "city": "Краснодар",
+        "mock": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
