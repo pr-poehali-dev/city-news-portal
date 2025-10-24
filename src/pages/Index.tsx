@@ -64,9 +64,18 @@ const Index = () => {
       const response = await fetch(url);
       const data = await response.json();
       
-      const featured = data.find((n: any) => n.is_featured);
+      // Сортируем по дате (новые первыми)
+      const sortedData = data.sort((a: any, b: any) => 
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+      
+      // Главная новость: либо отмеченная is_featured, либо самая последняя
+      const featured = sortedData.find((n: any) => n.is_featured) || sortedData[0];
       setFeaturedNews(featured);
-      setArticles(data.filter((n: any) => !n.is_featured));
+      
+      // Остальные новости (без главной)
+      const otherNews = sortedData.filter((n: any) => n.id !== featured?.id);
+      setArticles(otherNews);
     } catch (error) {
       console.error('Failed to load news:', error);
     }
@@ -167,13 +176,16 @@ const Index = () => {
           <>
             {featuredNews && activeSection === 'Главная' && (
               <>
-                <FeaturedNews news={featuredNews} />
+                {/* Главная новость - большая плашка */}
+                <div className="mb-8" onClick={() => handleArticleClick(featuredNews.id)}>
+                  <FeaturedNews news={featuredNews} />
+                </div>
                 
+                {/* Следующие 3 новости - средние карточки */}
                 {articles.length > 0 && (
                   <div className="mb-8">
-                    <h3 className="text-xl font-serif font-bold mb-4">Другие новости</h3>
                     <div className="grid md:grid-cols-3 gap-4">
-                      {articles.slice(0, 6).map((article) => (
+                      {articles.slice(0, 3).map((article) => (
                         <MiniNewsCard
                           key={article.id}
                           news={article}
@@ -183,39 +195,68 @@ const Index = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Остальные новости - только заголовки */}
+                {articles.length > 3 && (
+                  <div className="mb-8">
+                    <h3 className="text-xl font-serif font-bold mb-4 border-b pb-2">Все новости</h3>
+                    <div className="space-y-3">
+                      {articles.slice(3).map((article) => (
+                        <div 
+                          key={article.id}
+                          onClick={() => handleArticleClick(article.id)}
+                          className="flex items-start gap-3 p-3 hover:bg-muted/50 rounded-lg cursor-pointer transition-colors group"
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <Badge variant="outline" className="text-xs">{article.section}</Badge>
+                              <span className="text-xs text-muted-foreground">{article.date}</span>
+                            </div>
+                            <h4 className="font-semibold group-hover:text-primary transition-colors">
+                              {article.title}
+                            </h4>
+                          </div>
+                          <Icon name="ChevronRight" size={20} className="text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </>
             )}
 
-            <div className="grid md:grid-cols-2 gap-6">
-              {articles.map((article) => (
-                <Card 
-                  key={article.id} 
-                  className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                  onClick={() => handleArticleClick(article.id)}
-                >
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={article.image_url}
-                      alt={article.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Badge variant="outline">{article.section}</Badge>
-                      <span className="text-sm text-muted-foreground">{article.date}</span>
+            {activeSection !== 'Главная' && (
+              <div className="grid md:grid-cols-2 gap-6">
+                {articles.map((article) => (
+                  <Card 
+                    key={article.id} 
+                    className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                    onClick={() => handleArticleClick(article.id)}
+                  >
+                    <div className="relative h-48 overflow-hidden">
+                      <img
+                        src={article.image_url}
+                        alt={article.title}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
-                    <h3 className="text-xl font-bold mb-3 line-clamp-2">{article.title}</h3>
-                    <p className="text-muted-foreground line-clamp-3 mb-4">
-                      {article.content}
-                    </p>
-                    <Button variant="link" className="p-0">
-                      Читать далее →
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Badge variant="outline">{article.section}</Badge>
+                        <span className="text-sm text-muted-foreground">{article.date}</span>
+                      </div>
+                      <h3 className="text-xl font-bold mb-3 line-clamp-2">{article.title}</h3>
+                      <p className="text-muted-foreground line-clamp-3 mb-4">
+                        {article.content}
+                      </p>
+                      <Button variant="link" className="p-0">
+                        Читать далее →
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
 
             <EventsSection events={events} />
           </>
