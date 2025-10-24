@@ -47,9 +47,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             news_id = params.get('id')
             category = params.get('category')
             status = params.get('status', 'published')
+            increment_views = params.get('increment_views', 'false').lower() == 'true'
             
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 if news_id:
+                    if increment_views:
+                        cur.execute('''
+                            UPDATE news 
+                            SET views = COALESCE(views, 0) + 1 
+                            WHERE id = %s
+                        ''', (news_id,))
+                        conn.commit()
+                    
                     cur.execute('''
                         SELECT n.*, a.name as author_name 
                         FROM news n 

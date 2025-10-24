@@ -34,6 +34,12 @@ export const NewsCard = ({
                 Главная
               </Badge>
             )}
+            {!isDraft && (
+              <Badge variant="secondary" className="gap-1">
+                <Icon name="Eye" size={12} />
+                {news.views || 0}
+              </Badge>
+            )}
             <span className="text-xs text-muted-foreground">
               {new Date(news.created_at).toLocaleDateString('ru-RU')}
             </span>

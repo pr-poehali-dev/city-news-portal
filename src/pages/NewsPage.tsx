@@ -44,18 +44,16 @@ export const NewsPage = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [newsResponse, sectionsResponse] = await Promise.all([
-          fetch(FUNCTIONS_URL.news),
-          fetch(FUNCTIONS_URL.events)
-        ]);
-
-        const allNews = await newsResponse.json();
-        const currentArticle = allNews.find((n: NewsArticle) => n.id === Number(id));
+        const articleResponse = await fetch(`${FUNCTIONS_URL.news}?id=${id}&increment_views=true`);
+        const currentArticle = await articleResponse.json();
         
-        if (currentArticle) {
+        if (currentArticle && currentArticle.id) {
           setArticle(currentArticle);
+          
+          const allNewsResponse = await fetch(FUNCTIONS_URL.news);
+          const allNews = await allNewsResponse.json();
           const related = allNews
-            .filter((n: NewsArticle) => n.section === currentArticle.section && n.id !== currentArticle.id)
+            .filter((n: NewsArticle) => n.category === currentArticle.category && n.id !== currentArticle.id)
             .slice(0, 4);
           setRelatedNews(related);
         }

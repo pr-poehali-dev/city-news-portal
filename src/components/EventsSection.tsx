@@ -10,6 +10,10 @@ interface EventsSectionProps {
 export const EventsSection = ({ events }: EventsSectionProps) => {
   if (events.length === 0) return null;
 
+  const sortedEvents = [...events].sort((a, b) => {
+    return new Date(a.event_date).getTime() - new Date(b.event_date).getTime();
+  });
+
   return (
     <>
       <Separator className="my-12" />
@@ -19,7 +23,7 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
           Афиша событий
         </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map((event) => (
+          {sortedEvents.map((event) => (
             <Card key={event.id} className="overflow-hidden hover:shadow-lg transition-shadow">
               {event.image_url ? (
                 <img 

@@ -6,7 +6,7 @@ import Icon from '@/components/ui/icon';
 interface EventCardProps {
   event: any;
   loading: boolean;
-  onDelete: () => void;
+  onDelete: (id: number) => void;
 }
 
 export const EventCard = ({ event, loading, onDelete }: EventCardProps) => {
@@ -49,7 +49,7 @@ export const EventCard = ({ event, loading, onDelete }: EventCardProps) => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Отмена</AlertDialogCancel>
-            <AlertDialogAction onClick={onDelete}>
+            <AlertDialogAction onClick={() => onDelete(event.id)}>
               Удалить
             </AlertDialogAction>
           </AlertDialogFooter>
