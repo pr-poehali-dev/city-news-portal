@@ -21,19 +21,12 @@ export const AuthorsManagement = ({
 }: AuthorsManagementProps) => {
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Добавить автора</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <AuthorForm
-            form={authorForm}
-            setForm={setAuthorForm}
-            onSubmit={onAuthorSubmit}
-            loading={loading}
-          />
-        </CardContent>
-      </Card>
+      <AuthorForm
+        authorForm={authorForm}
+        loading={loading}
+        onFormChange={(field, value) => setAuthorForm({ ...authorForm, [field]: value })}
+        onSubmit={onAuthorSubmit}
+      />
 
       <Card>
         <CardHeader>
