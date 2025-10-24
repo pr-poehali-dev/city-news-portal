@@ -8,7 +8,7 @@ export const NewsTicker = ({ latestNews }: NewsTickerProps) => {
   if (latestNews.length === 0) return null;
 
   return (
-    <div className="bg-primary text-white overflow-hidden">
+    <div className="bg-primary dark:bg-primary/90 text-white overflow-hidden">
       <div className="animate-marquee whitespace-nowrap py-2">
         {latestNews.map((news, i) => (
           <span key={news.id} className="inline-block mx-8">

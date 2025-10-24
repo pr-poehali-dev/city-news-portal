@@ -8,7 +8,7 @@ interface FooterProps {
 
 export const Footer = ({ sections, onSectionChange }: FooterProps) => {
   return (
-    <footer className="bg-white border-t mt-12">
+    <footer className="bg-white dark:bg-card border-t dark:border-border/50 mt-12">
       <div className="container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-4 gap-8">
           <div>

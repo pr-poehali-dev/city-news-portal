@@ -11,7 +11,7 @@ interface SiteHeaderProps {
 
 export const SiteHeader = ({ weather, sections, activeSection, onSectionChange }: SiteHeaderProps) => {
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-primary/10 shadow-sm">
+    <header className="sticky top-0 z-50 bg-white/95 dark:bg-background/95 backdrop-blur-sm border-b border-primary/10 dark:border-border/50 shadow-sm dark:shadow-lg">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -22,7 +22,7 @@ export const SiteHeader = ({ weather, sections, activeSection, onSectionChange }
           </div>
           <div className="flex items-center gap-2 md:gap-4">
             {weather && (
-              <Card className="bg-primary/5 border-primary/20 hidden sm:block">
+              <Card className="bg-primary/5 dark:bg-primary/10 border-primary/20 dark:border-primary/30 hidden sm:block">
                 <CardContent className="p-2 md:p-3 flex items-center gap-2">
                   <img 
                     src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
@@ -49,15 +49,15 @@ export const SiteHeader = ({ weather, sections, activeSection, onSectionChange }
           </div>
         </div>
         
-        <nav className="flex gap-6 overflow-x-auto pb-2">
+        <nav className="flex gap-6 overflow-x-auto pb-2 scrollbar-hide">
           {sections.map((section) => (
             <button
               key={section}
               onClick={() => onSectionChange(section)}
-              className={`text-sm font-medium whitespace-nowrap transition-colors ${
+              className={`text-sm font-medium whitespace-nowrap transition-all ${
                 activeSection === section
-                  ? 'text-primary border-b-2 border-primary pb-2'
-                  : 'text-muted-foreground hover:text-foreground'
+                  ? 'text-primary dark:text-primary border-b-2 border-primary pb-2'
+                  : 'text-muted-foreground hover:text-foreground dark:hover:text-foreground'
               }`}
             >
               {section}
