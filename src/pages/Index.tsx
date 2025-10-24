@@ -35,7 +35,7 @@ const Index = () => {
       title: 'Новый культурный центр откроется в центре города',
       category: 'Культура',
       excerpt: 'В историческом районе появится современное пространство для искусства и творчества',
-      image: 'https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/f78213ac-5101-438a-b303-5acde2b94047.jpg',
+      image: 'https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/0ddc2b1b-b229-4ec1-996c-3e913228e358.jpg',
       date: '24 октября 2025',
       readTime: '5 мин',
       comments: []
@@ -45,7 +45,7 @@ const Index = () => {
       title: 'Городской бюджет: основные направления расходов',
       category: 'Экономика',
       excerpt: 'Мэрия представила план финансирования социальных программ на следующий год',
-      image: 'https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/56d8656d-d8a1-43bf-be7e-9be948eebfb4.jpg',
+      image: 'https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/3060e08d-b406-4613-842e-5b0181981d53.jpg',
       date: '24 октября 2025',
       readTime: '7 мин',
       comments: []
@@ -55,7 +55,7 @@ const Index = () => {
       title: 'Местная команда вышла в финал регионального чемпионата',
       category: 'Спорт',
       excerpt: 'Решающий матч состоится в эту субботу на городском стадионе',
-      image: 'https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/b37eb08f-dad0-4072-b740-9882b5ddc15c.jpg',
+      image: 'https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/4b269b05-03c6-4f0f-86f6-7f4c2807ba24.jpg',
       date: '23 октября 2025',
       readTime: '4 мин',
       comments: []
@@ -98,12 +98,15 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-primary/10 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-4xl font-bold text-primary font-serif">
-              ГородNews
-            </h1>
+            <div>
+              <h1 className="text-4xl font-bold text-primary font-serif">
+                Город говорит
+              </h1>
+              <p className="text-sm text-muted-foreground font-medium">Краснодар</p>
+            </div>
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="sm">
                 <Icon name="Search" size={20} />
@@ -257,7 +260,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
             <div>
-              <h3 className="font-serif text-2xl font-bold mb-4">ГородNews</h3>
+              <h3 className="font-serif text-2xl font-bold mb-4">Город говорит: Краснодар</h3>
               <p className="text-sm opacity-80">
                 Актуальные новости вашего города. Будьте в курсе событий вместе с нами.
               </p>
