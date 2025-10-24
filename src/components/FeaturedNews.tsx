@@ -48,28 +48,28 @@ export const FeaturedNews = ({ news }: FeaturedNewsProps) => {
             </Badge>
           </div>
         </div>
-        <div className="p-4 md:p-6 flex flex-col justify-center">
+        <div className="p-4 md:p-6 flex flex-col justify-center overflow-hidden">
           <Badge className="w-fit mb-2 bg-primary/10 text-primary hover:bg-primary/20 text-xs">
             {news.category}
           </Badge>
-          <h2 className="text-lg md:text-xl font-serif font-bold mb-3 text-foreground leading-tight break-words overflow-wrap-anywhere line-clamp-3">
+          <h2 className="text-base md:text-lg font-serif font-bold mb-3 text-foreground leading-snug break-all line-clamp-3">
             {news.title}
           </h2>
-          <p className="text-muted-foreground mb-4 text-sm md:text-base leading-relaxed line-clamp-2">
+          <p className="text-muted-foreground mb-4 text-xs md:text-sm leading-relaxed line-clamp-2 break-words">
             {news.excerpt}
           </p>
-          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             <div className="flex items-center gap-1">
               <Icon name="Calendar" size={14} />
-              {new Date(news.created_at).toLocaleDateString('ru-RU')}
+              <span className="truncate">{new Date(news.created_at).toLocaleDateString('ru-RU')}</span>
             </div>
             <div className="flex items-center gap-1">
               <Icon name="Clock" size={14} />
-              {news.read_time}
+              <span className="truncate">{news.read_time}</span>
             </div>
             <div className="flex items-center gap-1">
               <Icon name="User" size={14} />
-              {news.author_name}
+              <span className="truncate">{news.author_name}</span>
             </div>
           </div>
         </div>
