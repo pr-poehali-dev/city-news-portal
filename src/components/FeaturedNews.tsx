@@ -52,7 +52,7 @@ export const FeaturedNews = ({ news }: FeaturedNewsProps) => {
           <Badge className="w-fit mb-2 bg-primary/10 text-primary hover:bg-primary/20 text-xs">
             {news.category}
           </Badge>
-          <h2 className="text-xl md:text-2xl font-serif font-bold mb-3 text-foreground leading-tight break-words line-clamp-3">
+          <h2 className="text-lg md:text-xl font-serif font-bold mb-3 text-foreground leading-tight break-words overflow-wrap-anywhere line-clamp-3">
             {news.title}
           </h2>
           <p className="text-muted-foreground mb-4 text-sm md:text-base leading-relaxed line-clamp-2">
