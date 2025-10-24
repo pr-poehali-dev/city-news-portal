@@ -35,10 +35,16 @@ export const NewsCard = ({
               </Badge>
             )}
             {!isDraft && (
-              <Badge variant="secondary" className="gap-1">
-                <Icon name="Eye" size={12} />
-                {news.views || 0}
-              </Badge>
+              <>
+                <Badge variant="secondary" className="gap-1">
+                  <Icon name="Eye" size={12} />
+                  {news.views || 0}
+                </Badge>
+                <Badge variant="secondary" className="gap-1">
+                  <Icon name="Heart" size={12} />
+                  {news.likes || 0}
+                </Badge>
+              </>
             )}
             <span className="text-xs text-muted-foreground">
               {new Date(news.created_at).toLocaleDateString('ru-RU')}

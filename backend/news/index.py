@@ -48,6 +48,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             category = params.get('category')
             status = params.get('status', 'published')
             increment_views = params.get('increment_views', 'false').lower() == 'true'
+            increment_likes = params.get('increment_likes', 'false').lower() == 'true'
             
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 if news_id:
@@ -55,6 +56,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         cur.execute('''
                             UPDATE news 
                             SET views = COALESCE(views, 0) + 1 
+                            WHERE id = %s
+                        ''', (news_id,))
+                        conn.commit()
+                    
+                    if increment_likes:
+                        cur.execute('''
+                            UPDATE news 
+                            SET likes = COALESCE(likes, 0) + 1 
                             WHERE id = %s
                         ''', (news_id,))
                         conn.commit()

@@ -31,6 +31,7 @@ const Index = () => {
   const [weather, setWeather] = useState<any>(null);
   const [comments, setComments] = useState<Record<number, any[]>>({});
   const [activeSection, setActiveSection] = useState('Главная');
+  const [likedArticles, setLikedArticles] = useState<Set<number>>(new Set());
 
   const sections = [
     'Главная',
@@ -48,6 +49,11 @@ const Index = () => {
     loadEvents();
     loadWeather();
     loadLatestForTicker();
+    
+    const savedLikes = localStorage.getItem('likedArticles');
+    if (savedLikes) {
+      setLikedArticles(new Set(JSON.parse(savedLikes)));
+    }
   }, []);
 
   useEffect(() => {
@@ -149,6 +155,29 @@ const Index = () => {
     navigate(`/news/${newsId}`);
   };
 
+  const handleLike = async (newsId: number) => {
+    if (likedArticles.has(newsId)) return;
+
+    try {
+      await fetch(`${FUNCTIONS_URL.news}?id=${newsId}&increment_likes=true`);
+      const newLikedArticles = new Set(likedArticles).add(newsId);
+      setLikedArticles(newLikedArticles);
+      localStorage.setItem('likedArticles', JSON.stringify([...newLikedArticles]));
+      
+      setArticles(prev => prev.map(article => 
+        article.id === newsId 
+          ? { ...article, likes: (article.likes || 0) + 1 }
+          : article
+      ));
+      
+      if (featuredNews?.id === newsId) {
+        setFeaturedNews((prev: any) => ({ ...prev, likes: (prev.likes || 0) + 1 }));
+      }
+    } catch (error) {
+      console.error('Failed to like article:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <NewsTicker latestNews={latestNews} />
@@ -190,6 +219,11 @@ const Index = () => {
                           key={article.id}
                           news={article}
                           onClick={() => handleArticleClick(article.id)}
+                          onLike={(e) => {
+                            e.stopPropagation();
+                            handleLike(article.id);
+                          }}
+                          hasLiked={likedArticles.has(article.id)}
                         />
                       ))}
                     </div>

@@ -18,6 +18,8 @@ interface NewsArticleProps {
   onCommentTextChange: (value: string) => void;
   onAddComment: () => void;
   onRelatedClick?: (newsId: number) => void;
+  onLike?: () => void;
+  hasLiked?: boolean;
 }
 
 export const NewsArticle = ({
@@ -31,7 +33,9 @@ export const NewsArticle = ({
   onCommentNameChange,
   onCommentTextChange,
   onAddComment,
-  onRelatedClick
+  onRelatedClick,
+  onLike,
+  hasLiked = false
 }: NewsArticleProps) => {
   const getYouTubeEmbedUrl = (url: string) => {
     const videoId = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/)?.[1];
@@ -94,22 +98,35 @@ export const NewsArticle = ({
               {article.author_name}
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onToggle}
-            className="gap-2"
-          >
-            {isExpanded ? (
-              <>
-                Свернуть <Icon name="ChevronUp" size={16} />
-              </>
-            ) : (
-              <>
-                Читать далее <Icon name="ChevronDown" size={16} />
-              </>
+          <div className="flex items-center gap-2">
+            {onLike && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onLike}
+                className={`gap-1 ${hasLiked ? 'text-red-500' : ''}`}
+              >
+                <Icon name={hasLiked ? "Heart" : "Heart"} size={16} className={hasLiked ? 'fill-current' : ''} />
+                <span className="text-xs">{article.likes || 0}</span>
+              </Button>
             )}
-          </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onToggle}
+              className="gap-2"
+            >
+              {isExpanded ? (
+                <>
+                  Свернуть <Icon name="ChevronUp" size={16} />
+                </>
+              ) : (
+                <>
+                  Читать далее <Icon name="ChevronDown" size={16} />
+                </>
+              )}
+            </Button>
+          </div>
         </div>
 
         {isExpanded && (
