@@ -45,11 +45,11 @@ export const NewsPage = () => {
     const loadData = async () => {
       try {
         const [newsResponse, sectionsResponse] = await Promise.all([
-          apiRequest('/api/news'),
-          apiRequest('/api/sections')
+          fetch(FUNCTIONS_URL.news),
+          fetch(FUNCTIONS_URL.events)
         ]);
 
-        const allNews = newsResponse.news || [];
+        const allNews = await newsResponse.json();
         const currentArticle = allNews.find((n: NewsArticle) => n.id === Number(id));
         
         if (currentArticle) {
@@ -60,7 +60,8 @@ export const NewsPage = () => {
           setRelatedNews(related);
         }
 
-        setSections(sectionsResponse.sections || []);
+        const allSections = ['Главная', 'Спорт', 'Культура', 'Экономика', 'Политика', 'Общество'];
+        setSections(allSections);
         setLoading(false);
       } catch (error) {
         console.error('Error loading news:', error);
