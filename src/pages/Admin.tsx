@@ -153,10 +153,11 @@ const Admin = () => {
         });
         setNewsForm({
           title: '',
-          category: 'Новости',
+          category: 'Политика',
           excerpt: '',
           content: '',
           image_url: '',
+          video_url: '',
           read_time: '5 мин',
           status: 'published'
         });
@@ -426,7 +427,12 @@ const Admin = () => {
             <Button 
               size="sm" 
               variant="outline"
-              onClick={() => setEditingNews(news)}
+              onClick={() => setEditingNews({
+                ...news,
+                image_url: news.image_url || '',
+                video_url: news.video_url || '',
+                read_time: news.read_time || '5 мин'
+              })}
             >
               <Icon name="Edit" size={14} className="mr-1" />
               Редактировать
