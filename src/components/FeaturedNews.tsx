@@ -27,48 +27,48 @@ export const FeaturedNews = ({ news }: FeaturedNewsProps) => {
   };
 
   return (
-    <Card className="mb-8 overflow-hidden hover:shadow-xl transition-shadow bg-gradient-to-r from-primary/5 to-secondary/5 border-2 border-primary/20">
+    <Card className="mb-8 overflow-hidden hover:shadow-xl transition-shadow bg-gradient-to-r from-primary/5 to-secondary/5 border-2 border-primary/20 cursor-pointer">
       <div className="grid md:grid-cols-2 gap-0">
         <div className="relative overflow-hidden group">
           {news.image_url ? (
             <img
               src={news.image_url}
               alt={news.title}
-              className="w-full h-full min-h-[400px] object-cover transition-transform group-hover:scale-105"
+              className="w-full h-full min-h-[200px] md:min-h-[300px] object-cover transition-transform group-hover:scale-105"
             />
           ) : (
-            <div className="w-full min-h-[400px] bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-              <Icon name="FileText" size={96} className="text-primary/40" />
+            <div className="w-full min-h-[200px] md:min-h-[300px] bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+              <Icon name="FileText" size={64} className="text-primary/40" />
             </div>
           )}
-          <div className="absolute top-4 left-4">
-            <Badge className="bg-red-600 text-white font-bold px-4 py-1.5 text-sm">
-              <Icon name="Pin" size={14} className="mr-1 inline" />
-              ГЛАВНАЯ НОВОСТЬ
+          <div className="absolute top-3 left-3">
+            <Badge className="bg-red-600 text-white font-bold px-3 py-1 text-xs">
+              <Icon name="Pin" size={12} className="mr-1 inline" />
+              ГЛАВНАЯ
             </Badge>
           </div>
         </div>
-        <div className="p-8 flex flex-col justify-center">
-          <Badge className="w-fit mb-3 bg-primary/10 text-primary hover:bg-primary/20">
+        <div className="p-4 md:p-6 flex flex-col justify-center">
+          <Badge className="w-fit mb-2 bg-primary/10 text-primary hover:bg-primary/20 text-xs">
             {news.category}
           </Badge>
-          <h2 className="text-3xl font-serif font-bold mb-4 text-foreground leading-tight break-words">
+          <h2 className="text-xl md:text-2xl font-serif font-bold mb-3 text-foreground leading-tight break-words line-clamp-3">
             {news.title}
           </h2>
-          <p className="text-muted-foreground mb-6 text-lg leading-relaxed">
+          <p className="text-muted-foreground mb-4 text-sm md:text-base leading-relaxed line-clamp-2">
             {news.excerpt}
           </p>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Icon name="Calendar" size={16} />
+          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+            <div className="flex items-center gap-1">
+              <Icon name="Calendar" size={14} />
               {new Date(news.created_at).toLocaleDateString('ru-RU')}
             </div>
-            <div className="flex items-center gap-2">
-              <Icon name="Clock" size={16} />
+            <div className="flex items-center gap-1">
+              <Icon name="Clock" size={14} />
               {news.read_time}
             </div>
-            <div className="flex items-center gap-2">
-              <Icon name="User" size={16} />
+            <div className="flex items-center gap-1">
+              <Icon name="User" size={14} />
               {news.author_name}
             </div>
           </div>
