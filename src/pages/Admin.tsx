@@ -147,9 +147,9 @@ const Admin = () => {
 
   const loadAuthors = async () => {
     try {
-      const response = await fetch(`${FUNCTIONS_URL.settings}?type=authors`);
+      const response = await fetch(`${FUNCTIONS_URL.settings}?resource=authors`);
       const data = await response.json();
-      setAuthorsList(data.authors || []);
+      setAuthorsList(data || []);
     } catch (error) {
       console.error('Failed to load authors:', error);
     }
@@ -157,12 +157,12 @@ const Admin = () => {
 
   const loadAbout = async () => {
     try {
-      const response = await fetch(`${FUNCTIONS_URL.settings}?type=about`);
+      const response = await fetch(`${FUNCTIONS_URL.settings}?resource=about`);
       const data = await response.json();
-      if (data.about) {
+      if (data) {
         setAboutForm({
-          title: data.about.title || '',
-          content: data.about.content || ''
+          title: data.title || '',
+          content: data.content || ''
         });
       }
     } catch (error) {
@@ -402,13 +402,10 @@ const Admin = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(FUNCTIONS_URL.settings, {
+      const response = await fetch(`${FUNCTIONS_URL.settings}?resource=authors`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'author',
-          data: authorForm
-        })
+        body: JSON.stringify(authorForm)
       });
 
       if (response.ok) {
@@ -439,7 +436,7 @@ const Admin = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${FUNCTIONS_URL.settings}?type=author&id=${authorId}`, {
+      const response = await fetch(`${FUNCTIONS_URL.settings}?resource=authors&id=${authorId}`, {
         method: 'DELETE'
       });
 
@@ -466,13 +463,10 @@ const Admin = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(FUNCTIONS_URL.settings, {
-        method: 'POST',
+      const response = await fetch(`${FUNCTIONS_URL.settings}?resource=about`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'about',
-          data: aboutForm
-        })
+        body: JSON.stringify(aboutForm)
       });
 
       if (response.ok) {
