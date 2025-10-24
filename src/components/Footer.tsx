@@ -48,33 +48,25 @@ export const Footer = ({ sections, onSectionChange }: FooterProps) => {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4">Информация</h4>
+            <h4 className="font-semibold mb-4">Социальные сети</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <button
-                  onClick={() => onSectionChange('О портале')}
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  О портале
-                </button>
-              </li>
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Редакция
+                <a href="https://vk.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                  <Icon name="Users" size={16} />
+                  ВКонтакте
                 </a>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Реклама
+                <a href="https://t.me" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                  <Icon name="Send" size={16} />
+                  Telegram
                 </a>
               </li>
               <li>
-                <button
-                  onClick={() => onSectionChange('Контакты')}
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Контакты
-                </button>
+                <a href="https://ok.ru" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                  <Icon name="MessageCircle" size={16} />
+                  Одноклассники
+                </a>
               </li>
             </ul>
           </div>
@@ -84,11 +76,11 @@ export const Footer = ({ sections, onSectionChange }: FooterProps) => {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <Icon name="Mail" size={16} />
-                info@gorodgovorit.ru
+                moskv.nickita@yandex.ru
               </li>
               <li className="flex items-center gap-2">
                 <Icon name="Phone" size={16} />
-                +7 (861) 123-45-67
+                +7 (911) 126-96-39
               </li>
               <li className="flex items-center gap-2">
                 <Icon name="MapPin" size={16} />

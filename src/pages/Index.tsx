@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { NewsTicker } from '@/components/NewsTicker';
 import { SiteHeader } from '@/components/SiteHeader';
 import { FeaturedNews } from '@/components/FeaturedNews';
-import { NewsArticle } from '@/components/NewsArticle';
 import { EventsSection } from '@/components/EventsSection';
 import { MiniNewsCard } from '@/components/MiniNewsCard';
 import { Separator } from '@/components/ui/separator';
@@ -188,20 +188,32 @@ const Index = () => {
 
             <div className="grid md:grid-cols-2 gap-6">
               {articles.map((article) => (
-                <NewsArticle
-                  key={article.id}
-                  article={article}
-                  isExpanded={selectedArticle === article.id}
-                  comments={comments[article.id] || []}
-                  commentName={commentName}
-                  commentText={commentText}
-                  relatedNews={articles.filter(a => a.id !== article.id && a.category === article.category).slice(0, 3)}
-                  onToggle={() => handleArticleClick(article.id)}
-                  onCommentNameChange={setCommentName}
-                  onCommentTextChange={setCommentText}
-                  onAddComment={() => handleAddComment(article.id)}
-                  onRelatedClick={handleArticleClick}
-                />
+                <Card 
+                  key={article.id} 
+                  className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                  onClick={() => handleArticleClick(article.id)}
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={article.image_url}
+                      alt={article.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Badge variant="outline">{article.section}</Badge>
+                      <span className="text-sm text-muted-foreground">{article.date}</span>
+                    </div>
+                    <h3 className="text-xl font-bold mb-3 line-clamp-2">{article.title}</h3>
+                    <p className="text-muted-foreground line-clamp-3 mb-4">
+                      {article.content}
+                    </p>
+                    <Button variant="link" className="p-0">
+                      Читать далее →
+                    </Button>
+                  </CardContent>
+                </Card>
               ))}
             </div>
 
