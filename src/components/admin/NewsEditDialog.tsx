@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useCallback } from 'react';
 
 interface NewsEditDialogProps {
   open: boolean;
@@ -25,10 +26,12 @@ export const NewsEditDialog = ({
   loading,
   onSave
 }: NewsEditDialogProps) => {
-  const updateField = (field: string, value: any) => {
-    if (!news) return;
-    setNews({ ...news, [field]: value });
-  };
+  const updateField = useCallback((field: string, value: any) => {
+    setNews((prev: any) => {
+      if (!prev) return prev;
+      return { ...prev, [field]: value };
+    });
+  }, [setNews]);
 
   if (!news) return null;
 
