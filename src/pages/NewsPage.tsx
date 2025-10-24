@@ -152,7 +152,7 @@ export const NewsPage = () => {
             <span className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm mb-4">
               {article.section}
             </span>
-            <h1 className="text-4xl font-bold mb-4">{article.title}</h1>
+            <h1 className="text-2xl md:text-4xl font-bold mb-4 break-words">{article.title}</h1>
             <div className="flex items-center gap-4 text-muted-foreground mb-6">
               <span className="flex items-center gap-2">
                 <Icon name="User" size={16} />
@@ -168,32 +168,33 @@ export const NewsPage = () => {
           <img 
             src={article.image_url} 
             alt={article.title}
-            className="w-full h-[400px] object-cover rounded-lg mb-8"
+            className="w-full h-[200px] md:h-[400px] object-cover rounded-lg mb-8"
           />
 
-          <div className="prose prose-lg max-w-none mb-12">
-            <p className="whitespace-pre-wrap text-foreground leading-relaxed">
+          <div className="prose prose-sm md:prose-lg max-w-none mb-12">
+            <p className="whitespace-pre-wrap text-foreground leading-relaxed break-words">
               {article.content}
             </p>
           </div>
 
           <div className="border-t border-border pt-8 mb-12">
-            <h3 className="text-xl font-semibold mb-4">Поделиться:</h3>
-            <div className="flex gap-4">
-              <Button variant="outline" onClick={handleCopyLink}>
-                <Icon name="Link" size={20} className="mr-2" />
-                Копировать ссылку
+            <h3 className="text-lg md:text-xl font-semibold mb-4">Поделиться:</h3>
+            <div className="flex flex-wrap gap-3">
+              <Button variant="outline" onClick={handleCopyLink} className="text-xs md:text-sm">
+                <Icon name="Link" size={16} className="mr-1 md:mr-2" />
+                <span className="hidden sm:inline">Копировать ссылку</span>
+                <span className="sm:hidden">Ссылка</span>
               </Button>
-              <Button variant="outline" onClick={() => handleShare('vk')}>
-                <Icon name="Share2" size={20} className="mr-2" />
+              <Button variant="outline" onClick={() => handleShare('vk')} className="text-xs md:text-sm">
+                <Icon name="Share2" size={16} className="mr-1 md:mr-2" />
                 ВКонтакте
               </Button>
-              <Button variant="outline" onClick={() => handleShare('telegram')}>
-                <Icon name="Send" size={20} className="mr-2" />
+              <Button variant="outline" onClick={() => handleShare('telegram')} className="text-xs md:text-sm">
+                <Icon name="Send" size={16} className="mr-1 md:mr-2" />
                 Telegram
               </Button>
-              <Button variant="outline" onClick={() => handleShare('whatsapp')}>
-                <Icon name="MessageCircle" size={20} className="mr-2" />
+              <Button variant="outline" onClick={() => handleShare('whatsapp')} className="text-xs md:text-sm">
+                <Icon name="MessageCircle" size={16} className="mr-1 md:mr-2" />
                 WhatsApp
               </Button>
             </div>
@@ -201,7 +202,7 @@ export const NewsPage = () => {
 
           {relatedNews.length > 0 && (
             <div className="border-t border-border pt-12 mb-12">
-              <h3 className="text-2xl font-semibold mb-6">Читайте также</h3>
+              <h3 className="text-xl md:text-2xl font-semibold mb-6">Читайте также</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {relatedNews.map((news) => (
                   <MiniNewsCard
@@ -218,7 +219,7 @@ export const NewsPage = () => {
           )}
 
           <div className="border-t border-border pt-12">
-            <h3 className="text-2xl font-semibold mb-6">
+            <h3 className="text-xl md:text-2xl font-semibold mb-6">
               Комментарии ({comments.length})
             </h3>
 
