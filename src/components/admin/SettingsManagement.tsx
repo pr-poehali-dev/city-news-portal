@@ -16,19 +16,12 @@ export const SettingsManagement = ({
 }: SettingsManagementProps) => {
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>О портале</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <AboutForm
-            form={aboutForm}
-            setForm={setAboutForm}
-            onSubmit={onAboutSubmit}
-            loading={loading}
-          />
-        </CardContent>
-      </Card>
+      <AboutForm
+        aboutForm={aboutForm}
+        loading={loading}
+        onFormChange={(field, value) => setAboutForm({ ...aboutForm, [field]: value })}
+        onSubmit={() => onAboutSubmit({ preventDefault: () => {} } as React.FormEvent)}
+      />
     </div>
   );
 };
