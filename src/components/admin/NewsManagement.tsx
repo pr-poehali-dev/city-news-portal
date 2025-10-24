@@ -51,10 +51,10 @@ export const NewsManagement = ({
               <NewsCard
                 key={news.id}
                 news={news}
+                loading={loading}
                 onEdit={onEditNews}
                 onDelete={onDeleteNews}
                 onSetFeatured={onSetFeatured}
-                loading={loading}
               />
             ))}
           </div>
@@ -72,10 +72,10 @@ export const NewsManagement = ({
                 key={draft.id}
                 news={draft}
                 isDraft
+                loading={loading}
                 onEdit={onEditNews}
                 onDelete={onDeleteNews}
                 onPublish={onPublishDraft}
-                loading={loading}
               />
             ))}
           </div>
