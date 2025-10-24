@@ -19,6 +19,8 @@ const Index = () => {
   const [commentName, setCommentName] = useState('');
   const [commentText, setCommentText] = useState('');
   const [articles, setArticles] = useState<any[]>([]);
+  const [featuredNews, setFeaturedNews] = useState<any>(null);
+  const [latestNews, setLatestNews] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [weather, setWeather] = useState<any>(null);
   const [comments, setComments] = useState<Record<number, any[]>>({});
@@ -26,7 +28,6 @@ const Index = () => {
 
   const sections = [
     'Главная',
-    'Новости',
     'Политика',
     'Экономика',
     'Культура',
@@ -40,6 +41,7 @@ const Index = () => {
     loadNews();
     loadEvents();
     loadWeather();
+    loadLatestForTicker();
   }, []);
 
   useEffect(() => {
@@ -55,9 +57,22 @@ const Index = () => {
       const url = category ? `${FUNCTIONS_URL.news}?category=${encodeURIComponent(category)}` : FUNCTIONS_URL.news;
       const response = await fetch(url);
       const data = await response.json();
-      setArticles(data);
+      
+      const featured = data.find((n: any) => n.is_featured);
+      setFeaturedNews(featured);
+      setArticles(data.filter((n: any) => !n.is_featured));
     } catch (error) {
       console.error('Failed to load news:', error);
+    }
+  };
+
+  const loadLatestForTicker = async () => {
+    try {
+      const response = await fetch(FUNCTIONS_URL.news);
+      const data = await response.json();
+      setLatestNews(data.slice(0, 5));
+    } catch (error) {
+      console.error('Failed to load latest news:', error);
     }
   };
 
@@ -128,6 +143,19 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {latestNews.length > 0 && (
+        <div className="bg-primary text-white overflow-hidden">
+          <div className="animate-marquee whitespace-nowrap py-2">
+            {latestNews.map((news, i) => (
+              <span key={news.id} className="inline-block mx-8">
+                <Icon name="Circle" size={6} className="inline mr-2" />
+                {news.title}
+                {i < latestNews.length - 1 && <span className="mx-4">•</span>}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-primary/10 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
@@ -185,7 +213,7 @@ const Index = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        {articles.length === 0 ? (
+        {articles.length === 0 && !featuredNews ? (
           <Card className="p-12 text-center">
             <Icon name="FileText" size={48} className="mx-auto mb-4 text-muted-foreground" />
             <h2 className="text-2xl font-serif font-bold mb-2">Новостей пока нет</h2>
@@ -197,7 +225,74 @@ const Index = () => {
             </Button>
           </Card>
         ) : (
-          <div className="grid gap-8 lg:grid-cols-2">
+          <>
+            {featuredNews && activeSection === 'Главная' && (
+              <Card className="mb-8 overflow-hidden hover:shadow-xl transition-shadow bg-gradient-to-r from-primary/5 to-secondary/5 border-2 border-primary/20">
+                <div className="grid md:grid-cols-2 gap-0">
+                  <div className="relative overflow-hidden group">
+                    {featuredNews.image_url ? (
+                      <img
+                        src={featuredNews.image_url}
+                        alt={featuredNews.title}
+                        className="w-full h-full min-h-[400px] object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-full min-h-[400px] bg-primary/10 flex items-center justify-center">
+                        <Icon name="Image" size={64} className="text-primary/30" />
+                      </div>
+                    )}
+                    <Badge className="absolute top-4 left-4 bg-primary text-white text-lg px-4 py-2">
+                      <Icon name="Pin" size={16} className="inline mr-2" />
+                      Главная новость
+                    </Badge>
+                  </div>
+                  <div className="p-8 flex flex-col justify-between">
+                    <div>
+                      <Badge className="mb-4">{featuredNews.category}</Badge>
+                      <h2 className="font-serif font-bold text-4xl mb-4 hover:text-primary transition-colors">
+                        {featuredNews.title}
+                      </h2>
+                      <p className="text-muted-foreground text-lg leading-relaxed mb-4">
+                        {featuredNews.excerpt}
+                      </p>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+                        <span className="flex items-center gap-1">
+                          <Icon name="User" size={16} />
+                          {featuredNews.author_name || 'Никита Москвин'}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Icon name="Calendar" size={16} />
+                          {new Date(featuredNews.published_at).toLocaleDateString('ru-RU')}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Icon name="Clock" size={16} />
+                          {featuredNews.read_time}
+                        </span>
+                      </div>
+                      <Button 
+                        size="lg"
+                        className="w-full"
+                        onClick={() => handleArticleClick(featuredNews.id)}
+                      >
+                        {selectedArticle === featuredNews.id ? 'Скрыть' : 'Читать полностью'}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+                {selectedArticle === featuredNews.id && (
+                  <div className="border-t bg-muted/30 animate-accordion-down p-6">
+                    {featuredNews.content && (
+                      <div className="prose prose-sm max-w-none mb-6 text-foreground">
+                        {featuredNews.content}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </Card>
+            )}
+            <div className="grid gap-8 lg:grid-cols-2">
             {articles.map((article, index) => (
               <Card 
                 key={article.id} 
@@ -338,6 +433,7 @@ const Index = () => {
               </Card>
             ))}
           </div>
+          </>
         )}
 
         {events.length > 0 && (

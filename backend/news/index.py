@@ -116,9 +116,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             excerpt = body.get('excerpt', '')
             content = body.get('content', '')
             image_url = body.get('image_url', '')
+            video_url = body.get('video_url', '')
             author_id = body.get('author_id', 1)
             read_time = body.get('read_time', '5 мин')
             status = body.get('status', 'published')
+            is_featured = body.get('is_featured', False)
             
             if not title or not category or not excerpt:
                 return {
@@ -132,11 +134,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 }
             
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                if is_featured:
+                    cur.execute('UPDATE news SET is_featured = FALSE')
+                
                 cur.execute('''
-                    INSERT INTO news (title, category, excerpt, content, image_url, author_id, read_time, status)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO news (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING *
-                ''', (title, category, excerpt, content, image_url, author_id, read_time, status))
+                ''', (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured))
                 
                 new_news = cur.fetchone()
                 conn.commit()
@@ -184,17 +189,25 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if 'image_url' in body:
                 fields.append('image_url = %s')
                 values.append(body['image_url'])
+            if 'video_url' in body:
+                fields.append('video_url = %s')
+                values.append(body['video_url'])
             if 'read_time' in body:
                 fields.append('read_time = %s')
                 values.append(body['read_time'])
             if 'status' in body:
                 fields.append('status = %s')
                 values.append(body['status'])
+            if 'is_featured' in body:
+                fields.append('is_featured = %s')
+                values.append(body['is_featured'])
             
             fields.append('updated_at = CURRENT_TIMESTAMP')
             values.append(news_id)
             
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                if body.get('is_featured'):
+                    cur.execute('UPDATE news SET is_featured = FALSE')
                 cur.execute(f'''
                     UPDATE news 
                     SET {', '.join(fields)}

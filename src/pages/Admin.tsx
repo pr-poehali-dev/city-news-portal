@@ -17,13 +17,13 @@ const FUNCTIONS_URL = {
 };
 
 const CATEGORIES = [
-  'Главная',
-  'Новости',
   'Политика',
   'Экономика',
   'Культура',
   'Спорт',
-  'События'
+  'События',
+  'О портале',
+  'Контакты'
 ];
 
 const ADMIN_CREDENTIALS = {
@@ -41,10 +41,11 @@ const Admin = () => {
   
   const [newsForm, setNewsForm] = useState({
     title: '',
-    category: 'Новости',
+    category: 'Политика',
     excerpt: '',
     content: '',
     image_url: '',
+    video_url: '',
     read_time: '5 мин',
     status: 'published'
   });
@@ -261,6 +262,34 @@ const Admin = () => {
     }
   };
 
+  const handleSetFeatured = async (newsId: number) => {
+    setLoading(true);
+
+    try {
+      const response = await fetch(FUNCTIONS_URL.news, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: newsId, is_featured: true })
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно!',
+          description: 'Новость закреплена в главной'
+        });
+        loadNews();
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось закрепить',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleEventSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -314,7 +343,7 @@ const Admin = () => {
                   value={loginForm.login}
                   onChange={(e) => setLoginForm({ ...loginForm, login: e.target.value })}
                   required
-                  placeholder="moskvinkrd"
+                  placeholder="Логин"
                 />
               </div>
               <div>
@@ -324,7 +353,7 @@ const Admin = () => {
                   value={loginForm.password}
                   onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
                   required
-                  placeholder="••••••••"
+                  placeholder="Пароль"
                 />
               </div>
               <Button type="submit" className="w-full">
@@ -379,6 +408,17 @@ const Admin = () => {
           >
             <Icon name="Upload" size={14} className="mr-1" />
             Опубликовать
+          </Button>
+        )}
+        {!isDraft && (
+          <Button 
+            size="sm" 
+            variant={news.is_featured ? "default" : "secondary"}
+            onClick={() => handleSetFeatured(news.id)}
+            disabled={loading || news.is_featured}
+          >
+            <Icon name="Pin" size={14} className="mr-1" />
+            {news.is_featured ? 'Главная новость' : 'В главную'}
           </Button>
         )}
         <Dialog open={editDialogOpen && editingNews?.id === news.id} onOpenChange={setEditDialogOpen}>
@@ -442,6 +482,15 @@ const Admin = () => {
                   <Input
                     value={editingNews.image_url || ''}
                     onChange={(e) => setEditingNews({ ...editingNews, image_url: e.target.value })}
+                    placeholder="https://..."
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Ссылка на видео (YouTube, Rutube)</label>
+                  <Input
+                    value={editingNews.video_url || ''}
+                    onChange={(e) => setEditingNews({ ...editingNews, video_url: e.target.value })}
+                    placeholder="https://youtube.com/..."
                   />
                 </div>
                 <div>
@@ -583,6 +632,15 @@ const Admin = () => {
                         value={newsForm.image_url}
                         onChange={(e) => setNewsForm({ ...newsForm, image_url: e.target.value })}
                         placeholder="https://..."
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Ссылка на видео (YouTube, Rutube)</label>
+                      <Input
+                        value={newsForm.video_url}
+                        onChange={(e) => setNewsForm({ ...newsForm, video_url: e.target.value })}
+                        placeholder="https://youtube.com/..."
                       />
                     </div>
 
