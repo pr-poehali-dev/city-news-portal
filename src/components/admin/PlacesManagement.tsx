@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +7,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import Icon from '@/components/ui/icon';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 const PLACE_CATEGORIES = [
   'Город завтракает',
@@ -44,10 +47,27 @@ interface PlacesManagementProps {
   onTogglePublish: (id: number, isPublished: boolean) => void;
 }
 
-declare global {
-  interface Window {
-    ymaps3: any;
-  }
+function LocationMarker({ position, onPositionChange }: any) {
+  useMapEvents({
+    click(e) {
+      onPositionChange([e.latlng.lat, e.latlng.lng]);
+    },
+  });
+
+  const icon = L.divIcon({
+    className: 'custom-marker',
+    html: `
+      <div style="position: relative; width: 40px; height: 40px;">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="#FF6B6B" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="white" stroke-width="1"/>
+        </svg>
+      </div>
+    `,
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+  });
+
+  return position ? <Marker position={position} icon={icon} /> : null;
 }
 
 export function PlacesManagement({
@@ -59,111 +79,19 @@ export function PlacesManagement({
   onDeletePlace,
   onTogglePublish,
 }: PlacesManagementProps) {
+  const [mapPosition, setMapPosition] = useState<[number, number]>([45.0355, 38.9753]);
+  const [mapKey, setMapKey] = useState(0);
   const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const mapRef = useRef<HTMLDivElement>(null);
-  const ymapInstance = useRef<any>(null);
 
-  useEffect(() => {
-    const apiKey = import.meta.env.VITE_YANDEX_MAPS_API_KEY || '1ecb8ea8-36e4-4c1d-a753-a203a45d737c';
-    
-    const loadYandexMaps = async () => {
-      if (!mapRef.current) return;
-
-      if (!window.ymaps3) {
-        await new Promise<void>((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = `https://api-maps.yandex.ru/v3/?apikey=${apiKey}&lang=ru_RU`;
-          script.async = true;
-          script.onload = () => resolve();
-          script.onerror = () => reject(new Error('Failed to load Yandex Maps'));
-          document.head.appendChild(script);
-        });
-      }
-
-      await window.ymaps3.ready;
-
-      const {
-        YMap,
-        YMapDefaultSchemeLayer,
-        YMapDefaultFeaturesLayer,
-        YMapMarker,
-        YMapListener,
-      } = window.ymaps3;
-
-      const center = [placeForm.longitude || 38.9753, placeForm.latitude || 45.0355];
-
-      if (!ymapInstance.current) {
-        ymapInstance.current = new YMap(mapRef.current, {
-          location: {
-            center,
-            zoom: 12,
-          },
-        });
-
-        ymapInstance.current.addChild(new YMapDefaultSchemeLayer());
-        ymapInstance.current.addChild(new YMapDefaultFeaturesLayer());
-
-        const listener = new YMapListener({
-          onClick: (object: any, event: any) => {
-            const coords = event.coordinates;
-            setPlaceForm({
-              ...placeForm,
-              latitude: coords[1],
-              longitude: coords[0],
-            });
-          },
-        });
-
-        ymapInstance.current.addChild(listener);
-      }
-
-      ymapInstance.current.update({ 
-        location: { 
-          center: [placeForm.longitude || 38.9753, placeForm.latitude || 45.0355],
-          zoom: 12 
-        } 
-      });
-
-      const existingMarkers = ymapInstance.current.children.filter((child: any) => 
-        child instanceof YMapMarker
-      );
-      existingMarkers.forEach((marker: any) => {
-        ymapInstance.current.removeChild(marker);
-      });
-
-      if (placeForm.latitude && placeForm.longitude) {
-        const color = categoryColors[placeForm.category as keyof typeof categoryColors] || '#FF6B6B';
-        
-        const markerElement = document.createElement('div');
-        markerElement.innerHTML = `
-          <div style="position: relative; width: 40px; height: 40px;">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="${color}" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="white" stroke-width="1"/>
-            </svg>
-          </div>
-        `;
-
-        const marker = new YMapMarker(
-          {
-            coordinates: [placeForm.longitude, placeForm.latitude],
-          },
-          markerElement
-        );
-
-        ymapInstance.current.addChild(marker);
-      }
-    };
-
-    loadYandexMaps().catch(console.error);
-
-    return () => {
-      if (ymapInstance.current) {
-        ymapInstance.current.destroy();
-        ymapInstance.current = null;
-      }
-    };
-  }, [placeForm.latitude, placeForm.longitude, placeForm.category]);
+  const handleMapClick = (position: [number, number]) => {
+    setMapPosition(position);
+    setPlaceForm({
+      ...placeForm,
+      latitude: position[0],
+      longitude: position[1],
+    });
+  };
 
   const handleAddressSearch = async (query: string) => {
     if (query.length < 3) {
@@ -172,17 +100,11 @@ export function PlacesManagement({
     }
 
     try {
-      const apiKey = import.meta.env.VITE_YANDEX_MAPS_API_KEY || '1ecb8ea8-36e4-4c1d-a753-a203a45d737c';
       const response = await fetch(
-        `https://geocode-maps.yandex.ru/1.x/?apikey=${apiKey}&geocode=Краснодар, ${encodeURIComponent(query)}&format=json&results=5`
+        `https://nominatim.openstreetmap.org/search?format=json&q=Краснодар, ${encodeURIComponent(query)}&limit=5`
       );
       const data = await response.json();
-      const suggestions = data.response.GeoObjectCollection.featureMember.map((item: any) => ({
-        name: item.GeoObject.name,
-        description: item.GeoObject.description,
-        coordinates: item.GeoObject.Point.pos.split(' ').map(Number),
-      }));
-      setAddressSuggestions(suggestions);
+      setAddressSuggestions(data);
       setShowSuggestions(true);
     } catch (error) {
       console.error('Failed to fetch suggestions:', error);
@@ -255,15 +177,16 @@ export function PlacesManagement({
                     onClick={() => {
                       setPlaceForm({
                         ...placeForm,
-                        address: `${suggestion.name}, ${suggestion.description}`,
-                        latitude: suggestion.coordinates[1],
-                        longitude: suggestion.coordinates[0]
+                        address: suggestion.display_name,
+                        latitude: parseFloat(suggestion.lat),
+                        longitude: parseFloat(suggestion.lon)
                       });
+                      setMapPosition([parseFloat(suggestion.lat), parseFloat(suggestion.lon)]);
+                      setMapKey(prev => prev + 1);
                       setShowSuggestions(false);
                     }}
                   >
-                    <div className="font-medium">{suggestion.name}</div>
-                    <div className="text-xs text-muted-foreground">{suggestion.description}</div>
+                    {suggestion.display_name}
                   </div>
                 ))}
               </div>
@@ -336,11 +259,20 @@ export function PlacesManagement({
 
           <div className="space-y-2">
             <Label>Местоположение на карте (кликните на карту)</Label>
-            <div 
-              ref={mapRef} 
-              style={{ height: '400px', width: '100%', borderRadius: '8px' }}
-              className="border"
-            />
+            <div style={{ height: '400px', width: '100%', borderRadius: '8px' }} className="border">
+              <MapContainer
+                key={mapKey}
+                center={mapPosition}
+                zoom={12}
+                style={{ height: '100%', width: '100%', borderRadius: '8px' }}
+              >
+                <TileLayer
+                  attribution='&copy; OpenStreetMap'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <LocationMarker position={mapPosition} onPositionChange={handleMapClick} />
+              </MapContainer>
+            </div>
             {placeForm.latitude && placeForm.longitude && (
               <p className="text-xs text-muted-foreground">
                 Координаты: {placeForm.latitude.toFixed(6)}, {placeForm.longitude.toFixed(6)}
