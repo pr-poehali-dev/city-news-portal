@@ -35,6 +35,7 @@ const Index = () => {
   const [topThreeNews, setTopThreeNews] = useState<any[]>([]);
   const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+  const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   
   const newsCategories = ['Политика', 'Экономика', 'Культура', 'Спорт', 'События'];
 
@@ -68,6 +69,16 @@ const Index = () => {
       loadNews();
     }
   }, [activeSection]);
+
+  useEffect(() => {
+    const categoriesWithNews = newsCategories.filter(cat => 
+      articles.some(a => a.category === cat)
+    );
+    setAvailableCategories(categoriesWithNews);
+    if (categoriesWithNews.length > 0 && currentCategoryIndex >= categoriesWithNews.length) {
+      setCurrentCategoryIndex(0);
+    }
+  }, [articles]);
 
   useEffect(() => {
     if (topThreeNews.length === 0) return;
@@ -294,11 +305,9 @@ const Index = () => {
                 )}
 
                 {/* Новости по категориям */}
-                {(() => {
-                  const currentCategory = newsCategories[currentCategoryIndex];
+                {availableCategories.length > 0 && (() => {
+                  const currentCategory = availableCategories[currentCategoryIndex];
                   const categoryNews = articles.filter(a => a.category === currentCategory).slice(0, 4);
-                  
-                  if (categoryNews.length === 0) return null;
                   
                   return (
                     <div className="mb-8">
@@ -308,20 +317,20 @@ const Index = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setCurrentCategoryIndex((prev) => (prev - 1 + newsCategories.length) % newsCategories.length)}
+                            onClick={() => setCurrentCategoryIndex((prev) => (prev - 1 + availableCategories.length) % availableCategories.length)}
                           >
                             <Icon name="ChevronLeft" size={20} />
                           </Button>
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setCurrentCategoryIndex((prev) => (prev + 1) % newsCategories.length)}
+                            onClick={() => setCurrentCategoryIndex((prev) => (prev + 1) % availableCategories.length)}
                           >
                             <Icon name="ChevronRight" size={20} />
                           </Button>
                         </div>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
                         {categoryNews.map((article) => (
                           <Card
                             key={article.id}
