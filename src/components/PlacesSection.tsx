@@ -39,7 +39,7 @@ export function PlacesSection({
       )
     : filteredByCategory;
 
-  const displayedPlaces = showAllPlaces ? filteredPlaces : filteredPlaces.slice(0, 6);
+  const displayedPlaces = showAllPlaces ? filteredPlaces : filteredPlaces.slice(0, 4);
 
   return (
     <div className="mb-12">
@@ -116,30 +116,30 @@ export function PlacesSection({
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 gap-4">
         {displayedPlaces.map((place) => (
           <Card key={place.id} className="overflow-hidden hover:shadow-lg transition-all">
             <CardContent className="p-0">
               {place.image_url && (
-                <div className="relative h-48 overflow-hidden">
+                <div className="relative h-40 md:h-48 overflow-hidden">
                   <img
                     src={place.image_url}
                     alt={place.title}
                     className="w-full h-full object-cover"
                   />
                   <div
-                    className="absolute top-4 right-4 w-4 h-4 rounded-full border-2 border-white shadow-lg"
+                    className="absolute top-3 right-3 w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-white shadow-lg"
                     style={{ backgroundColor: categoryColors[place.category as keyof typeof categoryColors] }}
                   />
                 </div>
               )}
-              <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2">{place.title}</h3>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                  <Icon name="MapPin" size={14} />
-                  <span>{place.address}</span>
+              <div className="p-3 md:p-4">
+                <h3 className="text-base md:text-lg font-semibold mb-1 md:mb-2 line-clamp-1">{place.title}</h3>
+                <div className="flex items-center gap-1 md:gap-2 text-xs md:text-sm text-muted-foreground mb-2">
+                  <Icon name="MapPin" size={12} className="flex-shrink-0" />
+                  <span className="truncate">{place.address}</span>
                 </div>
-                <p className="text-muted-foreground text-sm line-clamp-3">{place.excerpt}</p>
+                <p className="text-muted-foreground text-xs md:text-sm line-clamp-2">{place.excerpt}</p>
               </div>
             </CardContent>
           </Card>
@@ -154,10 +154,10 @@ export function PlacesSection({
         </div>
       )}
 
-      {filteredPlaces.length > 6 && (
+      {filteredPlaces.length > 4 && !showAllPlaces && (
         <div className="text-center mt-6">
-          <Button onClick={onShowAllToggle} variant="outline">
-            {showAllPlaces ? 'Показать меньше' : `Показать все (${filteredPlaces.length})`}
+          <Button onClick={() => navigate('/places')} variant="outline">
+            Показать все ({filteredPlaces.length})
           </Button>
         </div>
       )}

@@ -3,7 +3,7 @@ import Icon from '@/components/ui/icon';
 
 export const SocialSubscribe = () => {
   return (
-    <div className="py-16 bg-gradient-to-br from-primary/5 via-orange-50/30 to-background dark:from-primary/10 dark:via-orange-950/20">
+    <div className="py-12 bg-gradient-to-br from-primary/5 via-orange-50/30 to-background dark:from-primary/10 dark:via-orange-950/20">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">

@@ -339,7 +339,7 @@ const Index = () => {
               likedArticles={likedArticles}
             />
 
-            <Separator className="my-12" />
+            <Separator className="my-8" />
 
             <PartnersSection />
           </>
