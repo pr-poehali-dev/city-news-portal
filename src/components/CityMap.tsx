@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -53,9 +53,20 @@ export default function CityMap({ places, onPlaceClick }: CityMapProps) {
     });
   }, []);
 
-  const center: [number, number] = places.length > 0 
-    ? [places[0].latitude, places[0].longitude]
-    : [55.7558, 37.6173];
+  const center: [number, number] = useMemo(() => 
+    places.length > 0 
+      ? [places[0].latitude, places[0].longitude]
+      : [55.7558, 37.6173],
+    [places]
+  );
+
+  if (places.length === 0) {
+    return (
+      <div className="h-[500px] w-full rounded-lg border border-dashed border-gray-300 flex items-center justify-center bg-gray-50">
+        <p className="text-gray-500">Добавьте места на карту через админ-панель</p>
+      </div>
+    );
+  }
 
   return (
     <MapContainer
@@ -63,6 +74,7 @@ export default function CityMap({ places, onPlaceClick }: CityMapProps) {
       zoom={12}
       style={{ height: '500px', width: '100%', borderRadius: '8px' }}
       className="z-0"
+      key={`map-${places.length}`}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
