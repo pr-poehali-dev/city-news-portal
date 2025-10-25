@@ -60,6 +60,16 @@ const Index = () => {
     'Контакты'
   ];
 
+  const handleSectionChange = (section: string) => {
+    if (section === 'О портале') {
+      navigate('/about');
+    } else if (section === 'Контакты') {
+      navigate('/contacts');
+    } else {
+      setActiveSection(section);
+    }
+  };
+
   useEffect(() => {
     loadNews();
     loadEvents();
@@ -232,7 +242,7 @@ const Index = () => {
         weather={weather}
         sections={sections}
         activeSection={activeSection}
-        onSectionChange={setActiveSection}
+        onSectionChange={handleSectionChange}
       />
 
       <main className="container mx-auto px-4 py-8">
@@ -315,7 +325,7 @@ const Index = () => {
 
       <Footer 
         sections={sections} 
-        onSectionChange={setActiveSection} 
+        onSectionChange={handleSectionChange} 
       />
     </div>
   );
