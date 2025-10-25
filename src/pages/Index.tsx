@@ -295,7 +295,10 @@ const Index = () => {
         )}
       </main>
 
-      <Footer />
+      <Footer 
+        sections={sections} 
+        onSectionChange={setActiveSection} 
+      />
     </div>
   );
 };
