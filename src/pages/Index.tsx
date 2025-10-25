@@ -34,6 +34,9 @@ const Index = () => {
   const [likedArticles, setLikedArticles] = useState<Set<number>>(new Set());
   const [topThreeNews, setTopThreeNews] = useState<any[]>([]);
   const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
+  const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+  
+  const newsCategories = ['Политика', 'Экономика', 'Культура', 'Спорт', 'События'];
 
   const sections = [
     'Главная',
@@ -291,13 +294,33 @@ const Index = () => {
                 )}
 
                 {/* Новости по категориям */}
-                {['Политика', 'Экономика', 'Культура', 'Спорт'].map((category) => {
-                  const categoryNews = articles.filter(a => a.category === category).slice(0, 4);
+                {(() => {
+                  const currentCategory = newsCategories[currentCategoryIndex];
+                  const categoryNews = articles.filter(a => a.category === currentCategory).slice(0, 4);
+                  
                   if (categoryNews.length === 0) return null;
                   
                   return (
-                    <div key={category} className="mb-8">
-                      <h3 className="text-2xl font-serif font-bold mb-4 border-b-2 border-primary pb-2">{category}</h3>
+                    <div className="mb-8">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-2xl font-serif font-bold border-b-2 border-primary pb-2 flex-1">{currentCategory}</h3>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentCategoryIndex((prev) => (prev - 1 + newsCategories.length) % newsCategories.length)}
+                          >
+                            <Icon name="ChevronLeft" size={20} />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentCategoryIndex((prev) => (prev + 1) % newsCategories.length)}
+                          >
+                            <Icon name="ChevronRight" size={20} />
+                          </Button>
+                        </div>
+                      </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {categoryNews.map((article) => (
                           <Card
@@ -306,7 +329,7 @@ const Index = () => {
                             onClick={() => handleArticleClick(article.id)}
                           >
                             {article.image_url && (
-                              <div className="relative overflow-hidden h-48">
+                              <div className="relative overflow-hidden h-40">
                                 <img
                                   src={article.image_url}
                                   alt={article.title}
@@ -314,15 +337,15 @@ const Index = () => {
                                 />
                               </div>
                             )}
-                            <CardContent className="p-4">
+                            <CardContent className="p-3">
                               <div className="flex items-center gap-2 mb-2 text-xs text-muted-foreground">
                                 <Icon name="Clock" size={12} />
                                 {new Date(article.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
                               </div>
-                              <h4 className="font-bold text-lg mb-2 line-clamp-2 leading-snug">
+                              <h4 className="font-bold text-base mb-1 line-clamp-2 leading-snug">
                                 {article.title}
                               </h4>
-                              <p className="text-sm text-muted-foreground line-clamp-2">
+                              <p className="text-xs text-muted-foreground line-clamp-2">
                                 {article.excerpt}
                               </p>
                             </CardContent>
@@ -331,7 +354,7 @@ const Index = () => {
                       </div>
                     </div>
                   );
-                })}
+                })()}
               </>
             )}
 
