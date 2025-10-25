@@ -64,6 +64,7 @@ export function PlacesManagement({
 }: PlacesManagementProps) {
   const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [filterFeatured, setFilterFeatured] = useState<'all' | 'featured' | 'regular'>('all');
   const mapRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -98,17 +99,21 @@ export function PlacesManagement({
     }
 
     if (placeForm.latitude && placeForm.longitude) {
+      const markerColor = placeForm.is_featured ? '#FFD700' : categoryColors[placeForm.category as keyof typeof categoryColors] || '#FF6B6B';
+      const markerSize = placeForm.is_featured ? 50 : 40;
+      
       const icon = L.divIcon({
         className: 'custom-marker',
         html: `
-          <div style="position: relative; width: 40px; height: 40px;">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="#FF6B6B" xmlns="http://www.w3.org/2000/svg">
+          <div style="position: relative; width: ${markerSize}px; height: ${markerSize}px;">
+            <svg width="${markerSize}" height="${markerSize}" viewBox="0 0 24 24" fill="${markerColor}" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="white" stroke-width="1"/>
             </svg>
+            ${placeForm.is_featured ? '<div style="position: absolute; top: 8px; left: 50%; transform: translateX(-50%); font-size: 16px;">⭐</div>' : ''}
           </div>
         `,
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
+        iconSize: [markerSize, markerSize],
+        iconAnchor: [markerSize / 2, markerSize],
       });
 
       markerRef.current = L.marker([placeForm.latitude, placeForm.longitude], { icon }).addTo(mapRef.current);
@@ -121,7 +126,7 @@ export function PlacesManagement({
         mapRef.current = null;
       }
     };
-  }, [placeForm.latitude, placeForm.longitude]);
+  }, [placeForm.latitude, placeForm.longitude, placeForm.is_featured, placeForm.category]);
 
   const handleAddressSearch = async (query: string) => {
     if (query.length < 3) {
@@ -360,11 +365,43 @@ export function PlacesManagement({
 
       <Card>
         <CardHeader>
-          <CardTitle>Список мест ({placesList.length})</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>Список мест ({placesList.length})</CardTitle>
+            <div className="flex gap-2">
+              <Button
+                variant={filterFeatured === 'all' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setFilterFeatured('all')}
+              >
+                Все
+              </Button>
+              <Button
+                variant={filterFeatured === 'featured' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setFilterFeatured('featured')}
+                className={filterFeatured === 'featured' ? 'bg-yellow-500 hover:bg-yellow-600' : ''}
+              >
+                ⭐ Город оценил
+              </Button>
+              <Button
+                variant={filterFeatured === 'regular' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setFilterFeatured('regular')}
+              >
+                Обычные
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {placesList.map((place) => (
+            {placesList
+              .filter(place => {
+                if (filterFeatured === 'featured') return place.is_featured;
+                if (filterFeatured === 'regular') return !place.is_featured;
+                return true;
+              })
+              .map((place) => (
               <div key={place.id} className="flex items-start gap-4 p-4 border rounded-lg">
                 {place.image_url && (
                   <img
@@ -433,9 +470,15 @@ export function PlacesManagement({
                 </div>
               </div>
             ))}
-            {placesList.length === 0 && (
+            {placesList.filter(place => {
+              if (filterFeatured === 'featured') return place.is_featured;
+              if (filterFeatured === 'regular') return !place.is_featured;
+              return true;
+            }).length === 0 && (
               <p className="text-center text-muted-foreground py-8">
-                Нет добавленных мест
+                {filterFeatured === 'featured' ? 'Нет мест с отметкой "Город оценил"' : 
+                 filterFeatured === 'regular' ? 'Нет обычных мест' : 
+                 'Нет добавленных мест'}
               </p>
             )}
           </div>

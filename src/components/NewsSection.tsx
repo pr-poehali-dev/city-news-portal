@@ -55,15 +55,15 @@ export function NewsSection({
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {categoryNews.slice(0, 6).map((article) => (
+      <div className="grid grid-cols-2 gap-4">
+        {categoryNews.slice(0, 4).map((article) => (
           <Card
             key={article.id}
             className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
           >
             <CardContent className="p-0">
               {article.image_url && (
-                <div className="relative h-48 overflow-hidden rounded-t-lg">
+                <div className="relative h-40 overflow-hidden rounded-t-lg">
                   <img
                     src={article.image_url}
                     alt={article.title}
@@ -71,9 +71,9 @@ export function NewsSection({
                   />
                 </div>
               )}
-              <div className="p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <Badge variant="secondary">{article.category}</Badge>
+              <div className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge variant="secondary" className="text-xs">{article.category}</Badge>
                   <span className="text-xs text-muted-foreground">
                     {new Date(article.created_at).toLocaleDateString('ru-RU')}
                   </span>
@@ -81,12 +81,12 @@ export function NewsSection({
 
                 <h3
                   onClick={() => onArticleClick(article.id)}
-                  className="text-xl font-semibold mb-2 hover:text-primary cursor-pointer line-clamp-2"
+                  className="text-base font-semibold mb-2 hover:text-primary cursor-pointer line-clamp-2"
                 >
                   {article.title}
                 </h3>
 
-                <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
+                <p className="text-muted-foreground text-xs mb-3 line-clamp-2">
                   {article.excerpt}
                 </p>
 
