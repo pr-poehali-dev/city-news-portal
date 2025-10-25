@@ -67,7 +67,7 @@ export const FeaturedNews = ({ news, currentIndex = 0, totalCount = 1 }: Feature
             </div>
             <div className="flex items-center gap-1">
               <Icon name="Clock" size={14} />
-              <span className="truncate">{news.read_time}</span>
+              <span className="truncate">{new Date(news.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</span>
             </div>
             <div className="flex items-center gap-1">
               <Icon name="User" size={14} />

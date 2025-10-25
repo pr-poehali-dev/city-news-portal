@@ -91,7 +91,7 @@ export const NewsArticle = ({
             </div>
             <div className="flex items-center gap-1">
               <Icon name="Clock" size={14} />
-              {article.read_time}
+              {new Date(article.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
             </div>
             <div className="flex items-center gap-1">
               <Icon name="User" size={14} />
