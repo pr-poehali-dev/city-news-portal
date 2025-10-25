@@ -101,14 +101,8 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
               />
 
               <div 
-                className="flex flex-col md:flex-row min-h-[220px] rounded-lg overflow-hidden"
+                className="flex flex-col md:flex-row min-h-[220px] rounded-lg overflow-hidden bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950/40 dark:via-orange-950/40 dark:to-yellow-950/40"
                 style={{
-                  background: 'linear-gradient(135deg, #fefdfb 0%, #fef9f3 50%, #fef5eb 100%)',
-                  backgroundImage: `
-                    linear-gradient(135deg, #fefdfb 0%, #fef9f3 50%, #fef5eb 100%),
-                    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(251, 191, 36, 0.015) 2px, rgba(251, 191, 36, 0.015) 4px),
-                    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(251, 191, 36, 0.015) 2px, rgba(251, 191, 36, 0.015) 4px)
-                  `,
                   boxShadow: '0 10px 40px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.5)'
                 }}
               >
@@ -130,7 +124,7 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
                     )}
                     
                     <div className="absolute bottom-3 left-3 right-3">
-                      <div className="bg-white/95 backdrop-blur-sm rounded px-2 py-1 inline-block">
+                      <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm rounded px-2 py-1 inline-block">
                         <div className="text-[9px] text-muted-foreground uppercase tracking-wider">Событие</div>
                         <div className="text-lg font-bold text-primary">{currentIndex + 1}<span className="text-xs text-muted-foreground">/{events.length}</span></div>
                       </div>
@@ -158,10 +152,10 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
                     )}
                   </div>
 
-                  <div className="space-y-2 mb-3 p-3 bg-primary/[0.02] rounded-md border border-primary/10">
+                  <div className="space-y-2 mb-3 p-3 bg-primary/[0.02] dark:bg-primary/5 rounded-md border border-primary/10 dark:border-primary/20">
                     {(currentEvent.event_date || currentEvent.event_date_display) && (
                       <div className="flex items-start gap-2">
-                        <div className="w-7 h-7 rounded bg-white/80 flex items-center justify-center flex-shrink-0 border border-primary/20 shadow-sm">
+                        <div className="w-7 h-7 rounded bg-white/80 dark:bg-slate-800/80 flex items-center justify-center flex-shrink-0 border border-primary/20 shadow-sm">
                           <Icon name="Clock" size={14} className="text-primary" />
                         </div>
                         <div className="flex-1">
@@ -180,7 +174,7 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
                     
                     {currentEvent.location && (
                       <div className="flex items-start gap-2 pt-1.5 border-t border-primary/10">
-                        <div className="w-7 h-7 rounded bg-white/80 flex items-center justify-center flex-shrink-0 border border-primary/20 shadow-sm">
+                        <div className="w-7 h-7 rounded bg-white/80 dark:bg-slate-800/80 flex items-center justify-center flex-shrink-0 border border-primary/20 shadow-sm">
                           <Icon name="MapPin" size={14} className="text-primary" />
                         </div>
                         <div className="flex-1">

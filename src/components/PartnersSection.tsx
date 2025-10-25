@@ -82,7 +82,7 @@ export const PartnersSection = () => {
         {partners.map((partner, idx) => (
           <Card 
             key={idx}
-            className="overflow-hidden hover:shadow-2xl transition-all duration-500 border-4 border-transparent hover:border-pink-400 bg-gradient-to-br from-pink-50 via-purple-50 to-orange-50 relative"
+            className="overflow-hidden hover:shadow-2xl transition-all duration-500 border-4 border-transparent hover:border-pink-400 bg-gradient-to-br from-pink-50 via-purple-50 to-orange-50 dark:from-pink-950/30 dark:via-purple-950/30 dark:to-orange-950/30 relative"
             onMouseEnter={() => setShowConfetti(true)}
             onMouseLeave={() => setShowConfetti(false)}
           >
@@ -113,7 +113,7 @@ export const PartnersSection = () => {
                   style={{ objectPosition: '50% 25%' }}
                 />
                 <div className="absolute top-3 left-3 z-30 animate-pulse">
-                  <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-orange-500 text-white px-4 py-2 rounded-full font-bold text-sm shadow-xl flex items-center gap-2 border-2 border-white">
+                  <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-orange-500 text-white px-4 py-2 rounded-full font-bold text-sm shadow-xl flex items-center gap-2 border-2 border-white dark:border-slate-900">
                     <Icon name="Gift" size={18} />
                     {partner.category}
                   </div>
@@ -137,7 +137,7 @@ export const PartnersSection = () => {
                     {partner.description}
                   </p>
                   {partner.discount && (
-                    <div className="bg-gradient-to-r from-orange-500/10 to-pink-500/10 border-2 border-orange-500/30 rounded-lg p-4 mb-4">
+                    <div className="bg-gradient-to-r from-orange-500/10 to-pink-500/10 dark:from-orange-500/20 dark:to-pink-500/20 border-2 border-orange-500/30 dark:border-orange-500/50 rounded-lg p-4 mb-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3">
                           <div className="bg-gradient-to-r from-orange-500 to-pink-500 p-2 rounded-full">
@@ -155,7 +155,7 @@ export const PartnersSection = () => {
                         <div className="mt-3 pt-3 border-t border-orange-300/30">
                           <p className="text-xs text-muted-foreground mb-2">Промокод для скидки:</p>
                           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                            <div className="flex-1 bg-white border-2 border-dashed border-pink-400 rounded-lg px-3 py-2 font-mono font-bold text-base sm:text-lg text-center text-pink-600">
+                            <div className="flex-1 bg-white dark:bg-slate-900 border-2 border-dashed border-pink-400 dark:border-pink-500 rounded-lg px-3 py-2 font-mono font-bold text-base sm:text-lg text-center text-pink-600 dark:text-pink-400">
                               {partner.promoCode}
                             </div>
                             <button
@@ -185,10 +185,10 @@ export const PartnersSection = () => {
                   {partner.highlights.map((highlight, i) => (
                     <div 
                       key={i}
-                      className="flex items-center gap-2 text-sm"
+                      className="flex items-center gap-2 text-sm text-foreground/90 dark:text-foreground"
                     >
                       <div className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-pink-500"></div>
-                      <span className="text-foreground font-medium">{highlight}</span>
+                      <span className="font-medium">{highlight}</span>
                     </div>
                   ))}
                 </div>
