@@ -255,7 +255,10 @@ export default function PlacesMap() {
         </div>
       </main>
 
-      <Footer />
+      <Footer 
+        sections={sections}
+        onSectionChange={handleSectionChange}
+      />
     </div>
   );
 }
