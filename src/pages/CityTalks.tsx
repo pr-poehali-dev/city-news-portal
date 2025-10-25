@@ -26,8 +26,9 @@ const CityTalks = () => {
       const response = await fetch('https://functions.poehali.dev/d7440490-2756-4be6-9013-fc14e99c0a76');
       if (response.ok) {
         const data = await response.json();
-        setCurrentPost(data);
-        setPosts(prev => [data, ...prev].slice(0, 20));
+        const postWithId = { ...data, id: Date.now() };
+        setCurrentPost(postWithId);
+        setPosts(prev => [postWithId, ...prev].slice(0, 20));
       }
     } catch (error) {
       console.error('Error fetching city post:', error);
