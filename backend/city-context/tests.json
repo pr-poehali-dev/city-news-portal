@@ -9,17 +9,15 @@
       "bodyMatcher": "exact"
     },
     {
-      "name": "Test POST with valid question",
-      "method": "POST",
+      "name": "Test GET city context",
+      "method": "GET",
       "path": "/",
-      "body": {
-        "question": "Как дела?",
-        "systemPrompt": "Ты город Краснодар",
-        "previousMessages": []
-      },
       "expectedStatus": 200,
       "expectedBody": {
-        "answer": "string"
+        "news": "array",
+        "posts": "array",
+        "places": "array",
+        "city": "object"
       },
       "bodyMatcher": "partial"
     }
