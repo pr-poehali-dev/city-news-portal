@@ -97,7 +97,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 subscription = subscription_data if isinstance(subscription_data, dict) else json.loads(subscription_data)
                 
                 notification_data = {
-                    "title": "Новые просмотры",
+                    "title": "👁 Новые просмотры",
                     "body": f"+{new_views} {new_views == 1 and 'просмотр' or new_views < 5 and 'просмотра' or 'просмотров'}",
                     "url": "/admin",
                     "icon": "/icon-192.png"

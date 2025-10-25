@@ -1,5 +1,5 @@
 const CHECK_UPDATES_URL = 'https://functions.poehali.dev/ad6dbc40-341f-468c-bf43-bc78691be642';
-const CHECK_INTERVAL = 5000;
+const CHECK_INTERVAL = 10000;
 
 let intervalId: number | null = null;
 
