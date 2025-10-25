@@ -32,6 +32,8 @@ const Index = () => {
   const [comments, setComments] = useState<Record<number, any[]>>({});
   const [activeSection, setActiveSection] = useState('Главная');
   const [likedArticles, setLikedArticles] = useState<Set<number>>(new Set());
+  const [topThreeNews, setTopThreeNews] = useState<any[]>([]);
+  const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
 
   const sections = [
     'Главная',
@@ -64,6 +66,20 @@ const Index = () => {
     }
   }, [activeSection]);
 
+  useEffect(() => {
+    if (topThreeNews.length === 0) return;
+
+    const interval = setInterval(() => {
+      setCurrentFeaturedIndex((prev) => {
+        const nextIndex = (prev + 1) % topThreeNews.length;
+        setFeaturedNews(topThreeNews[nextIndex]);
+        return nextIndex;
+      });
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, [topThreeNews]);
+
   const loadNews = async (category?: string) => {
     try {
       const url = category ? `${FUNCTIONS_URL.news}?category=${encodeURIComponent(category)}` : FUNCTIONS_URL.news;
@@ -75,12 +91,15 @@ const Index = () => {
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
       
-      // Главная новость: либо отмеченная is_featured, либо самая последняя
-      const featured = sortedData.find((n: any) => n.is_featured) || sortedData[0];
-      setFeaturedNews(featured);
+      // Берем топ-3 новости для ротации
+      const top3 = sortedData.slice(0, 3);
+      setTopThreeNews(top3);
       
-      // Остальные новости (без главной)
-      const otherNews = sortedData.filter((n: any) => n.id !== featured?.id);
+      // Главная новость: первая из топ-3
+      setFeaturedNews(top3[0]);
+      
+      // Остальные новости (начиная с 4-й)
+      const otherNews = sortedData.slice(3);
       setArticles(otherNews);
     } catch (error) {
       console.error('Failed to load news:', error);
@@ -207,7 +226,11 @@ const Index = () => {
               <>
                 {/* Главная новость - большая плашка */}
                 <div className="mb-8" onClick={() => handleArticleClick(featuredNews.id)}>
-                  <FeaturedNews news={featuredNews} />
+                  <FeaturedNews 
+                    news={featuredNews} 
+                    currentIndex={currentFeaturedIndex}
+                    totalCount={topThreeNews.length}
+                  />
                 </div>
                 
                 {/* Следующие 3 новости - средние карточки */}

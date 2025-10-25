@@ -4,9 +4,11 @@ import Icon from '@/components/ui/icon';
 
 interface FeaturedNewsProps {
   news: any;
+  currentIndex?: number;
+  totalCount?: number;
 }
 
-export const FeaturedNews = ({ news }: FeaturedNewsProps) => {
+export const FeaturedNews = ({ news, currentIndex = 0, totalCount = 1 }: FeaturedNewsProps) => {
   const getYouTubeEmbedUrl = (url: string) => {
     const videoId = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/)?.[1];
     return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
@@ -72,6 +74,19 @@ export const FeaturedNews = ({ news }: FeaturedNewsProps) => {
               <span className="truncate">{news.author_name}</span>
             </div>
           </div>
+          
+          {totalCount > 1 && (
+            <div className="flex gap-2 mt-4">
+              {Array.from({ length: totalCount }).map((_, index) => (
+                <div
+                  key={index}
+                  className={`h-1 flex-1 rounded-full transition-all ${
+                    index === currentIndex ? 'bg-primary' : 'bg-primary/20'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
       {news.video_url && (
