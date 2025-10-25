@@ -267,6 +267,7 @@ const Index = () => {
             {featuredNews && (
               <FeaturedNews
                 news={featuredNews}
+                allTopNews={topThreeNews}
                 currentIndex={currentFeaturedIndex}
                 totalCount={topThreeNews.length}
                 onNavigate={(direction) => {
@@ -279,6 +280,7 @@ const Index = () => {
                   });
                 }}
                 onClick={() => handleArticleClick(featuredNews.id)}
+                onNewsClick={(newsId) => handleArticleClick(newsId)}
               />
             )}
 
