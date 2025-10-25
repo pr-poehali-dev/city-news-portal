@@ -17,7 +17,7 @@ export const SocialSubscribe = () => {
 
           <div className="grid md:grid-cols-2 gap-6">
             <a
-              href="https://vk.com/ggkrasnodar"
+              href="https://vk.com/club233389110"
               target="_blank"
               rel="noopener noreferrer"
               className="group relative overflow-hidden rounded-2xl p-8 bg-gradient-to-br from-[#0077FF] to-[#0055CC] hover:shadow-2xl hover:shadow-blue-500/30 transition-all duration-500 hover:scale-105"
@@ -52,7 +52,7 @@ export const SocialSubscribe = () => {
             </a>
 
             <a
-              href="https://dzen.ru/ggkrasnodar"
+              href="https://dzen.ru/govoritkrasnodar"
               target="_blank"
               rel="noopener noreferrer"
               className="group relative overflow-hidden rounded-2xl p-8 bg-gradient-to-br from-black via-gray-900 to-gray-800 hover:shadow-2xl hover:shadow-black/50 transition-all duration-500 hover:scale-105"
