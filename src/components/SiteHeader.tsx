@@ -2,7 +2,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useNavigate } from 'react-router-dom';
-import { NotificationSubscribe } from '@/components/NotificationSubscribe';
+
 
 interface SiteHeaderProps {
   weather?: any;
@@ -43,7 +43,6 @@ export const SiteHeader = ({ weather, sections, activeSection, onSectionChange }
                 </CardContent>
               </Card>
             )}
-            <NotificationSubscribe compact />
             <Button variant="ghost" size="sm">
               <Icon name="Search" size={20} />
             </Button>

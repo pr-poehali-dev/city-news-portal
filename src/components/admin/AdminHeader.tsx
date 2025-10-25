@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
-import { NotificationSubscribe } from '@/components/NotificationSubscribe';
+
 
 interface AdminHeaderProps {
   onLogout: () => void;
@@ -18,7 +18,6 @@ export const AdminHeader = ({ onLogout }: AdminHeaderProps) => {
             <p className="text-xs md:text-sm text-muted-foreground truncate">Город говорит</p>
           </div>
           <div className="flex gap-1.5 md:gap-2 flex-shrink-0">
-            <NotificationSubscribe compact />
             <Button 
               variant="outline" 
               size="sm"
