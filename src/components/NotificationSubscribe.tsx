@@ -60,6 +60,34 @@ export const NotificationSubscribe = ({ compact = false }: NotificationSubscribe
       setPermission(result);
 
       if (result === 'granted') {
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+          try {
+            const registration = await navigator.serviceWorker.ready;
+            
+            const vapidPublicKey = 'BJthRLSPR5F7cbZdLvq-xq-xBn6q6iJP_VDP3xVGGWqO7hCvF-5jVvjN3xBpJhm3tqJN1qSZvPjJ8-xN5xFqMxE';
+            
+            const subscription = await registration.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: vapidPublicKey
+            });
+
+            const response = await fetch('https://functions.poehali.dev/b67aed3b-df61-46cb-9e8e-05d4950ef6d1', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'subscribe',
+                subscription: subscription.toJSON()
+              })
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to save subscription');
+            }
+          } catch (pushError) {
+            console.error('Push API error:', pushError);
+          }
+        }
+        
         localStorage.setItem('notifications-subscribed', 'true');
         localStorage.setItem('notification-subscription-time', Date.now().toString());
         setIsSubscribed(true);
@@ -67,7 +95,7 @@ export const NotificationSubscribe = ({ compact = false }: NotificationSubscribe
         
         toast({
           title: 'Вы подписаны!',
-          description: 'Уведомления будут приходить при открытой вкладке админки'
+          description: 'Уведомления будут приходить даже при закрытой вкладке'
         });
 
         new Notification('Город говорит', {

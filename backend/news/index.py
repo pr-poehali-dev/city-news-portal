@@ -66,13 +66,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         # Get news title and views for notification
                         cur.execute('SELECT title, views FROM news WHERE id = %s', (news_id,))
                         news_data = cur.fetchone()
-                        if news_data and news_data['views'] % 100 == 0:
+                        if news_data:
                             notification_url = os.environ.get('NOTIFICATION_FUNCTION_URL')
                             if notification_url:
                                 try:
                                     notification_payload = {
-                                        'title': 'Юбилейный просмотр!',
-                                        'body': f'"{news_data["title"]}" достигла {news_data["views"]} просмотров',
+                                        'title': '👁 Новый просмотр',
+                                        'body': f'"{news_data["title"]}" (всего: {news_data["views"]})',
                                         'url': f'/news/{news_id}'
                                     }
                                     req = urllib.request.Request(
