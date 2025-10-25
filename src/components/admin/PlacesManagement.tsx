@@ -45,6 +45,9 @@ interface PlacesManagementProps {
   onPlaceSubmit: () => void;
   onDeletePlace: (id: number) => void;
   onTogglePublish: (id: number, isPublished: boolean) => void;
+  onToggleFeatured: (id: number, isFeatured: boolean) => void;
+  onEditPlace: (place: any) => void;
+  onUpdatePlace: () => void;
 }
 
 export function PlacesManagement({
@@ -55,6 +58,9 @@ export function PlacesManagement({
   onPlaceSubmit,
   onDeletePlace,
   onTogglePublish,
+  onToggleFeatured,
+  onEditPlace,
+  onUpdatePlace,
 }: PlacesManagementProps) {
   const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -256,19 +262,25 @@ export function PlacesManagement({
                   input.onchange = async (e: any) => {
                     const file = e.target.files[0];
                     if (!file) return;
-                    const formData = new FormData();
-                    formData.append('image', file);
                     
-                    try {
-                      const response = await fetch('/api/upload-image', {
-                        method: 'POST',
-                        body: formData
-                      });
-                      const data = await response.json();
-                      setPlaceForm({ ...placeForm, image_url: data.url });
-                    } catch (error) {
-                      console.error('Upload failed:', error);
-                    }
+                    const reader = new FileReader();
+                    reader.onloadend = async () => {
+                      const base64 = reader.result as string;
+                      try {
+                        const response = await fetch('https://functions.poehali.dev/bc882f30-e97a-4dcc-aca0-a79cffa9bd71', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ image: base64, filename: file.name })
+                        });
+                        const data = await response.json();
+                        if (data.url) {
+                          setPlaceForm({ ...placeForm, image_url: data.url });
+                        }
+                      } catch (error) {
+                        console.error('Upload failed:', error);
+                      }
+                    };
+                    reader.readAsDataURL(file);
                   };
                   input.click();
                 }}
@@ -316,9 +328,33 @@ export function PlacesManagement({
             </div>
           </div>
 
-          <Button onClick={onPlaceSubmit} disabled={loading} className="w-full">
-            {loading ? 'Сохранение...' : 'Добавить место'}
+          <Button 
+            onClick={placeForm.id ? onUpdatePlace : onPlaceSubmit} 
+            disabled={loading} 
+            className="w-full"
+          >
+            {loading ? 'Сохранение...' : (placeForm.id ? 'Обновить место' : 'Добавить место')}
           </Button>
+          {placeForm.id && (
+            <Button 
+              onClick={() => setPlaceForm({
+                title: '',
+                excerpt: '',
+                content: '',
+                category: 'Город завтракает',
+                latitude: 45.0355,
+                longitude: 38.9753,
+                address: '',
+                image_url: '',
+                is_published: false,
+                is_featured: false
+              })} 
+              variant="outline" 
+              className="w-full"
+            >
+              Отменить редактирование
+            </Button>
+          )}
         </CardContent>
       </Card>
 
@@ -358,21 +394,42 @@ export function PlacesManagement({
                   <p className="text-sm text-muted-foreground mb-1">{place.excerpt}</p>
                   <p className="text-xs text-muted-foreground">📍 {place.address}</p>
                 </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onTogglePublish(place.id, !place.is_published)}
-                  >
-                    {place.is_published ? 'Скрыть' : 'Опубликовать'}
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => onDeletePlace(place.id)}
-                  >
-                    <Icon name="Trash2" size={16} />
-                  </Button>
+                <div className="flex gap-2 flex-col">
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onEditPlace(place)}
+                    >
+                      <Icon name="Edit" size={16} className="mr-1" />
+                      Редактировать
+                    </Button>
+                    <Button
+                      variant={place.is_featured ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => onToggleFeatured(place.id, !place.is_featured)}
+                      className={place.is_featured ? "bg-yellow-500 hover:bg-yellow-600" : ""}
+                    >
+                      <span className="mr-1">⭐</span>
+                      {place.is_featured ? 'Убрать' : 'Город оценил'}
+                    </Button>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onTogglePublish(place.id, !place.is_published)}
+                    >
+                      {place.is_published ? 'Скрыть' : 'Опубликовать'}
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => onDeletePlace(place.id)}
+                    >
+                      <Icon name="Trash2" size={16} />
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}

@@ -114,6 +114,9 @@ const Admin = () => {
               onPlaceSubmit={handlePlaceSubmit}
               onDeletePlace={handleDeletePlace}
               onTogglePublish={handleTogglePublishPlace}
+              onToggleFeatured={handleToggleFeaturedPlace}
+              onEditPlace={handleEditPlace}
+              onUpdatePlace={handleUpdatePlace}
             />
           </TabsContent>
 

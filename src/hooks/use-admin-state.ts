@@ -582,7 +582,8 @@ export const useAdminState = () => {
           longitude: 38.9753,
           address: '',
           image_url: '',
-          is_published: false
+          is_published: false,
+          is_featured: false
         });
         await loadPlaces();
       }
@@ -651,6 +652,91 @@ export const useAdminState = () => {
     }
   };
 
+  const handleToggleFeaturedPlace = async (id: number, isFeatured: boolean) => {
+    setLoading(true);
+
+    try {
+      const response = await fetch(FUNCTIONS_URL.cityPlaces, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, is_featured: isFeatured })
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно!',
+          description: isFeatured ? 'Золотой маркер добавлен' : 'Золотой маркер убран'
+        });
+        await loadPlaces();
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditPlace = async (place: any) => {
+    setPlaceForm({
+      ...place,
+      latitude: place.latitude || 45.0355,
+      longitude: place.longitude || 38.9753
+    });
+  };
+
+  const handleUpdatePlace = async () => {
+    if (!placeForm.title || !placeForm.content || !placeForm.category) {
+      toast({
+        title: 'Ошибка',
+        description: 'Заполните обязательные поля',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(FUNCTIONS_URL.cityPlaces, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(placeForm)
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно!',
+          description: 'Место обновлено'
+        });
+        setPlaceForm({
+          title: '',
+          excerpt: '',
+          content: '',
+          category: 'Город завтракает',
+          latitude: 45.0355,
+          longitude: 38.9753,
+          address: '',
+          image_url: '',
+          is_published: false,
+          is_featured: false
+        });
+        await loadPlaces();
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить место',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     authenticated,
@@ -688,6 +774,9 @@ export const useAdminState = () => {
     handlePlaceSubmit,
     handleDeletePlace,
     handleTogglePublishPlace,
+    handleToggleFeaturedPlace,
+    handleEditPlace,
+    handleUpdatePlace,
     handleAuthorSubmit,
     handleDeleteAuthor,
     handleAboutSubmit
