@@ -34,7 +34,7 @@ export default function CityMap({ places, onPlaceClick }: CityMapProps) {
   const ymapInstance = useRef<any>(null);
 
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_YANDEX_MAPS_API_KEY;
+    const apiKey = import.meta.env.VITE_YANDEX_MAPS_API_KEY || '1ecb8ea8-36e4-4c1d-a753-a203a45d737c';
     
     const loadYandexMaps = async () => {
       if (!mapRef.current) return;

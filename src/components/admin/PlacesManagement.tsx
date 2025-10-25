@@ -65,7 +65,7 @@ export function PlacesManagement({
   const ymapInstance = useRef<any>(null);
 
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_YANDEX_MAPS_API_KEY;
+    const apiKey = import.meta.env.VITE_YANDEX_MAPS_API_KEY || '1ecb8ea8-36e4-4c1d-a753-a203a45d737c';
     
     const loadYandexMaps = async () => {
       if (!mapRef.current) return;
@@ -172,7 +172,7 @@ export function PlacesManagement({
     }
 
     try {
-      const apiKey = import.meta.env.VITE_YANDEX_MAPS_API_KEY;
+      const apiKey = import.meta.env.VITE_YANDEX_MAPS_API_KEY || '1ecb8ea8-36e4-4c1d-a753-a203a45d737c';
       const response = await fetch(
         `https://geocode-maps.yandex.ru/1.x/?apikey=${apiKey}&geocode=Краснодар, ${encodeURIComponent(query)}&format=json&results=5`
       );
