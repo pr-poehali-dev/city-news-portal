@@ -42,6 +42,7 @@ export const NewsPage = () => {
   const [sections, setSections] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [promoUsageCount] = useState(() => Math.floor(Math.random() * 100) + 1);
+  const [displayCount, setDisplayCount] = useState(0);
 
   useEffect(() => {
     const loadData = async () => {
@@ -71,6 +72,27 @@ export const NewsPage = () => {
 
     loadData();
   }, [id]);
+
+  useEffect(() => {
+    if (!loading && article) {
+      const duration = 1500;
+      const steps = 60;
+      const increment = promoUsageCount / steps;
+      let currentStep = 0;
+
+      const timer = setInterval(() => {
+        currentStep++;
+        if (currentStep >= steps) {
+          setDisplayCount(promoUsageCount);
+          clearInterval(timer);
+        } else {
+          setDisplayCount(Math.floor(increment * currentStep));
+        }
+      }, duration / steps);
+
+      return () => clearInterval(timer);
+    }
+  }, [loading, article, promoUsageCount]);
 
   const handleAddComment = () => {
     if (commentName.trim() && commentText.trim()) {
@@ -277,7 +299,7 @@ export const NewsPage = () => {
 
                 <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
                   <Icon name="Users" size={16} className="text-green-600" />
-                  <span>Промокодом уже воспользовались <span className="font-bold text-green-600">{promoUsageCount}</span> {promoUsageCount === 1 ? 'человек' : promoUsageCount < 5 ? 'человека' : 'человек'}</span>
+                  <span>Промокодом уже воспользовались <span className="font-bold text-green-600 tabular-nums">{displayCount}</span> {displayCount === 1 ? 'человек' : displayCount < 5 && displayCount > 0 ? 'человека' : 'человек'}</span>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3">
