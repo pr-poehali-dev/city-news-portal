@@ -19,6 +19,13 @@ export function AnalyticsManagement({ loading }: AnalyticsManagementProps) {
   useEffect(() => {
     loadAnalytics();
     loadComments();
+    
+    const interval = setInterval(() => {
+      loadAnalytics();
+      loadComments();
+    }, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const loadAnalytics = async () => {

@@ -9,6 +9,7 @@ interface NotificationData {
 export const useAdminNotifications = () => {
   const lastCheckRef = useRef<number>(Date.now());
   const commentsCountRef = useRef<number>(0);
+  const viewsCountRef = useRef<number>(0);
 
   useEffect(() => {
     const isSubscribed = localStorage.getItem('notifications-subscribed') === 'true';
@@ -18,10 +19,10 @@ export const useAdminNotifications = () => {
 
     const checkForUpdates = async () => {
       try {
-        const response = await fetch('https://functions.poehali.dev/e442a5de-b5ed-4ff1-b15c-da8b0bfea9b5?action=list_all');
-        if (!response.ok) return;
+        const commentsResponse = await fetch('https://functions.poehali.dev/e442a5de-b5ed-4ff1-b15c-da8b0bfea9b5?action=list_all');
+        if (!commentsResponse.ok) return;
 
-        const comments = await response.json();
+        const comments = await commentsResponse.json();
         
         if (commentsCountRef.current === 0) {
           commentsCountRef.current = comments.length;
@@ -56,6 +57,34 @@ export const useAdminNotifications = () => {
           }
 
           commentsCountRef.current = comments.length;
+        }
+
+        const newsResponse = await fetch('https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe?status=published');
+        if (newsResponse.ok) {
+          const newsData = await newsResponse.json();
+          const totalViews = Array.isArray(newsData) ? newsData.reduce((sum: number, news: any) => sum + (news.views || 0), 0) : 0;
+          
+          if (viewsCountRef.current === 0) {
+            viewsCountRef.current = totalViews;
+          } else if (totalViews > viewsCountRef.current) {
+            const newViews = totalViews - viewsCountRef.current;
+            
+            const notification = new Notification('Новые просмотры', {
+              body: `+${newViews} ${newViews === 1 ? 'просмотр' : newViews < 5 ? 'просмотра' : 'просмотров'}`,
+              icon: '/icon-192.png',
+              badge: '/icon-192.png',
+              tag: 'views-update',
+              requireInteraction: false
+            });
+
+            notification.onclick = () => {
+              window.focus();
+              window.location.href = '/admin';
+              notification.close();
+            };
+
+            viewsCountRef.current = totalViews;
+          }
         }
       } catch (error) {
         console.error('Failed to check for updates:', error);
