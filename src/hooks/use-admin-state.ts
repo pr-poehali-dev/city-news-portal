@@ -43,10 +43,22 @@ export const useAdminState = () => {
     is_featured: false
   });
 
+  const [memoryForm, setMemoryForm] = useState({
+    title: '',
+    excerpt: '',
+    content: '',
+    year: '',
+    decade: '',
+    event_date: '',
+    image_url: '',
+    is_published: false
+  });
+
   const [newsList, setNewsList] = useState([]);
   const [draftsList, setDraftsList] = useState([]);
   const [eventsList, setEventsList] = useState([]);
   const [placesList, setPlacesList] = useState([]);
+  const [memoryList, setMemoryList] = useState([]);
   const [authorsList, setAuthorsList] = useState([]);
 
   const [authorForm, setAuthorForm] = useState({
@@ -100,6 +112,7 @@ export const useAdminState = () => {
       loadDrafts();
       loadEvents();
       loadPlaces();
+      loadMemory();
       loadAuthors();
       loadAbout();
     }
@@ -166,6 +179,16 @@ export const useAdminState = () => {
       setPlacesList(data);
     } catch (error) {
       console.error('Failed to load places:', error);
+    }
+  };
+
+  const loadMemory = async () => {
+    try {
+      const response = await fetch(FUNCTIONS_URL.memory);
+      const data = await response.json();
+      setMemoryList(data || []);
+    } catch (error) {
+      console.error('Failed to load memory articles:', error);
     }
   };
 
@@ -737,6 +760,163 @@ export const useAdminState = () => {
     }
   };
 
+  const handleMemorySubmit = async () => {
+    if (!memoryForm.title || !memoryForm.content || !memoryForm.year) {
+      toast({
+        title: 'Ошибка',
+        description: 'Заполните обязательные поля: название, год, история',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(FUNCTIONS_URL.memory, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(memoryForm)
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно!',
+          description: 'Статья добавлена'
+        });
+        setMemoryForm({
+          title: '',
+          excerpt: '',
+          content: '',
+          year: '',
+          decade: '',
+          event_date: '',
+          image_url: '',
+          is_published: false
+        });
+        await loadMemory();
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось добавить статью',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteMemory = async (id: number) => {
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${FUNCTIONS_URL.memory}?id=${id}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно!',
+          description: 'Статья удалена'
+        });
+        await loadMemory();
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось удалить',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTogglePublishMemory = async (id: number, isPublished: boolean) => {
+    setLoading(true);
+
+    try {
+      const response = await fetch(FUNCTIONS_URL.memory, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, is_published: isPublished })
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно!',
+          description: isPublished ? 'Статья опубликована' : 'Статья скрыта'
+        });
+        await loadMemory();
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить статус',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditMemory = async (memory: any) => {
+    setMemoryForm({
+      ...memory,
+      year: memory.year || '',
+      decade: memory.decade || '',
+      event_date: memory.event_date || ''
+    });
+  };
+
+  const handleUpdateMemory = async () => {
+    if (!memoryForm.title || !memoryForm.content || !memoryForm.year) {
+      toast({
+        title: 'Ошибка',
+        description: 'Заполните обязательные поля',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(FUNCTIONS_URL.memory, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(memoryForm)
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно!',
+          description: 'Статья обновлена'
+        });
+        setMemoryForm({
+          title: '',
+          excerpt: '',
+          content: '',
+          year: '',
+          decade: '',
+          event_date: '',
+          image_url: '',
+          is_published: false
+        });
+        await loadMemory();
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить статью',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     authenticated,
@@ -777,6 +957,14 @@ export const useAdminState = () => {
     handleToggleFeaturedPlace,
     handleEditPlace,
     handleUpdatePlace,
+    memoryForm,
+    setMemoryForm,
+    memoryList,
+    handleMemorySubmit,
+    handleDeleteMemory,
+    handleTogglePublishMemory,
+    handleEditMemory,
+    handleUpdateMemory,
     handleAuthorSubmit,
     handleDeleteAuthor,
     handleAboutSubmit

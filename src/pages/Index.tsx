@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { Footer } from '@/components/Footer';
 import { NewsSection } from '@/components/NewsSection';
 import { PlacesSection } from '@/components/PlacesSection';
+import { MemorySection } from '@/components/MemorySection';
 import { CategoryPreview } from '@/components/CategoryPreview';
 
 const FUNCTIONS_URL = {
@@ -16,7 +17,8 @@ const FUNCTIONS_URL = {
   events: 'https://functions.poehali.dev/383dd478-9fc2-4b12-bcc4-72b87c103a3d',
   weather: 'https://functions.poehali.dev/5531fc0c-ecba-421c-bfb4-245613816060',
   comments: 'https://functions.poehali.dev/e442a5de-b5ed-4ff1-b15c-da8b0bfea9b5',
-  cityPlaces: 'https://functions.poehali.dev/5db1b661-abf3-4bcb-8e1f-d01437219788'
+  cityPlaces: 'https://functions.poehali.dev/5db1b661-abf3-4bcb-8e1f-d01437219788',
+  memory: 'https://functions.poehali.dev/524497f7-1b8d-4d18-9293-548392f10987'
 };
 
 const categoryColors = {
@@ -33,6 +35,7 @@ const Index = () => {
   const [latestNews, setLatestNews] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [cityPlaces, setCityPlaces] = useState<any[]>([]);
+  const [memoryArticles, setMemoryArticles] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showAllPlaces, setShowAllPlaces] = useState(false);
   const [weather, setWeather] = useState<any>(null);
@@ -62,6 +65,7 @@ const Index = () => {
     loadWeather();
     loadLatestForTicker();
     loadCityPlaces();
+    loadMemoryArticles();
     
     const savedLikes = localStorage.getItem('likedArticles');
     if (savedLikes) {
@@ -137,6 +141,16 @@ const Index = () => {
       setCityPlaces(data.filter((p: any) => p.is_published));
     } catch (error) {
       console.error('Failed to load city places:', error);
+    }
+  };
+
+  const loadMemoryArticles = async () => {
+    try {
+      const response = await fetch(FUNCTIONS_URL.memory);
+      const data = await response.json();
+      setMemoryArticles(data.filter((a: any) => a.is_published));
+    } catch (error) {
+      console.error('Failed to load memory articles:', error);
     }
   };
 
@@ -267,6 +281,13 @@ const Index = () => {
               categoryColors={categoryColors}
               onCategorySelect={setSelectedCategory}
               onShowAllToggle={() => setShowAllPlaces(!showAllPlaces)}
+            />
+
+            <Separator className="my-12" />
+
+            <MemorySection
+              articles={memoryArticles}
+              onArticleClick={handleArticleClick}
             />
 
             <Separator className="my-12" />

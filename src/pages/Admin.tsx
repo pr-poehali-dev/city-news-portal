@@ -4,6 +4,7 @@ import { AdminHeader } from '@/components/admin/AdminHeader';
 import { NewsManagement } from '@/components/admin/NewsManagement';
 import { EventsManagement } from '@/components/admin/EventsManagement';
 import { PlacesManagement } from '@/components/admin/PlacesManagement';
+import { MemoryManagement } from '@/components/admin/MemoryManagement';
 import { AuthorsManagement } from '@/components/admin/AuthorsManagement';
 import { SettingsManagement } from '@/components/admin/SettingsManagement';
 import { NewsEditDialog } from '@/components/admin/NewsEditDialog';
@@ -51,6 +52,14 @@ const Admin = () => {
     handleToggleFeaturedPlace,
     handleEditPlace,
     handleUpdatePlace,
+    memoryForm,
+    setMemoryForm,
+    memoryList,
+    handleMemorySubmit,
+    handleDeleteMemory,
+    handleTogglePublishMemory,
+    handleEditMemory,
+    handleUpdateMemory,
     handleAuthorSubmit,
     handleDeleteAuthor,
     handleAboutSubmit
@@ -73,10 +82,11 @@ const Admin = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="news" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="news">Новости</TabsTrigger>
             <TabsTrigger value="events">События</TabsTrigger>
             <TabsTrigger value="places">Город оценил</TabsTrigger>
+            <TabsTrigger value="memory">Город помнит</TabsTrigger>
             <TabsTrigger value="authors">Авторы</TabsTrigger>
             <TabsTrigger value="settings">Настройки</TabsTrigger>
           </TabsList>
@@ -120,6 +130,20 @@ const Admin = () => {
               onToggleFeatured={handleToggleFeaturedPlace}
               onEditPlace={handleEditPlace}
               onUpdatePlace={handleUpdatePlace}
+            />
+          </TabsContent>
+
+          <TabsContent value="memory">
+            <MemoryManagement
+              memoryForm={memoryForm}
+              setMemoryForm={setMemoryForm}
+              memoryList={memoryList}
+              loading={loading}
+              onMemorySubmit={handleMemorySubmit}
+              onDeleteMemory={handleDeleteMemory}
+              onTogglePublish={handleTogglePublishMemory}
+              onEditMemory={handleEditMemory}
+              onUpdateMemory={handleUpdateMemory}
             />
           </TabsContent>
 
