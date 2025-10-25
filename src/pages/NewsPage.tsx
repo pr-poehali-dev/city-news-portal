@@ -227,6 +227,48 @@ export const NewsPage = () => {
               </div>
             </div>
 
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-background border-2 border-primary/20 p-6 md:p-8 mb-12 hover:shadow-xl hover:border-primary/40 transition-all duration-300 cursor-pointer group"
+                 onClick={() => {
+                   navigate('/');
+                   setTimeout(() => {
+                     document.getElementById('partner')?.scrollIntoView({ behavior: 'smooth' });
+                   }, 100);
+                 }}>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-primary/20 p-3 rounded-xl group-hover:scale-110 transition-transform">
+                    <Icon name="Gift" size={28} className="text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                      Забрать подарок от партнёра
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-1">Эксклюзивное предложение для читателей</p>
+                  </div>
+                </div>
+                
+                <div className="bg-background/80 backdrop-blur-sm rounded-xl p-4 border border-primary/20 mb-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex-1">
+                      <p className="text-sm text-muted-foreground mb-1">Промокод на скидку:</p>
+                      <p className="text-2xl md:text-3xl font-bold text-primary tracking-wider">GORODGOVORIT</p>
+                    </div>
+                    <div className="bg-primary/10 p-4 rounded-lg">
+                      <Icon name="Percent" size={32} className="text-primary" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 text-sm text-muted-foreground group-hover:text-primary transition-colors">
+                  <span>Перейти к партнёру</span>
+                  <Icon name="ArrowRight" size={18} className="group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </div>
+
             {relatedNews.length > 0 && (
               <div className="border-t border-border pt-12 mb-12">
                 <h3 className="text-xl md:text-2xl font-semibold mb-6">Читайте также</h3>
