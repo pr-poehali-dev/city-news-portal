@@ -21,9 +21,10 @@ interface MemorySectionProps {
 }
 
 export function MemorySection({ articles, onArticleClick }: MemorySectionProps) {
-  const publishedArticles = articles.filter(a => a.is_published);
   const [currentSetIndex, setCurrentSetIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  
+  const publishedArticles = articles.filter(a => a.is_published);
   
   if (publishedArticles.length === 0) return null;
 
