@@ -1,6 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import { useState } from 'react';
 
 interface Partner {
   name: string;
@@ -10,6 +11,7 @@ interface Partner {
   highlights: string[];
   image: string;
   discount?: string;
+  promoCode?: string;
 }
 
 const partners: Partner[] = [
@@ -20,6 +22,7 @@ const partners: Partner[] = [
     category: 'Детские праздники',
     image: 'https://cdn.poehali.dev/files/c6c405f0-2301-4754-b75f-625e2aa7b983.jpeg',
     discount: '500 ₽ скидка при переходе с «Город говорит»',
+    promoCode: 'Праздник500',
     highlights: [
       'Профессиональные аниматоры',
       'Уникальные сценарии',
@@ -29,7 +32,45 @@ const partners: Partner[] = [
   }
 ];
 
+const Confetti = () => {
+  const colors = ['#FF6B9D', '#C44569', '#FFA502', '#FF6348', '#A55EEA'];
+  const confettiPieces = Array.from({ length: 30 }, (_, i) => ({
+    id: i,
+    left: Math.random() * 100,
+    delay: Math.random() * 2,
+    duration: 2 + Math.random() * 2,
+    color: colors[Math.floor(Math.random() * colors.length)]
+  }));
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {confettiPieces.map((piece) => (
+        <div
+          key={piece.id}
+          className="absolute w-2 h-2 animate-confetti"
+          style={{
+            left: `${piece.left}%`,
+            top: '-10px',
+            backgroundColor: piece.color,
+            animationDelay: `${piece.delay}s`,
+            animationDuration: `${piece.duration}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 export const PartnersSection = () => {
+  const [copiedPromo, setCopiedPromo] = useState<string | null>(null);
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  const copyPromoCode = (code: string) => {
+    navigator.clipboard.writeText(code);
+    setCopiedPromo(code);
+    setTimeout(() => setCopiedPromo(null), 2000);
+  };
+
   return (
     <section className="mb-12">
       <div className="flex items-center gap-3 mb-6">
@@ -42,13 +83,18 @@ export const PartnersSection = () => {
           <Card 
             key={idx}
             className="overflow-hidden hover:shadow-2xl transition-all duration-500 border-4 border-transparent hover:border-pink-400 bg-gradient-to-br from-pink-50 via-purple-50 to-orange-50 relative"
+            onMouseEnter={() => setShowConfetti(true)}
+            onMouseLeave={() => setShowConfetti(false)}
           >
+            {showConfetti && <Confetti />}
+            
             <div className="absolute top-4 right-4 animate-bounce">
               <Icon name="Sparkles" size={32} className="text-pink-500" />
             </div>
             <div className="absolute top-4 left-4">
               <Icon name="PartyPopper" size={28} className="text-orange-500" />
             </div>
+            
             <div className="grid md:grid-cols-[380px_1fr] gap-0">
               <div className="relative overflow-hidden group">
                 <div className="absolute inset-0 bg-gradient-to-br from-pink-400/20 via-purple-400/20 to-orange-400/20 z-10"></div>
@@ -84,17 +130,45 @@ export const PartnersSection = () => {
                   </p>
                   {partner.discount && (
                     <div className="bg-gradient-to-r from-orange-500/10 to-pink-500/10 border-2 border-orange-500/30 rounded-lg p-4 mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-gradient-to-r from-orange-500 to-pink-500 p-2 rounded-full">
-                          <Icon name="Gift" size={24} className="text-white" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-foreground mb-1">Специальное предложение!</p>
-                          <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-pink-600">
-                            {partner.discount}
-                          </p>
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className="bg-gradient-to-r from-orange-500 to-pink-500 p-2 rounded-full">
+                            <Icon name="Gift" size={24} className="text-white" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-foreground mb-1">Специальное предложение!</p>
+                            <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-pink-600">
+                              {partner.discount}
+                            </p>
+                          </div>
                         </div>
                       </div>
+                      {partner.promoCode && (
+                        <div className="mt-3 pt-3 border-t border-orange-300/30">
+                          <p className="text-xs text-muted-foreground mb-2">Промокод для скидки:</p>
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 bg-white border-2 border-dashed border-pink-400 rounded-lg px-4 py-2 font-mono font-bold text-lg text-center text-pink-600">
+                              {partner.promoCode}
+                            </div>
+                            <button
+                              onClick={() => copyPromoCode(partner.promoCode!)}
+                              className="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2"
+                            >
+                              {copiedPromo === partner.promoCode ? (
+                                <>
+                                  <Icon name="Check" size={18} />
+                                  Скопировано
+                                </>
+                              ) : (
+                                <>
+                                  <Icon name="Copy" size={18} />
+                                  Скопировать
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
