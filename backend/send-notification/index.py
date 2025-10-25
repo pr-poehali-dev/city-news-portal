@@ -55,7 +55,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     vapid_private_key = os.environ.get('VAPID_PRIVATE_KEY')
     vapid_public_key = os.environ.get('VAPID_PUBLIC_KEY')
     vapid_claims = {
-        "sub": "mailto:admin@gorodgovorit.ru"
+        "sub": "mailto:admin@example.com"
     }
     
     sent_count = 0
