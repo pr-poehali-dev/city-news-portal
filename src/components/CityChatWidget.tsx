@@ -55,7 +55,8 @@ export const CityChatWidget = () => {
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
-    const normalizedQuestion = input.trim().toLowerCase();
+    const userQuestion = input.trim();
+    const normalizedQuestion = userQuestion.toLowerCase();
     
     if (askedQuestions.current.has(normalizedQuestion)) {
       const warningMsg: Message = {
@@ -71,7 +72,7 @@ export const CityChatWidget = () => {
 
     const userMessage: Message = {
       id: Date.now().toString(),
-      text: input,
+      text: userQuestion,
       isUser: true,
       timestamp: new Date()
     };
@@ -85,14 +86,22 @@ export const CityChatWidget = () => {
       const response = await fetch(CITY_CHAT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input })
+        body: JSON.stringify({ message: userQuestion })
       });
 
       const data = await response.json();
+      
+      console.log('AI Response Full:', data);
+
+      const responseText = data.response || 'Извините, не удалось получить ответ.';
+      
+      if (data.debug) {
+        console.log('Debug info:', data.debug);
+      }
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: data.response || 'Извините, не удалось получить ответ.',
+        text: responseText,
         isUser: false,
         timestamp: new Date()
       };
