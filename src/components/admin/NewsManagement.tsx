@@ -36,7 +36,7 @@ export const NewsManagement = ({
   onSaveVkDraft
 }: NewsManagementProps) => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <NewsForm
         newsForm={newsForm}
         categories={categories}
@@ -48,10 +48,10 @@ export const NewsManagement = ({
 
       <Card>
         <CardHeader>
-          <CardTitle>Опубликованные новости</CardTitle>
+          <CardTitle className="text-base md:text-lg">Опубликованные новости</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4 max-h-[600px] overflow-y-auto">
+          <div className="space-y-3 md:space-y-4 max-h-[400px] md:max-h-[600px] overflow-y-auto">
             {newsList.map((news) => (
               <NewsCard
                 key={news.id}
@@ -70,10 +70,10 @@ export const NewsManagement = ({
 
       <Card>
         <CardHeader>
-          <CardTitle>Черновики</CardTitle>
+          <CardTitle className="text-base md:text-lg">Черновики</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4 max-h-[600px] overflow-y-auto">
+          <div className="space-y-3 md:space-y-4 max-h-[400px] md:max-h-[600px] overflow-y-auto">
             {draftsList.map((draft) => (
               <NewsCard
                 key={draft.id}
