@@ -267,18 +267,23 @@ const Index = () => {
                         <div 
                           key={article.id}
                           onClick={() => handleArticleClick(article.id)}
-                          className="flex items-start gap-3 p-3 hover:bg-muted/50 rounded-lg cursor-pointer transition-colors group"
+                          className="border-l-4 border-primary/30 pl-4 pr-3 py-3 hover:border-primary hover:bg-primary/5 rounded-r-lg cursor-pointer transition-all group"
                         >
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <Badge variant="outline" className="text-xs">{article.section}</Badge>
-                              <span className="text-xs text-muted-foreground">{article.date}</span>
+                          <div className="flex items-start gap-3">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1.5">
+                                <Badge className="text-xs bg-orange-500 text-white">{article.category}</Badge>
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <Icon name="Clock" size={12} />
+                                  {new Date(article.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                              </div>
+                              <h4 className="font-semibold text-base leading-snug group-hover:text-primary transition-colors">
+                                {article.title}
+                              </h4>
                             </div>
-                            <h4 className="font-semibold group-hover:text-primary transition-colors">
-                              {article.title}
-                            </h4>
+                            <Icon name="ChevronRight" size={20} className="text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0 mt-1" />
                           </div>
-                          <Icon name="ChevronRight" size={20} className="text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
                         </div>
                       ))}
                     </div>
