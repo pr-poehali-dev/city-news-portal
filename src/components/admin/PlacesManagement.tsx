@@ -34,6 +34,7 @@ interface PlaceForm {
   address: string;
   image_url: string;
   is_published: boolean;
+  is_featured: boolean;
 }
 
 interface PlacesManagementProps {
@@ -292,13 +293,27 @@ export function PlacesManagement({
             )}
           </div>
 
-          <div className="flex items-center gap-2">
-            <Switch
-              id="place-published"
-              checked={placeForm.is_published}
-              onCheckedChange={(checked) => setPlaceForm({ ...placeForm, is_published: checked })}
-            />
-            <Label htmlFor="place-published">Опубликовать сразу</Label>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Switch
+                id="place-published"
+                checked={placeForm.is_published}
+                onCheckedChange={(checked) => setPlaceForm({ ...placeForm, is_published: checked })}
+              />
+              <Label htmlFor="place-published">Опубликовать сразу</Label>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Switch
+                id="place-featured"
+                checked={placeForm.is_featured}
+                onCheckedChange={(checked) => setPlaceForm({ ...placeForm, is_featured: checked })}
+              />
+              <Label htmlFor="place-featured" className="flex items-center gap-2">
+                <span>⭐</span>
+                <span>Город оценил (золотой маркер)</span>
+              </Label>
+            </div>
           </div>
 
           <Button onClick={onPlaceSubmit} disabled={loading} className="w-full">

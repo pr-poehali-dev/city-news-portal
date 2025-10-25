@@ -260,12 +260,6 @@ const Index = () => {
               </div>
             </div>
 
-            <CategoryPreview
-              cityPlaces={cityPlaces}
-              categoryColors={categoryColors}
-              onPlaceClick={(id) => console.log('Place clicked:', id)}
-            />
-
             <PlacesSection
               cityPlaces={cityPlaces}
               selectedCategory={selectedCategory}

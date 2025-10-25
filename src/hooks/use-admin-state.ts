@@ -39,7 +39,8 @@ export const useAdminState = () => {
     longitude: 38.9753,
     address: '',
     image_url: '',
-    is_published: false
+    is_published: false,
+    is_featured: false
   });
 
   const [newsList, setNewsList] = useState([]);

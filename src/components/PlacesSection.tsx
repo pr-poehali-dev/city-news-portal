@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,6 +23,7 @@ export function PlacesSection({
   onCategorySelect,
   onShowAllToggle,
 }: PlacesSectionProps) {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const categories = Array.from(new Set(cityPlaces.map(p => p.category)));
   
@@ -44,6 +46,14 @@ export function PlacesSection({
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-3xl font-bold">Город говорит</h2>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/places')}
+            className="gap-2"
+          >
+            Все места
+            <Icon name="ArrowRight" size={16} />
+          </Button>
         </div>
         
         <div className="flex flex-col md:flex-row gap-4 mb-4">
