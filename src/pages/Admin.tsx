@@ -10,9 +10,12 @@ import { SettingsManagement } from '@/components/admin/SettingsManagement';
 import { AnalyticsManagement } from '@/components/admin/AnalyticsManagement';
 import { NewsEditDialog } from '@/components/admin/NewsEditDialog';
 import { useAdminState } from '@/hooks/use-admin-state';
+import { useAdminNotifications } from '@/hooks/use-admin-notifications';
 import { CATEGORIES } from '@/lib/admin-constants';
 
 const Admin = () => {
+  useAdminNotifications();
+  
   const {
     loading,
     authenticated,

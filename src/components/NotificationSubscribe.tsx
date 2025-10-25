@@ -40,7 +40,7 @@ export const NotificationSubscribe = ({ compact = false }: NotificationSubscribe
     if (!('Notification' in window)) {
       toast({
         title: 'Уведомления не поддерживаются',
-        description: 'Ваш браузер не поддерживает push-уведомления',
+        description: 'Ваш браузер не поддерживает уведомления',
         variant: 'destructive'
       });
       return;
@@ -60,39 +60,6 @@ export const NotificationSubscribe = ({ compact = false }: NotificationSubscribe
       setPermission(result);
 
       if (result === 'granted') {
-        // Check if Service Worker and Push API are supported
-        if ('serviceWorker' in navigator && 'PushManager' in window) {
-          try {
-            const registration = await navigator.serviceWorker.ready;
-            const subscription = await registration.pushManager.getSubscription();
-            
-            let pushSubscription = subscription;
-            if (!subscription) {
-              const vapidPublicKey = 'BEl-zYj8XFnI6H7KLzWEYKzPKCzN_S6lLlQVGz6QDQVQF9tKQz0O_pN6eKKQ7vF4hN8cPKJL5N8fZQzKL2PQxQI';
-              pushSubscription = await registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: vapidPublicKey
-              });
-            }
-            
-            // Save subscription to backend
-            const response = await fetch('https://functions.poehali.dev/b67aed3b-df61-46cb-9e8e-05d4950ef6d1', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                action: 'subscribe',
-                subscription: pushSubscription.toJSON()
-              })
-            });
-            
-            if (!response.ok) {
-              throw new Error('Failed to save subscription');
-            }
-          } catch (pushError) {
-            console.error('Push subscription error:', pushError);
-          }
-        }
-        
         localStorage.setItem('notifications-subscribed', 'true');
         localStorage.setItem('notification-subscription-time', Date.now().toString());
         setIsSubscribed(true);
@@ -100,16 +67,14 @@ export const NotificationSubscribe = ({ compact = false }: NotificationSubscribe
         
         toast({
           title: 'Вы подписаны!',
-          description: 'Теперь вы будете получать уведомления о новостях с 10:00 до 20:00'
+          description: 'Уведомления будут приходить при открытой вкладке админки'
         });
 
-        if ('Notification' in window) {
-          new Notification('Город говорит', {
-            body: 'Вы успешно подписались на уведомления',
-            icon: '/icon-192.png',
-            badge: '/icon-192.png'
-          });
-        }
+        new Notification('Город говорит', {
+          body: 'Вы успешно подписались на уведомления',
+          icon: '/icon-192.png',
+          badge: '/icon-192.png'
+        });
       }
     } catch (error) {
       toast({
