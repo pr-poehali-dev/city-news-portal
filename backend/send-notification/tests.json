@@ -1,0 +1,25 @@
+{
+  "tests": [
+    {
+      "name": "Send notification with valid data",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "title": "Новый комментарий",
+        "body": "Пользователь оставил комментарий к новости",
+        "url": "/news/123"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Handle OPTIONS request for CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    }
+  ]
+}

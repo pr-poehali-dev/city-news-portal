@@ -4,6 +4,8 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from typing import Dict, Any
 import random
+import urllib.request
+import urllib.error
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -60,6 +62,28 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             WHERE id = %s
                         ''', (news_id,))
                         conn.commit()
+                        
+                        # Get news title and views for notification
+                        cur.execute('SELECT title, views FROM news WHERE id = %s', (news_id,))
+                        news_data = cur.fetchone()
+                        if news_data and news_data['views'] % 100 == 0:
+                            notification_url = os.environ.get('NOTIFICATION_FUNCTION_URL')
+                            if notification_url:
+                                try:
+                                    notification_payload = {
+                                        'title': 'Юбилейный просмотр!',
+                                        'body': f'"{news_data["title"]}" достигла {news_data["views"]} просмотров',
+                                        'url': f'/news/{news_id}'
+                                    }
+                                    req = urllib.request.Request(
+                                        notification_url,
+                                        data=json.dumps(notification_payload).encode('utf-8'),
+                                        headers={'Content-Type': 'application/json'},
+                                        method='POST'
+                                    )
+                                    urllib.request.urlopen(req, timeout=5)
+                                except (urllib.error.URLError, Exception):
+                                    pass
                     
                     if increment_likes:
                         cur.execute('''

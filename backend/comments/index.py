@@ -3,6 +3,8 @@ import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from typing import Dict, Any
+import urllib.request
+import urllib.error
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -107,6 +109,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             text_safe = text.replace("'", "''")
             
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                # Get news title for notification
+                cur.execute(f'''
+                    SELECT title FROM news WHERE id = {news_id}
+                ''')
+                news_result = cur.fetchone()
+                news_title = news_result['title'] if news_result else 'новости'
+                
                 cur.execute(f'''
                     INSERT INTO comments (news_id, author_name, text)
                     VALUES ({news_id}, '{author_name_safe}', '{text_safe}')
@@ -115,6 +124,25 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 new_comment = cur.fetchone()
                 conn.commit()
+                
+                # Send notification to admin
+                notification_url = os.environ.get('NOTIFICATION_FUNCTION_URL')
+                if notification_url:
+                    try:
+                        notification_data = {
+                            'title': 'Новый комментарий',
+                            'body': f'{author_name} оставил комментарий к "{news_title}"',
+                            'url': f'/news/{news_id}'
+                        }
+                        req = urllib.request.Request(
+                            notification_url,
+                            data=json.dumps(notification_data).encode('utf-8'),
+                            headers={'Content-Type': 'application/json'},
+                            method='POST'
+                        )
+                        urllib.request.urlopen(req, timeout=5)
+                    except (urllib.error.URLError, Exception):
+                        pass
                 
                 return {
                     'statusCode': 201,
