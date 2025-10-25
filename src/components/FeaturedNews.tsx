@@ -30,16 +30,16 @@ export const FeaturedNews = ({ news, currentIndex = 0, totalCount = 1 }: Feature
 
   return (
     <Card className="mb-8 overflow-hidden hover:shadow-xl transition-shadow bg-gradient-to-r from-primary/5 to-secondary/5 border-2 border-primary/20 cursor-pointer">
-      <div className="grid md:grid-cols-2 gap-0">
+      <div className="grid md:grid-cols-[40%_60%] gap-0">
         <div className="relative overflow-hidden group">
           {news.image_url ? (
             <img
               src={news.image_url}
               alt={news.title}
-              className="w-full h-full min-h-[200px] md:min-h-[300px] object-cover transition-transform group-hover:scale-105"
+              className="w-full h-full min-h-[200px] md:min-h-[400px] object-cover transition-transform group-hover:scale-105"
             />
           ) : (
-            <div className="w-full min-h-[200px] md:min-h-[300px] bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+            <div className="w-full min-h-[200px] md:min-h-[400px] bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
               <Icon name="FileText" size={64} className="text-primary/40" />
             </div>
           )}
@@ -50,32 +50,33 @@ export const FeaturedNews = ({ news, currentIndex = 0, totalCount = 1 }: Feature
             </Badge>
           </div>
         </div>
-        <div className="p-4 md:p-6 flex flex-col justify-center overflow-hidden">
-          <Badge className="w-fit mb-2 bg-orange-500 text-white text-xs">
+        <div className="p-4 md:p-8 flex flex-col justify-start overflow-hidden">
+          <Badge className="w-fit mb-3 bg-orange-500 text-white text-sm">
             {news.category}
           </Badge>
-          <h2 className="text-base md:text-lg font-serif font-bold mb-3 text-foreground leading-snug break-all line-clamp-3">
+          <h2 className="text-xl md:text-2xl font-serif font-bold mb-4 text-foreground leading-snug">
             {news.title}
           </h2>
-          <p className="text-muted-foreground mb-4 text-xs md:text-sm leading-relaxed line-clamp-2 break-words">
+          <p className="text-muted-foreground mb-4 text-sm md:text-base leading-relaxed hidden md:line-clamp-none md:block">
+            {news.content || news.excerpt}
+          </p>
+          <p className="text-muted-foreground mb-4 text-xs leading-relaxed line-clamp-2 md:hidden">
             {news.excerpt}
           </p>
-          <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <Icon name="Calendar" size={14} />
-              <span className="truncate">{new Date(news.created_at).toLocaleDateString('ru-RU')}</span>
+          <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mt-auto">
+            <div className="flex items-center gap-1.5">
+              <Icon name="Calendar" size={16} />
+              <span>{new Date(news.created_at).toLocaleDateString('ru-RU')}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Icon name="Clock" size={14} />
-              <span className="truncate">{new Date(news.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</span>
+            <div className="flex items-center gap-1.5">
+              <Icon name="Clock" size={16} />
+              <span>{new Date(news.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Icon name="User" size={14} />
-              <span className="truncate">{news.author_name}</span>
+            <div className="flex items-center gap-1.5">
+              <Icon name="User" size={16} />
+              <span>{news.author_name}</span>
             </div>
           </div>
-          
-
         </div>
       </div>
       {news.video_url && (
