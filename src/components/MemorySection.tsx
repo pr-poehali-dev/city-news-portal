@@ -21,13 +21,10 @@ interface MemorySectionProps {
 }
 
 export function MemorySection({ articles, onArticleClick }: MemorySectionProps) {
+  const publishedArticles = articles.filter(a => a.is_published);
   const [currentSetIndex, setCurrentSetIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   
-  const publishedArticles = articles.filter(a => a.is_published);
-  
-  if (publishedArticles.length === 0) return null;
-
   const totalSets = Math.ceil(publishedArticles.length / 3);
   const currentArticles = publishedArticles.slice(currentSetIndex * 3, (currentSetIndex * 3) + 3);
 
@@ -44,6 +41,8 @@ export function MemorySection({ articles, onArticleClick }: MemorySectionProps) 
 
     return () => clearInterval(interval);
   }, [publishedArticles.length, totalSets]);
+  
+  if (publishedArticles.length === 0) return null;
 
   const handleViewAll = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
