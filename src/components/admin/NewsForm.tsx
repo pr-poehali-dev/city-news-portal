@@ -4,6 +4,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Icon from '@/components/ui/icon';
+import { ImageUpload } from './ImageUpload';
 
 interface NewsFormProps {
   newsForm: {
@@ -78,11 +79,10 @@ export const NewsForm = ({ newsForm, categories, loading, onFormChange, onSubmit
           </div>
 
           <div>
-            <label className="text-sm font-medium mb-2 block">Ссылка на изображение</label>
-            <Input
+            <label className="text-sm font-medium mb-2 block">Изображение</label>
+            <ImageUpload
               value={newsForm.image_url}
-              onChange={(e) => onFormChange('image_url', e.target.value)}
-              placeholder="https://..."
+              onChange={(url) => onFormChange('image_url', url)}
             />
           </div>
 

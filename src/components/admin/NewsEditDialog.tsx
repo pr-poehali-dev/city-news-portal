@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { ImageUpload } from './ImageUpload';
 import { useCallback } from 'react';
 
 interface NewsEditDialogProps {
@@ -90,11 +91,10 @@ export const NewsEditDialog = ({
           </div>
 
           <div>
-            <Label>URL изображения</Label>
-            <Input
+            <Label>Изображение</Label>
+            <ImageUpload
               value={news.image_url || ''}
-              onChange={(e) => updateField('image_url', e.target.value)}
-              placeholder="https://example.com/image.jpg"
+              onChange={(url) => updateField('image_url', url)}
             />
           </div>
 
