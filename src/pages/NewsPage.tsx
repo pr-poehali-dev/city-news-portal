@@ -135,18 +135,20 @@ export const NewsPage = () => {
         }} 
       />
 
-      <main className="container mx-auto px-4 py-8 mt-20">
-        <Button 
-          variant="ghost" 
-          onClick={() => navigate(-1)}
-          className="mb-6"
-        >
-          <Icon name="ArrowLeft" size={20} className="mr-2" />
-          Назад
-        </Button>
+      <main className="mt-16">
+        <div className="container mx-auto px-4 py-4">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate(-1)}
+            className="mb-2"
+          >
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            Назад
+          </Button>
+        </div>
 
         <article className="max-w-4xl mx-auto">
-          <div className="mb-6">
+          <div className="px-4 mb-6">
             <span className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm mb-4">
               {article.section}
             </span>
@@ -166,16 +168,16 @@ export const NewsPage = () => {
           <img 
             src={article.image_url} 
             alt={article.title}
-            className="w-full h-[200px] md:h-[400px] object-cover rounded-lg mb-8"
+            className="w-full h-[300px] md:h-[500px] object-cover mb-8"
           />
 
-          <div className="prose prose-sm md:prose-lg max-w-none mb-12">
+          <div className="px-4 prose prose-sm md:prose-lg max-w-none mb-12">
             <p className="whitespace-pre-wrap text-foreground leading-relaxed break-words">
               {article.content}
             </p>
           </div>
 
-          <div className="border-t border-border pt-8 mb-12">
+          <div className="px-4 border-t border-border pt-8 mb-12">
             <h3 className="text-lg md:text-xl font-semibold mb-4">Поделиться:</h3>
             <div className="flex flex-wrap gap-3">
               <Button variant="outline" onClick={handleCopyLink} className="text-xs md:text-sm">
@@ -199,7 +201,7 @@ export const NewsPage = () => {
           </div>
 
           {relatedNews.length > 0 && (
-            <div className="border-t border-border pt-12 mb-12">
+            <div className="px-4 border-t border-border pt-12 mb-12">
               <h3 className="text-xl md:text-2xl font-semibold mb-6">Читайте также</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {relatedNews.map((news) => (
@@ -216,7 +218,7 @@ export const NewsPage = () => {
             </div>
           )}
 
-          <div className="border-t border-border pt-12">
+          <div className="px-4 border-t border-border pt-12">
             <h3 className="text-xl md:text-2xl font-semibold mb-6">
               Комментарии ({comments.length})
             </h3>
