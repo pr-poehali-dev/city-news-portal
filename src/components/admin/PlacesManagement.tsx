@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import Icon from '@/components/ui/icon';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMapEvents, MapContainerProps } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -80,6 +80,7 @@ export function PlacesManagement({
   onTogglePublish,
 }: PlacesManagementProps) {
   const [mapPosition, setMapPosition] = useState<[number, number]>([45.0355, 38.9753]);
+  const [mapKey, setMapKey] = useState(0);
 
   const handleMapClick = (position: [number, number]) => {
     setMapPosition(position);
@@ -180,6 +181,7 @@ export function PlacesManagement({
             <Label>Координаты на карте (кликните на карте)</Label>
             <div className="h-[400px] rounded-lg overflow-hidden border">
               <MapContainer
+                key={mapKey}
                 center={mapPosition}
                 zoom={12}
                 style={{ height: '100%', width: '100%' }}
