@@ -51,13 +51,15 @@ export default function CityMap({ places, onPlaceClick }: CityMapProps) {
 
     if (places.length === 0) return;
 
-    const center: [number, number] = [places[0].latitude, places[0].longitude];
+    const center: [number, number] = places.length > 0 
+      ? [places[0].latitude, places[0].longitude]
+      : [45.0355, 38.9753];
 
     if (!mapRef.current) {
       mapRef.current = L.map(containerRef.current).setView(center, 12);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | Краснодар',
       }).addTo(mapRef.current);
     }
 
@@ -97,13 +99,28 @@ export default function CityMap({ places, onPlaceClick }: CityMapProps) {
     };
   }, [places, onPlaceClick]);
 
-  if (places.length === 0) {
-    return (
-      <div className="h-[500px] w-full rounded-lg border border-dashed border-gray-300 flex items-center justify-center bg-gray-50">
-        <p className="text-gray-500">Добавьте места на карту через админ-панель</p>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    if (places.length === 0) {
+      const center: [number, number] = [45.0355, 38.9753];
+
+      if (!mapRef.current) {
+        mapRef.current = L.map(containerRef.current).setView(center, 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | Краснодар',
+        }).addTo(mapRef.current);
+      }
+    }
+
+    return () => {
+      if (mapRef.current && places.length === 0) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, [places]);
 
   return (
     <div 

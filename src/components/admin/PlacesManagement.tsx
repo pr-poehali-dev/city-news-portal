@@ -79,7 +79,7 @@ export function PlacesManagement({
   onDeletePlace,
   onTogglePublish,
 }: PlacesManagementProps) {
-  const [mapPosition, setMapPosition] = useState<[number, number]>([55.7558, 37.6173]);
+  const [mapPosition, setMapPosition] = useState<[number, number]>([45.0355, 38.9753]);
 
   const handleMapClick = (position: [number, number]) => {
     setMapPosition(position);

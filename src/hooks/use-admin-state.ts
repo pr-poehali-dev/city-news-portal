@@ -35,8 +35,8 @@ export const useAdminState = () => {
     excerpt: '',
     content: '',
     category: 'Город завтракает',
-    latitude: 55.7558,
-    longitude: 37.6173,
+    latitude: 45.0355,
+    longitude: 38.9753,
     address: '',
     image_url: '',
     is_published: false
@@ -577,8 +577,8 @@ export const useAdminState = () => {
           excerpt: '',
           content: '',
           category: 'Город завтракает',
-          latitude: 55.7558,
-          longitude: 37.6173,
+          latitude: 45.0355,
+          longitude: 38.9753,
           address: '',
           image_url: '',
           is_published: false
