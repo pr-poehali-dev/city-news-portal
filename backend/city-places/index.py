@@ -32,7 +32,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if method == 'GET':
             cur.execute("""
                 SELECT id, title, excerpt, content, category, latitude, longitude, 
-                       address, image_url, is_published, created_at, updated_at
+                       address, image_url, is_published, is_featured, created_at, updated_at
                 FROM city_places
                 ORDER BY created_at DESC
             """)
@@ -51,8 +51,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'address': row[7],
                     'image_url': row[8],
                     'is_published': row[9],
-                    'created_at': row[10].isoformat() if row[10] else None,
-                    'updated_at': row[11].isoformat() if row[11] else None
+                    'is_featured': row[10],
+                    'created_at': row[11].isoformat() if row[11] else None,
+                    'updated_at': row[12].isoformat() if row[12] else None
                 })
             
             cur.close()
@@ -73,8 +74,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             cur.execute("""
                 INSERT INTO city_places 
-                (title, excerpt, content, category, latitude, longitude, address, image_url, is_published)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                (title, excerpt, content, category, latitude, longitude, address, image_url, is_published, is_featured)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 RETURNING id
             """, (
                 body_data.get('title'),
@@ -85,7 +86,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 body_data.get('longitude'),
                 body_data.get('address', ''),
                 body_data.get('image_url', ''),
-                body_data.get('is_published', False)
+                body_data.get('is_published', False),
+                body_data.get('is_featured', False)
             ))
             
             place_id = cur.fetchone()[0]
@@ -107,11 +109,45 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             body_data = json.loads(event.get('body', '{}'))
             place_id = body_data.get('id')
             
-            cur.execute("""
-                UPDATE city_places
-                SET is_published = %s, updated_at = CURRENT_TIMESTAMP
-                WHERE id = %s
-            """, (body_data.get('is_published'), place_id))
+            update_fields = []
+            update_values = []
+            
+            if 'title' in body_data:
+                update_fields.append('title = %s')
+                update_values.append(body_data['title'])
+            if 'excerpt' in body_data:
+                update_fields.append('excerpt = %s')
+                update_values.append(body_data['excerpt'])
+            if 'content' in body_data:
+                update_fields.append('content = %s')
+                update_values.append(body_data['content'])
+            if 'category' in body_data:
+                update_fields.append('category = %s')
+                update_values.append(body_data['category'])
+            if 'latitude' in body_data:
+                update_fields.append('latitude = %s')
+                update_values.append(body_data['latitude'])
+            if 'longitude' in body_data:
+                update_fields.append('longitude = %s')
+                update_values.append(body_data['longitude'])
+            if 'address' in body_data:
+                update_fields.append('address = %s')
+                update_values.append(body_data['address'])
+            if 'image_url' in body_data:
+                update_fields.append('image_url = %s')
+                update_values.append(body_data['image_url'])
+            if 'is_published' in body_data:
+                update_fields.append('is_published = %s')
+                update_values.append(body_data['is_published'])
+            if 'is_featured' in body_data:
+                update_fields.append('is_featured = %s')
+                update_values.append(body_data['is_featured'])
+            
+            update_fields.append('updated_at = CURRENT_TIMESTAMP')
+            update_values.append(place_id)
+            
+            query = f"UPDATE city_places SET {', '.join(update_fields)} WHERE id = %s"
+            cur.execute(query, tuple(update_values))
             
             conn.commit()
             cur.close()

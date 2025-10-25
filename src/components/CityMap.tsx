@@ -11,6 +11,7 @@ interface CityPlace {
   longitude: number;
   address: string;
   image_url?: string;
+  is_featured?: boolean;
 }
 
 interface CityMapProps {
@@ -27,7 +28,7 @@ const categoryColors = {
 
 const createCustomIcon = (category: string, isFeatured: boolean = false) => {
   const color = isFeatured ? '#FFD700' : (categoryColors[category as keyof typeof categoryColors] || '#FF6B6B');
-  const size = isFeatured ? 50 : 40;
+  const size = isFeatured ? 60 : 40;
   
   return L.divIcon({
     className: 'custom-marker',
@@ -36,7 +37,7 @@ const createCustomIcon = (category: string, isFeatured: boolean = false) => {
         <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color}" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="white" stroke-width="1.5"/>
         </svg>
-        ${isFeatured ? '<div style="position: absolute; top: -8px; right: -8px; font-size: 20px;">⭐</div>' : ''}
+        ${isFeatured ? '<div style="position: absolute; top: 5px; left: 50%; transform: translateX(-50%); font-size: 24px;">⭐</div>' : ''}
       </div>
     `,
     iconSize: [size, size],
