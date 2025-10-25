@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import Icon from '@/components/ui/icon';
 import { Helmet } from 'react-helmet';
+import { SocialSubscribeButtons } from '@/components/SocialSubscribeButtons';
 
 const FUNCTIONS_URL = {
   news: 'https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe',
@@ -272,6 +273,10 @@ export const NewsPage = () => {
                   WhatsApp
                 </Button>
               </div>
+            </div>
+
+            <div className="border-t border-border pt-6 pb-8 mb-8">
+              <SocialSubscribeButtons size="compact" className="justify-center" />
             </div>
 
             <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-pink-50 via-purple-50 to-orange-50 border-4 border-pink-400 p-6 md:p-8 mb-12 hover:shadow-2xl transition-all duration-500 cursor-pointer group"
