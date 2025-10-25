@@ -287,10 +287,16 @@ export const NewsPage = () => {
                     <Icon name="ArrowRight" size={20} />
                   </a>
                   
-                  <button className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300">
+                  <a
+                    href="https://laakids.ru"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
+                  >
                     <Icon name="Info" size={20} />
                     Узнать больше о партнёре
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>
