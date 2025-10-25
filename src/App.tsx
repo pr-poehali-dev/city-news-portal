@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useTheme } from "@/hooks/use-theme";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import '@/services/background-checker';
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import NewsPage from "./pages/NewsPage";
