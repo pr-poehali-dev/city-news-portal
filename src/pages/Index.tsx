@@ -260,15 +260,11 @@ const Index = () => {
               </div>
             </div>
 
-            <Separator className="my-12" />
-
             <CategoryPreview
               cityPlaces={cityPlaces}
               categoryColors={categoryColors}
               onPlaceClick={(id) => console.log('Place clicked:', id)}
             />
-
-            <Separator className="my-12" />
 
             <PlacesSection
               cityPlaces={cityPlaces}
