@@ -23,7 +23,7 @@ export function AnalyticsManagement({ loading }: AnalyticsManagementProps) {
     const interval = setInterval(() => {
       loadAnalytics();
       loadComments();
-    }, 5000);
+    }, 30000);
     
     return () => clearInterval(interval);
   }, []);
