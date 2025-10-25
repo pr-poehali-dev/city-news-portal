@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This file is auto-generated. Do not edit manually. -->
-<!-- Dynamic sitemap is served from: https://functions.poehali.dev/0d0f69b6-8c6c-441f-ba89-36f59adf440b -->
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
     <url>
-        <loc>https://ggkrasnodar.ru/</loc>
-        <changefreq>hourly</changefreq>
+        <loc>https://gorodgovorit.ru/</loc>
+        <lastmod>2025-10-26</lastmod>
+        <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
 </urlset>
