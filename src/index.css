@@ -154,3 +154,23 @@
 .animate-confetti {
   animation: confetti linear infinite;
 }
+
+@keyframes whatsapp-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 20px rgba(34, 197, 94, 0.4),
+      0 0 40px rgba(34, 197, 94, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow:
+      0 0 30px rgba(34, 197, 94, 0.6),
+      0 0 60px rgba(34, 197, 94, 0.3);
+    transform: scale(1.03);
+  }
+}
+
+.animate-whatsapp-glow {
+  animation: whatsapp-glow 2s ease-in-out infinite;
+}
