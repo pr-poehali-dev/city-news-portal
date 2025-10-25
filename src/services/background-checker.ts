@@ -27,6 +27,10 @@ export function stopBackgroundChecker() {
   }
 }
 
-if (typeof window !== 'undefined' && localStorage.getItem('notifications-subscribed') === 'true') {
-  startBackgroundChecker();
+if (typeof window !== 'undefined') {
+  window.addEventListener('load', () => {
+    if (localStorage.getItem('notifications-subscribed') === 'true') {
+      startBackgroundChecker();
+    }
+  });
 }
