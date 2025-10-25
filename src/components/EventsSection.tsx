@@ -184,7 +184,7 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
                     TICKET-{currentEvent.id}
                   </div>
                   
-                  <div className="mb-5">
+                  <div className="mb-5 pr-32">
                     <div className="inline-block mb-2 px-2 py-0.5 bg-primary/5 border border-primary/20 rounded text-[10px] text-primary uppercase tracking-wider font-bold">
                       Краснодар
                     </div>
