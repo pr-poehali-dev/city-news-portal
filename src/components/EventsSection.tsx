@@ -29,17 +29,19 @@ const capitalizeFirst = (str: string): string => {
 export const EventsSection = ({ events }: EventsSectionProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  if (events.length === 0) {
-    return null;
-  }
-
   useEffect(() => {
+    if (events.length === 0) return;
+    
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev === events.length - 1 ? 0 : prev + 1));
     }, 5000);
 
     return () => clearInterval(interval);
   }, [events.length]);
+
+  if (events.length === 0) {
+    return null;
+  }
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? events.length - 1 : prev - 1));
