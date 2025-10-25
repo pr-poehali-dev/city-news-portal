@@ -56,6 +56,41 @@ export const NewsArticle = ({
     return null;
   };
 
+  const renderContentWithImages = (content: string) => {
+    const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+    const parts: (string | JSX.Element)[] = [];
+    let lastIndex = 0;
+    let match;
+    let key = 0;
+
+    while ((match = imageRegex.exec(content)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(content.substring(lastIndex, match.index));
+      }
+      
+      const alt = match[1] || 'Изображение';
+      const imageUrl = match[2];
+      
+      parts.push(
+        <img 
+          key={key++}
+          src={imageUrl} 
+          alt={alt}
+          className="w-full max-w-2xl mx-auto rounded-lg my-4 object-contain"
+          style={{ maxHeight: '500px' }}
+        />
+      );
+      
+      lastIndex = match.index + match[0].length;
+    }
+    
+    if (lastIndex < content.length) {
+      parts.push(content.substring(lastIndex));
+    }
+    
+    return parts;
+  };
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       {article.image_url && (
@@ -133,9 +168,9 @@ export const NewsArticle = ({
           <div className="mt-6 space-y-6">
             <Separator />
             <div className="prose max-w-none">
-              <p className="text-foreground leading-relaxed whitespace-pre-wrap">
-                {article.content}
-              </p>
+              <div className="text-foreground leading-relaxed whitespace-pre-wrap">
+                {renderContentWithImages(article.content)}
+              </div>
             </div>
 
             {article.video_url && (

@@ -6,7 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ImageUpload } from './ImageUpload';
-import { useCallback } from 'react';
+import Icon from '@/components/ui/icon';
+import { useCallback, useRef, useState } from 'react';
 
 interface NewsEditDialogProps {
   open: boolean;
@@ -27,12 +28,56 @@ export const NewsEditDialog = ({
   loading,
   onSave
 }: NewsEditDialogProps) => {
+  const [imageUrlForInsert, setImageUrlForInsert] = useState('');
+  const contentTextareaRef = useRef<HTMLTextAreaElement>(null);
+
   const updateField = useCallback((field: string, value: any) => {
     setNews((prev: any) => {
       if (!prev) return prev;
       return { ...prev, [field]: value };
     });
   }, [setNews]);
+
+  const insertImageIntoContent = (imageUrl: string) => {
+    if (!imageUrl || !news) return;
+    
+    const textarea = contentTextareaRef.current;
+    const currentContent = news.content || '';
+    const cursorPos = textarea?.selectionStart || currentContent.length;
+    
+    const textBefore = currentContent.substring(0, cursorPos);
+    const textAfter = currentContent.substring(cursorPos);
+    
+    const imageMarkdown = `\n![Изображение](${imageUrl})\n`;
+    const newContent = textBefore + imageMarkdown + textAfter;
+    
+    updateField('content', newContent);
+    setImageUrlForInsert('');
+  };
+
+  const handleImageUploadForContent = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch('https://cdn.poehali.dev/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error('Upload failed');
+
+      const data = await response.json();
+      const imageUrl = data.url || data.file_url;
+      
+      if (imageUrl) {
+        insertImageIntoContent(imageUrl);
+      }
+    } catch (error) {
+      console.error('Failed to upload image:', error);
+      alert('Ошибка загрузки изображения');
+    }
+  };
 
   if (!news) return null;
 
@@ -84,10 +129,49 @@ export const NewsEditDialog = ({
           <div>
             <Label>Содержание</Label>
             <Textarea
+              ref={contentTextareaRef}
               value={news.content || ''}
               onChange={(e) => updateField('content', e.target.value)}
               rows={6}
+              placeholder="Используйте ![Описание](URL) для вставки изображений"
             />
+            <div className="mt-2 p-3 bg-muted rounded-lg space-y-2">
+              <div className="text-xs font-medium">Вставить изображение в текст:</div>
+              <div className="flex gap-2">
+                <Input
+                  type="text"
+                  placeholder="URL изображения"
+                  value={imageUrlForInsert}
+                  onChange={(e) => setImageUrlForInsert(e.target.value)}
+                  className="flex-1 text-sm"
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => insertImageIntoContent(imageUrlForInsert)}
+                  disabled={!imageUrlForInsert}
+                >
+                  <Icon name="Image" size={14} />
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = (e: any) => {
+                      const file = e.target?.files?.[0];
+                      if (file) handleImageUploadForContent(file);
+                    };
+                    input.click();
+                  }}
+                >
+                  <Icon name="Upload" size={14} />
+                </Button>
+              </div>
+            </div>
           </div>
 
           <div>

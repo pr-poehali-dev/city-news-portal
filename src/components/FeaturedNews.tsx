@@ -30,16 +30,16 @@ export const FeaturedNews = ({ news, currentIndex = 0, totalCount = 1 }: Feature
 
   return (
     <Card className="mb-8 overflow-hidden hover:shadow-xl transition-shadow bg-gradient-to-r from-primary/5 to-secondary/5 border-2 border-primary/20 cursor-pointer">
-      <div className="grid md:grid-cols-[40%_60%] gap-0">
-        <div className="relative overflow-hidden group h-[250px] md:h-[320px]">
+      <div className="grid md:grid-cols-[35%_65%] gap-0">
+        <div className="relative overflow-hidden group">
           {news.image_url ? (
             <img
               src={news.image_url}
               alt={news.title}
-              className="w-full h-full object-cover transition-transform group-hover:scale-105"
+              className="w-full h-[200px] md:h-[280px] object-contain bg-muted transition-transform group-hover:scale-105"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+            <div className="w-full h-[200px] md:h-[280px] bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
               <Icon name="FileText" size={64} className="text-primary/40" />
             </div>
           )}
@@ -50,7 +50,7 @@ export const FeaturedNews = ({ news, currentIndex = 0, totalCount = 1 }: Feature
             </Badge>
           </div>
         </div>
-        <div className="p-4 md:p-6 flex flex-col justify-between h-[250px] md:h-[320px]">
+        <div className="p-4 md:p-6 flex flex-col justify-between min-h-[200px] md:min-h-[280px]">
           <div className="overflow-hidden">
             <Badge className="w-fit mb-2 bg-orange-500 text-white text-sm">
               {news.category}
