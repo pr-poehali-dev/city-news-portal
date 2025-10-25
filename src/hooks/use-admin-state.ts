@@ -144,18 +144,35 @@ export const useAdminState = () => {
 
   const handleNewsSubmit = async (e: React.FormEvent, isDraft = false) => {
     e.preventDefault();
+    
+    if (!newsForm.title || !newsForm.category || !newsForm.excerpt) {
+      toast({
+        title: 'Ошибка',
+        description: 'Заполните обязательные поля: заголовок, категория и краткое описание',
+        variant: 'destructive'
+      });
+      return;
+    }
+    
     setLoading(true);
 
     try {
+      const payload = {
+        ...newsForm,
+        author_id: 1,
+        status: isDraft ? 'draft' : 'published'
+      };
+      
+      console.log('Sending news:', payload);
+      
       const response = await fetch(FUNCTIONS_URL.news, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...newsForm,
-          author_id: 1,
-          status: isDraft ? 'draft' : 'published'
-        })
+        body: JSON.stringify(payload)
       });
+
+      const data = await response.json();
+      console.log('Response:', response.status, data);
 
       if (response.ok) {
         toast({
@@ -174,8 +191,15 @@ export const useAdminState = () => {
         });
         loadNews();
         loadDrafts();
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: data.error || 'Не удалось сохранить',
+          variant: 'destructive'
+        });
       }
     } catch (error) {
+      console.error('News submit error:', error);
       toast({
         title: 'Ошибка',
         description: 'Не удалось сохранить',
