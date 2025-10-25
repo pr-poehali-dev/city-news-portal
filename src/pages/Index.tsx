@@ -293,30 +293,35 @@ const Index = () => {
             )}
 
             {activeSection !== 'Главная' && (
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {articles.map((article) => (
                   <Card 
                     key={article.id} 
                     className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
                     onClick={() => handleArticleClick(article.id)}
                   >
-                    <div className="relative h-48 overflow-hidden">
-                      <img
-                        src={article.image_url}
-                        alt={article.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+                    {article.image_url && (
+                      <div className="relative overflow-hidden">
+                        <img
+                          src={article.image_url}
+                          alt={article.title}
+                          className="w-full h-auto object-contain"
+                        />
+                      </div>
+                    )}
                     <CardContent className="p-6">
                       <div className="flex items-center gap-2 mb-3">
-                        <Badge variant="outline">{article.section}</Badge>
-                        <span className="text-sm text-muted-foreground">{article.date}</span>
+                        <Badge className="bg-orange-500 text-white">{article.category}</Badge>
+                        <span className="text-sm text-muted-foreground flex items-center gap-1">
+                          <Icon name="Clock" size={14} />
+                          {new Date(article.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
                       </div>
                       <h3 className="text-xl font-bold mb-3 line-clamp-2">{article.title}</h3>
                       <p className="text-muted-foreground line-clamp-3 mb-4">
-                        {article.content}
+                        {article.excerpt}
                       </p>
-                      <Button variant="link" className="p-0">
+                      <Button variant="link" className="p-0 text-primary">
                         Читать далее →
                       </Button>
                     </CardContent>
