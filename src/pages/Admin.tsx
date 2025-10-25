@@ -14,7 +14,7 @@ import { useAdminNotifications } from '@/hooks/use-admin-notifications';
 import { CATEGORIES } from '@/lib/admin-constants';
 
 const Admin = () => {
-  useAdminNotifications();
+  // useAdminNotifications();
   
   const {
     loading,
