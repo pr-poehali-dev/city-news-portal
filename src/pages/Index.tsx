@@ -242,7 +242,7 @@ const Index = () => {
                 {topThreeNews.length > 1 && (
                   <div className="mb-8">
                     <div className="grid md:grid-cols-3 gap-4">
-                      {topThreeNews.slice(1, 3).concat(articles.slice(3, 4)).map((article) => (
+                      {topThreeNews.filter(n => n.id !== featuredNews.id).slice(0, 2).concat(articles.slice(3, 4)).map((article) => (
                         <MiniNewsCard
                           key={article.id}
                           news={article}
