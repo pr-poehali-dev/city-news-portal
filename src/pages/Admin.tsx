@@ -48,6 +48,9 @@ const Admin = () => {
     handlePlaceSubmit,
     handleDeletePlace,
     handleTogglePublishPlace,
+    handleToggleFeaturedPlace,
+    handleEditPlace,
+    handleUpdatePlace,
     handleAuthorSubmit,
     handleDeleteAuthor,
     handleAboutSubmit
