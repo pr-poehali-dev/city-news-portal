@@ -1,0 +1,19 @@
+{
+  "tests": [
+    {
+      "name": "Handle OPTIONS for CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Get sitemap.xml",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedHeaders": {
+        "Content-Type": "application/xml; charset=utf-8"
+      }
+    }
+  ]
+}
