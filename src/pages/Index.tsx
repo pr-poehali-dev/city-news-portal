@@ -11,12 +11,21 @@ import { EventsSection } from '@/components/EventsSection';
 import { MiniNewsCard } from '@/components/MiniNewsCard';
 import { Separator } from '@/components/ui/separator';
 import { Footer } from '@/components/Footer';
+import CityMap from '@/components/CityMap';
 
 const FUNCTIONS_URL = {
   news: 'https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe',
   events: 'https://functions.poehali.dev/383dd478-9fc2-4b12-bcc4-72b87c103a3d',
   weather: 'https://functions.poehali.dev/5531fc0c-ecba-421c-bfb4-245613816060',
-  comments: 'https://functions.poehali.dev/e442a5de-b5ed-4ff1-b15c-da8b0bfea9b5'
+  comments: 'https://functions.poehali.dev/e442a5de-b5ed-4ff1-b15c-da8b0bfea9b5',
+  cityPlaces: 'https://functions.poehali.dev/5db1b661-abf3-4bcb-8e1f-d01437219788'
+};
+
+const categoryColors = {
+  'Город завтракает': '#FF6B6B',
+  'Город и кофе': '#8B4513',
+  'Город поет': '#9B59B6',
+  'Город танцует': '#3498DB',
 };
 
 const Index = () => {
@@ -28,6 +37,9 @@ const Index = () => {
   const [featuredNews, setFeaturedNews] = useState<any>(null);
   const [latestNews, setLatestNews] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
+  const [cityPlaces, setCityPlaces] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showAllPlaces, setShowAllPlaces] = useState(false);
   const [weather, setWeather] = useState<any>(null);
   const [comments, setComments] = useState<Record<number, any[]>>({});
   const [activeSection, setActiveSection] = useState('Главная');
@@ -55,6 +67,7 @@ const Index = () => {
     loadEvents();
     loadWeather();
     loadLatestForTicker();
+    loadCityPlaces();
     
     const savedLikes = localStorage.getItem('likedArticles');
     if (savedLikes) {
@@ -126,6 +139,16 @@ const Index = () => {
       setLatestNews(data.slice(0, 5));
     } catch (error) {
       console.error('Failed to load latest news:', error);
+    }
+  };
+
+  const loadCityPlaces = async () => {
+    try {
+      const response = await fetch(FUNCTIONS_URL.cityPlaces);
+      const data = await response.json();
+      setCityPlaces(data.filter((p: any) => p.is_published));
+    } catch (error) {
+      console.error('Failed to load city places:', error);
     }
   };
 
@@ -364,6 +387,187 @@ const Index = () => {
                     </div>
                   );
                 })()}
+
+                {/* Блок "Город оценил" */}
+                <div className="mb-12">
+                  <h2 className="text-3xl font-serif font-bold border-b-2 border-primary pb-2 mb-6">Город оценил</h2>
+                  
+                  {/* Карта */}
+                  <div className="mb-6">
+                    <CityMap 
+                      places={cityPlaces}
+                      onPlaceClick={(id) => {
+                        const place = cityPlaces.find(p => p.id === id);
+                        if (place) {
+                          setSelectedCategory(place.category);
+                          setShowAllPlaces(false);
+                        }
+                      }}
+                    />
+                  </div>
+
+                  {/* Дайджест по категориям */}
+                  {!showAllPlaces && selectedCategory && (
+                    <div className="mb-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-2xl font-serif font-bold" style={{ 
+                          color: categoryColors[selectedCategory as keyof typeof categoryColors] 
+                        }}>
+                          {selectedCategory}
+                        </h3>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setSelectedCategory(null)}
+                        >
+                          Все рубрики
+                        </Button>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {cityPlaces
+                          .filter(p => p.category === selectedCategory)
+                          .slice(0, 4)
+                          .map((place) => (
+                            <Card 
+                              key={place.id}
+                              className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                            >
+                              {place.image_url && (
+                                <div className="relative overflow-hidden h-48">
+                                  <img
+                                    src={place.image_url}
+                                    alt={place.title}
+                                    className="w-full h-full object-cover"
+                                  />
+                                  <div 
+                                    className="absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center"
+                                    style={{ 
+                                      backgroundColor: categoryColors[place.category as keyof typeof categoryColors] 
+                                    }}
+                                  >
+                                    <Icon name="Heart" size={20} className="text-white fill-white" />
+                                  </div>
+                                </div>
+                              )}
+                              <CardContent className="p-4">
+                                <h4 className="font-bold text-lg mb-2">{place.title}</h4>
+                                <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+                                  {place.excerpt}
+                                </p>
+                                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <Icon name="MapPin" size={12} />
+                                  {place.address}
+                                </p>
+                              </CardContent>
+                            </Card>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Показать все места */}
+                  {!selectedCategory && (
+                    <>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                        {Object.keys(categoryColors).map((cat) => {
+                          const count = cityPlaces.filter(p => p.category === cat).length;
+                          if (count === 0) return null;
+                          
+                          return (
+                            <Button
+                              key={cat}
+                              variant="outline"
+                              className="h-auto py-3 flex flex-col items-center gap-2 hover:shadow-md transition-shadow"
+                              onClick={() => setSelectedCategory(cat)}
+                              style={{ 
+                                borderColor: categoryColors[cat as keyof typeof categoryColors],
+                                borderWidth: '2px'
+                              }}
+                            >
+                              <Icon 
+                                name="Heart" 
+                                size={24} 
+                                style={{ color: categoryColors[cat as keyof typeof categoryColors] }}
+                                className="fill-current"
+                              />
+                              <span className="text-sm font-semibold">{cat}</span>
+                              <span className="text-xs text-muted-foreground">{count} мест</span>
+                            </Button>
+                          );
+                        })}
+                      </div>
+                      
+                      {!showAllPlaces && (
+                        <div className="text-center">
+                          <Button
+                            variant="outline"
+                            onClick={() => setShowAllPlaces(true)}
+                          >
+                            Показать все места
+                          </Button>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {/* Все места списком */}
+                  {showAllPlaces && (
+                    <div>
+                      <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-xl font-bold">Все любимые места</h3>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setShowAllPlaces(false)}
+                        >
+                          Скрыть
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {cityPlaces.map((place) => (
+                          <Card key={place.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                            {place.image_url && (
+                              <div className="relative overflow-hidden h-40">
+                                <img
+                                  src={place.image_url}
+                                  alt={place.title}
+                                  className="w-full h-full object-cover"
+                                />
+                                <div 
+                                  className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center"
+                                  style={{ 
+                                    backgroundColor: categoryColors[place.category as keyof typeof categoryColors] 
+                                  }}
+                                >
+                                  <Icon name="Heart" size={16} className="text-white fill-white" />
+                                </div>
+                              </div>
+                            )}
+                            <CardContent className="p-3">
+                              <Badge 
+                                className="mb-2 text-white"
+                                style={{ 
+                                  backgroundColor: categoryColors[place.category as keyof typeof categoryColors] 
+                                }}
+                              >
+                                {place.category}
+                              </Badge>
+                              <h4 className="font-bold text-sm mb-1 line-clamp-2">{place.title}</h4>
+                              <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
+                                {place.excerpt}
+                              </p>
+                              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Icon name="MapPin" size={10} />
+                                {place.address}
+                              </p>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </>
             )}
 

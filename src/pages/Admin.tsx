@@ -3,6 +3,7 @@ import { LoginForm } from '@/components/admin/LoginForm';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 import { NewsManagement } from '@/components/admin/NewsManagement';
 import { EventsManagement } from '@/components/admin/EventsManagement';
+import { PlacesManagement } from '@/components/admin/PlacesManagement';
 import { AuthorsManagement } from '@/components/admin/AuthorsManagement';
 import { SettingsManagement } from '@/components/admin/SettingsManagement';
 import { NewsEditDialog } from '@/components/admin/NewsEditDialog';
@@ -23,9 +24,12 @@ const Admin = () => {
     setNewsForm,
     eventForm,
     setEventForm,
+    placeForm,
+    setPlaceForm,
     newsList,
     draftsList,
     eventsList,
+    placesList,
     authorsList,
     authorForm,
     setAuthorForm,
@@ -41,6 +45,9 @@ const Admin = () => {
     handleSetFeatured,
     handleEventSubmit,
     handleDeleteEvent,
+    handlePlaceSubmit,
+    handleDeletePlace,
+    handleTogglePublishPlace,
     handleAuthorSubmit,
     handleDeleteAuthor,
     handleAboutSubmit
@@ -63,9 +70,10 @@ const Admin = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="news" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="news">Новости</TabsTrigger>
             <TabsTrigger value="events">События</TabsTrigger>
+            <TabsTrigger value="places">Город оценил</TabsTrigger>
             <TabsTrigger value="authors">Авторы</TabsTrigger>
             <TabsTrigger value="settings">Настройки</TabsTrigger>
           </TabsList>
@@ -94,6 +102,18 @@ const Admin = () => {
               loading={loading}
               onEventSubmit={handleEventSubmit}
               onDeleteEvent={handleDeleteEvent}
+            />
+          </TabsContent>
+
+          <TabsContent value="places">
+            <PlacesManagement
+              placeForm={placeForm}
+              setPlaceForm={setPlaceForm}
+              placesList={placesList}
+              loading={loading}
+              onPlaceSubmit={handlePlaceSubmit}
+              onDeletePlace={handleDeletePlace}
+              onTogglePublish={handleTogglePublishPlace}
             />
           </TabsContent>
 

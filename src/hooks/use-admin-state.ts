@@ -30,9 +30,22 @@ export const useAdminState = () => {
     image_url: ''
   });
 
+  const [placeForm, setPlaceForm] = useState({
+    title: '',
+    excerpt: '',
+    content: '',
+    category: 'Город завтракает',
+    latitude: 55.7558,
+    longitude: 37.6173,
+    address: '',
+    image_url: '',
+    is_published: false
+  });
+
   const [newsList, setNewsList] = useState([]);
   const [draftsList, setDraftsList] = useState([]);
   const [eventsList, setEventsList] = useState([]);
+  const [placesList, setPlacesList] = useState([]);
   const [authorsList, setAuthorsList] = useState([]);
 
   const [authorForm, setAuthorForm] = useState({
@@ -85,6 +98,7 @@ export const useAdminState = () => {
       loadNews();
       loadDrafts();
       loadEvents();
+      loadPlaces();
       loadAuthors();
       loadAbout();
     }
@@ -141,6 +155,16 @@ export const useAdminState = () => {
       setEventsList(data);
     } catch (error) {
       console.error('Failed to load events:', error);
+    }
+  };
+
+  const loadPlaces = async () => {
+    try {
+      const response = await fetch(FUNCTIONS_URL.cityPlaces);
+      const data = await response.json();
+      setPlacesList(data);
+    } catch (error) {
+      console.error('Failed to load places:', error);
     }
   };
 
@@ -524,6 +548,108 @@ export const useAdminState = () => {
     }
   };
 
+  const handlePlaceSubmit = async () => {
+    if (!placeForm.title || !placeForm.content || !placeForm.category) {
+      toast({
+        title: 'Ошибка',
+        description: 'Заполните обязательные поля',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(FUNCTIONS_URL.cityPlaces, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(placeForm)
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно!',
+          description: 'Место добавлено'
+        });
+        setPlaceForm({
+          title: '',
+          excerpt: '',
+          content: '',
+          category: 'Город завтракает',
+          latitude: 55.7558,
+          longitude: 37.6173,
+          address: '',
+          image_url: '',
+          is_published: false
+        });
+        await loadPlaces();
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось добавить место',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeletePlace = async (id: number) => {
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${FUNCTIONS_URL.cityPlaces}?id=${id}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно!',
+          description: 'Место удалено'
+        });
+        await loadPlaces();
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось удалить',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTogglePublishPlace = async (id: number, isPublished: boolean) => {
+    setLoading(true);
+
+    try {
+      const response = await fetch(FUNCTIONS_URL.cityPlaces, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, is_published: isPublished })
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно!',
+          description: isPublished ? 'Место опубликовано' : 'Место скрыто'
+        });
+        await loadPlaces();
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить статус',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     authenticated,
@@ -537,9 +663,12 @@ export const useAdminState = () => {
     setNewsForm,
     eventForm,
     setEventForm,
+    placeForm,
+    setPlaceForm,
     newsList,
     draftsList,
     eventsList,
+    placesList,
     authorsList,
     authorForm,
     setAuthorForm,
@@ -555,6 +684,9 @@ export const useAdminState = () => {
     handleSetFeatured,
     handleEventSubmit,
     handleDeleteEvent,
+    handlePlaceSubmit,
+    handleDeletePlace,
+    handleTogglePublishPlace,
     handleAuthorSubmit,
     handleDeleteAuthor,
     handleAboutSubmit
