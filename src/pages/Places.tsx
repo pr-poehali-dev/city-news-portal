@@ -86,8 +86,20 @@ const Places = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Город говорит</h1>
-          <p className="text-muted-foreground">Все места городской жизни Краснодара</p>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-4xl font-bold mb-2">Город говорит</h1>
+              <p className="text-muted-foreground">Все места городской жизни Краснодара</p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => navigate('/places/map')}
+              className="gap-2"
+            >
+              <Icon name="Map" size={16} />
+              На карте
+            </Button>
+          </div>
         </div>
 
         <div className="flex gap-2 flex-wrap mb-8">

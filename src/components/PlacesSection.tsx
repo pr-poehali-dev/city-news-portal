@@ -101,8 +101,19 @@ export function PlacesSection({
         </div>
       )}
 
-      <div className="mb-8">
-        <CityMap places={filteredPlaces} onPlaceClick={(id) => console.log('Place clicked:', id)} />
+      <div 
+        className="mb-8 relative cursor-pointer group overflow-hidden rounded-lg"
+        onClick={() => navigate('/places/map')}
+      >
+        <div className="absolute inset-0 bg-black/40 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="bg-white px-6 py-3 rounded-lg flex items-center gap-2 font-semibold">
+            <Icon name="Map" size={20} />
+            Открыть карту
+          </div>
+        </div>
+        <div className="pointer-events-none">
+          <CityMap places={filteredPlaces} onPlaceClick={() => {}} interactive={false} height="300px" />
+        </div>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

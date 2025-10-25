@@ -17,6 +17,8 @@ interface CityPlace {
 interface CityMapProps {
   places: CityPlace[];
   onPlaceClick: (id: number) => void;
+  interactive?: boolean;
+  height?: string;
 }
 
 const categoryColors = {
@@ -45,7 +47,7 @@ const createCustomIcon = (category: string, isFeatured: boolean = false) => {
   });
 };
 
-export default function CityMap({ places, onPlaceClick }: CityMapProps) {
+export default function CityMap({ places, onPlaceClick, interactive = true, height = '500px' }: CityMapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -59,7 +61,17 @@ export default function CityMap({ places, onPlaceClick }: CityMapProps) {
       : [45.0355, 38.9753];
 
     if (!mapRef.current) {
-      mapRef.current = L.map(containerRef.current).setView(center, 12);
+      const mapOptions: L.MapOptions = {
+        dragging: interactive,
+        touchZoom: interactive,
+        doubleClickZoom: interactive,
+        scrollWheelZoom: interactive,
+        boxZoom: interactive,
+        keyboard: interactive,
+        zoomControl: interactive,
+      };
+      
+      mapRef.current = L.map(containerRef.current, mapOptions).setView(center, 12);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap',
@@ -130,7 +142,7 @@ export default function CityMap({ places, onPlaceClick }: CityMapProps) {
   return (
     <div 
       ref={containerRef} 
-      style={{ height: '500px', width: '100%', borderRadius: '8px' }}
+      style={{ height, width: '100%', borderRadius: '8px' }}
       className="z-0"
     />
   );
