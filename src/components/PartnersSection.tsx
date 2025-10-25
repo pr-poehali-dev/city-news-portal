@@ -88,30 +88,38 @@ export const PartnersSection = () => {
           >
             {showConfetti && <Confetti />}
             
-            <div className="absolute top-4 right-4 animate-bounce">
-              <Icon name="Sparkles" size={32} className="text-pink-500" />
+            <div className="absolute top-4 right-4 animate-bounce z-40">
+              <Icon name="Sparkles" size={32} className="text-pink-500 drop-shadow-lg" />
             </div>
-            <div className="absolute top-4 left-4">
-              <Icon name="PartyPopper" size={28} className="text-orange-500" />
+            <div className="absolute top-4 left-4 z-40 animate-pulse">
+              <Icon name="PartyPopper" size={32} className="text-orange-500 drop-shadow-lg" />
+            </div>
+            <div className="absolute top-12 right-16 z-40 animate-bounce" style={{ animationDelay: '0.3s' }}>
+              <Icon name="Heart" size={24} className="text-red-500 fill-red-500 drop-shadow-lg" />
             </div>
             
-            <div className="grid md:grid-cols-[380px_1fr] gap-0">
-              <div className="relative overflow-hidden group">
+            <div className="grid md:grid-cols-[320px_1fr] gap-0">
+              <div className="relative overflow-hidden group h-[280px] md:h-auto">
                 <div className="absolute inset-0 bg-gradient-to-br from-pink-400/20 via-purple-400/20 to-orange-400/20 z-10"></div>
-                <div className="absolute top-0 left-0 w-full h-12 bg-gradient-to-b from-pink-500/30 to-transparent z-20"></div>
-                <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-pink-500/30 to-transparent z-20"></div>
-                <div className="absolute inset-0 border-8 border-pink-300/40 z-20 pointer-events-none"></div>
+                <div className="absolute top-0 left-0 w-full h-16 bg-gradient-to-b from-pink-500/40 to-transparent z-20"></div>
+                <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-orange-500/40 to-transparent z-20"></div>
+                <div className="absolute inset-0 border-8 border-pink-300/50 z-20 pointer-events-none shadow-inner"></div>
+                <div className="absolute top-2 left-2 right-2 h-2 bg-gradient-to-r from-pink-500 via-purple-500 to-orange-500 rounded-full z-20"></div>
+                <div className="absolute bottom-2 left-2 right-2 h-2 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 rounded-full z-20"></div>
                 <img 
                   src={partner.image} 
                   alt={partner.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  style={{ objectPosition: '50% 30%' }}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  style={{ objectPosition: '50% 25%' }}
                 />
-                <div className="absolute top-3 left-3 z-30">
-                  <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-orange-500 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-2">
+                <div className="absolute top-3 left-3 z-30 animate-pulse">
+                  <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-orange-500 text-white px-4 py-2 rounded-full font-bold text-sm shadow-xl flex items-center gap-2 border-2 border-white">
                     <Icon name="Gift" size={18} />
                     {partner.category}
                   </div>
+                </div>
+                <div className="absolute top-3 right-3 z-30">
+                  <Icon name="Star" className="text-yellow-400 fill-yellow-400 animate-bounce" size={24} />
                 </div>
               </div>
 
