@@ -135,8 +135,8 @@ export const NewsPage = () => {
         }} 
       />
 
-      <main className="mt-16">
-        <div className="container mx-auto px-4">
+      <main className="pt-16">
+        <div className="container mx-auto px-4 py-1">
           <Button 
             variant="ghost" 
             onClick={() => navigate(-1)}
