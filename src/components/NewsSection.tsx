@@ -55,7 +55,7 @@ export function NewsSection({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {categoryNews.slice(0, 4).map((article) => (
           <Card
             key={article.id}
@@ -63,7 +63,7 @@ export function NewsSection({
           >
             <CardContent className="p-0">
               {article.image_url && (
-                <div className="relative h-40 overflow-hidden rounded-t-lg">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-t-lg">
                   <img
                     src={article.image_url}
                     alt={article.title}
