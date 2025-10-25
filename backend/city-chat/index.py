@@ -69,7 +69,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     conn = psycopg2.connect(db_url)
     
     try:
-        context_data = get_site_context(conn)
+        try:
+            context_data = get_site_context(conn)
+        except Exception:
+            context_data = {'news': [], 'places': [], 'memories': []}
+        
         ai_response = get_ai_response(user_message, context_data, gigachat_key)
         
         return {
@@ -105,51 +109,58 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 
 def get_site_context(conn) -> Dict[str, Any]:
-    with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute("""
-            SELECT title, excerpt, category, created_at
-            FROM news
-            WHERE DATE(created_at) >= CURRENT_DATE - INTERVAL '7 days'
-            ORDER BY views DESC, created_at DESC
-            LIMIT 20
-        """)
-        news = cur.fetchall()
-        
-        cur.execute("""
-            SELECT title, address, category, description
-            FROM city_places
-            WHERE is_published = true
-            ORDER BY rating DESC NULLS LAST
-            LIMIT 15
-        """)
-        places = cur.fetchall()
-        
-        cur.execute("""
-            SELECT title, preview_text, tags
-            FROM memory_articles
-            ORDER BY created_at DESC
-            LIMIT 10
-        """)
-        memories = cur.fetchall()
-        
-        cur.execute("""
-            SELECT text, mood, location, created_at
-            FROM city_posts
-            WHERE DATE(created_at) >= CURRENT_DATE - INTERVAL '3 days'
-            ORDER BY created_at DESC
-            LIMIT 10
-        """)
-        city_posts = cur.fetchall()
-        
+    try:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            try:
+                cur.execute("""
+                    SELECT title, excerpt, category, created_at
+                    FROM news
+                    WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'
+                    ORDER BY views DESC, created_at DESC
+                    LIMIT 20
+                """)
+                news = cur.fetchall()
+            except Exception:
+                news = []
+            
+            try:
+                cur.execute("""
+                    SELECT title, address, category, description
+                    FROM city_places
+                    WHERE is_published = true
+                    ORDER BY rating DESC NULLS LAST
+                    LIMIT 15
+                """)
+                places = cur.fetchall()
+            except Exception:
+                places = []
+            
+            try:
+                cur.execute("""
+                    SELECT title, preview_text, tags
+                    FROM memory_articles
+                    ORDER BY created_at DESC
+                    LIMIT 10
+                """)
+                memories = cur.fetchall()
+            except Exception:
+                memories = []
+            
+            return {
+                'news': [dict(n) for n in news],
+                'places': [dict(p) for p in places],
+                'memories': [dict(m) for m in memories]
+            }
+    except Exception:
         return {
-            'news': [dict(n) for n in news],
-            'places': [dict(p) for p in places],
-            'memories': [dict(m) for m in memories],
-            'city_posts': [dict(cp) for cp in city_posts]
+            'news': [],
+            'places': [],
+            'memories': []
         }
 
 

@@ -40,6 +40,18 @@ export const CityChatWidget = () => {
     }
   }, [isOpen]);
 
+  const quickQuestions = [
+    'Какие новости сегодня?',
+    'Куда сходить в Краснодаре?',
+    'Интересные места города',
+    'Погода в Краснодаре',
+    'События на выходные'
+  ];
+
+  const handleQuickQuestion = (question: string) => {
+    setInput(question);
+  };
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
@@ -119,7 +131,7 @@ export const CityChatWidget = () => {
   }
 
   return (
-    <Card className="fixed bottom-6 right-6 w-96 h-[500px] shadow-2xl z-50 flex flex-col">
+    <Card className="fixed bottom-6 right-6 w-96 h-[550px] shadow-2xl z-50 flex flex-col">
       <div className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground rounded-t-lg">
         <div className="flex items-center gap-2">
           <Icon name="Bot" size={20} />
@@ -172,7 +184,20 @@ export const CityChatWidget = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-4 border-t">
+      <div className="p-4 border-t space-y-3">
+        {messages.length === 1 && (
+          <div className="flex flex-wrap gap-2">
+            {quickQuestions.map((q, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleQuickQuestion(q)}
+                className="text-xs px-3 py-1.5 bg-muted hover:bg-muted/80 rounded-full transition-colors"
+              >
+                {q}
+              </button>
+            ))}
+          </div>
+        )}
         <div className="flex gap-2">
           <Input
             value={input}
