@@ -88,36 +88,20 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
               }}
             >
               <div 
-                className="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-6 bg-background rounded-full -ml-3 z-20"
+                className="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-5 bg-background rounded-full -ml-2.5 z-20"
                 style={{
                   boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.1)'
                 }}
               />
               <div 
-                className="absolute left-0 top-1/4 w-6 h-6 bg-background rounded-full -ml-3 z-20"
+                className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 bg-background rounded-full -mr-2.5 z-20"
                 style={{
                   boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.1)'
-                }}
-              />
-              <div 
-                className="absolute left-0 bottom-1/4 w-6 h-6 bg-background rounded-full -ml-3 z-20"
-                style={{
-                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.1)'
-                }}
-              />
-              
-              <div 
-                className="absolute left-0 top-0 bottom-0 z-10"
-                style={{
-                  width: '2px',
-                  marginLeft: '120px',
-                  background: 'repeating-linear-gradient(0deg, transparent, transparent 6px, hsl(var(--primary) / 0.2) 6px, hsl(var(--primary) / 0.2) 10px)',
-                  boxShadow: '1px 0 2px rgba(0,0,0,0.05)'
                 }}
               />
 
               <div 
-                className="grid md:grid-cols-[100px_1fr] min-h-[240px] rounded-lg overflow-hidden"
+                className="flex flex-col md:flex-row min-h-[220px] rounded-lg overflow-hidden"
                 style={{
                   background: 'linear-gradient(135deg, #fefdfb 0%, #fef9f3 50%, #fef5eb 100%)',
                   backgroundImage: `
@@ -128,48 +112,33 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
                   boxShadow: '0 10px 40px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.5)'
                 }}
               >
-                <div className="relative p-4 flex flex-col items-center justify-center border-r-2 border-dashed border-primary/30">
-                  <div 
-                    className="absolute inset-0"
-                    style={{
-                      background: 'linear-gradient(to right, rgba(251, 191, 36, 0.08) 0%, rgba(251, 191, 36, 0.04) 100%)',
-                      backgroundImage: `
-                        linear-gradient(to right, rgba(251, 191, 36, 0.08) 0%, rgba(251, 191, 36, 0.04) 100%),
-                        repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.01) 10px, rgba(0,0,0,0.01) 11px)
-                      `
-                    }}
-                  />
-                  
-                  <div className="text-center space-y-3 relative z-10">
-                    <div className="space-y-1">
-                      <div className="inline-flex items-center justify-center w-10 h-10 rounded-sm bg-white/50 border border-primary/20 shadow-sm">
-                        <Icon name="Ticket" size={18} className="text-primary" />
-                      </div>
-                    </div>
+                {currentEvent.image_url && (
+                  <div className="relative w-full md:w-48 h-48 md:h-auto flex-shrink-0">
+                    <img 
+                      src={currentEvent.image_url}
+                      alt={capitalizeFirst(currentEvent.title)}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent" />
                     
                     {currentEvent.is_free && (
-                      <div className="relative -rotate-12">
-                        <Badge className="bg-green-600 hover:bg-green-700 text-white border-0 px-1.5 py-0.5 text-[9px] font-bold shadow-md">
-                          FREE
+                      <div className="absolute top-3 left-3 rotate-12">
+                        <Badge className="bg-green-600 text-white border-0 px-2 py-1 text-[10px] font-bold shadow-lg">
+                          БЕСПЛАТНО
                         </Badge>
                       </div>
                     )}
-
-                    <div className="space-y-0.5">
-                      <div className="text-[8px] text-muted-foreground uppercase tracking-widest">
-                        №
-                      </div>
-                      <div className="text-2xl font-bold text-primary font-serif">
-                        {currentIndex + 1}
-                      </div>
-                      <div className="text-[8px] text-muted-foreground">
-                        из {events.length}
+                    
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <div className="bg-white/95 backdrop-blur-sm rounded px-2 py-1 inline-block">
+                        <div className="text-[9px] text-muted-foreground uppercase tracking-wider">Событие</div>
+                        <div className="text-lg font-bold text-primary">{currentIndex + 1}<span className="text-xs text-muted-foreground">/{events.length}</span></div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
                 
-                <div className="p-5 flex flex-col justify-center relative">
+                <div className="p-5 flex flex-col justify-center relative flex-1">
                   <div className="absolute top-4 right-4 text-[10px] text-primary/30 uppercase tracking-widest font-mono">
                     TICKET-{currentEvent.id}
                   </div>

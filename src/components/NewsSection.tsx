@@ -55,7 +55,7 @@ export function NewsSection({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
         {categoryNews.slice(0, 4).map((article) => (
           <Card
             key={article.id}
@@ -63,7 +63,7 @@ export function NewsSection({
           >
             <CardContent className="p-0">
               {article.image_url && (
-                <div className="relative h-48 overflow-hidden rounded-t-lg">
+                <div className="relative h-40 overflow-hidden rounded-t-lg">
                   <img
                     src={article.image_url}
                     alt={article.title}
@@ -120,6 +120,29 @@ export function NewsSection({
           </Card>
         ))}
       </div>
+
+      {categoryNews.length > 4 && (
+        <div className="text-center">
+          <Button
+            variant="outline"
+            size="lg"
+            className="gap-2 px-8"
+            onClick={() => {
+              const categoryMap: Record<string, string> = {
+                'Политика': 'politics',
+                'Экономика': 'economy',
+                'Культура': 'culture',
+                'Спорт': 'sport'
+              };
+              const categoryPath = categoryMap[currentCategory] || 'politics';
+              window.location.href = `/${categoryPath}`;
+            }}
+          >
+            <span>Читать все новости</span>
+            <Icon name="ArrowRight" size={18} />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
