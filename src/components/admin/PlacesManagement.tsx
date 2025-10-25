@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +7,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import Icon from '@/components/ui/icon';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -47,29 +46,6 @@ interface PlacesManagementProps {
   onTogglePublish: (id: number, isPublished: boolean) => void;
 }
 
-function LocationMarker({ position, onPositionChange }: any) {
-  useMapEvents({
-    click(e) {
-      onPositionChange([e.latlng.lat, e.latlng.lng]);
-    },
-  });
-
-  const icon = L.divIcon({
-    className: 'custom-marker',
-    html: `
-      <div style="position: relative; width: 40px; height: 40px;">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="#FF6B6B" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="white" stroke-width="1"/>
-        </svg>
-      </div>
-    `,
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-  });
-
-  return position ? <Marker position={position} icon={icon} /> : null;
-}
-
 export function PlacesManagement({
   placeForm,
   setPlaceForm,
@@ -79,19 +55,66 @@ export function PlacesManagement({
   onDeletePlace,
   onTogglePublish,
 }: PlacesManagementProps) {
-  const [mapPosition, setMapPosition] = useState<[number, number]>([45.0355, 38.9753]);
-  const [mapKey, setMapKey] = useState(0);
   const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const mapRef = useRef<L.Map | null>(null);
+  const markerRef = useRef<L.Marker | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleMapClick = (position: [number, number]) => {
-    setMapPosition(position);
-    setPlaceForm({
-      ...placeForm,
-      latitude: position[0],
-      longitude: position[1],
-    });
-  };
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const center: [number, number] = placeForm.latitude && placeForm.longitude
+      ? [placeForm.latitude, placeForm.longitude]
+      : [45.0355, 38.9753];
+
+    if (!mapRef.current) {
+      mapRef.current = L.map(containerRef.current).setView(center, 12);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap',
+        maxZoom: 19,
+      }).addTo(mapRef.current);
+
+      mapRef.current.on('click', (e: L.LeafletMouseEvent) => {
+        const { lat, lng } = e.latlng;
+        setPlaceForm({
+          ...placeForm,
+          latitude: lat,
+          longitude: lng,
+        });
+      });
+    }
+
+    if (markerRef.current) {
+      mapRef.current.removeLayer(markerRef.current);
+    }
+
+    if (placeForm.latitude && placeForm.longitude) {
+      const icon = L.divIcon({
+        className: 'custom-marker',
+        html: `
+          <div style="position: relative; width: 40px; height: 40px;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="#FF6B6B" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="white" stroke-width="1"/>
+            </svg>
+          </div>
+        `,
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+      });
+
+      markerRef.current = L.marker([placeForm.latitude, placeForm.longitude], { icon }).addTo(mapRef.current);
+      mapRef.current.setView([placeForm.latitude, placeForm.longitude], 12);
+    }
+
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, [placeForm.latitude, placeForm.longitude]);
 
   const handleAddressSearch = async (query: string) => {
     if (query.length < 3) {
@@ -181,8 +204,6 @@ export function PlacesManagement({
                         latitude: parseFloat(suggestion.lat),
                         longitude: parseFloat(suggestion.lon)
                       });
-                      setMapPosition([parseFloat(suggestion.lat), parseFloat(suggestion.lon)]);
-                      setMapKey(prev => prev + 1);
                       setShowSuggestions(false);
                     }}
                   >
@@ -259,19 +280,11 @@ export function PlacesManagement({
 
           <div className="space-y-2">
             <Label>Местоположение на карте (кликните на карту)</Label>
-            <MapContainer
-              key={mapKey}
-              center={mapPosition}
-              zoom={12}
+            <div 
+              ref={containerRef} 
               style={{ height: '400px', width: '100%', borderRadius: '8px' }}
               className="border"
-            >
-              <TileLayer
-                attribution='&copy; OpenStreetMap'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              <LocationMarker position={mapPosition} onPositionChange={handleMapClick} />
-            </MapContainer>
+            />
             {placeForm.latitude && placeForm.longitude && (
               <p className="text-xs text-muted-foreground">
                 Координаты: {placeForm.latitude.toFixed(6)}, {placeForm.longitude.toFixed(6)}
