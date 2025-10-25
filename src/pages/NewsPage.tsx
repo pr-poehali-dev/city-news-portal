@@ -165,11 +165,13 @@ export const NewsPage = () => {
             </div>
           </div>
 
-          <img 
-            src={article.image_url} 
-            alt={article.title}
-            className="w-full h-auto mb-8"
-          />
+          <div className="container mx-auto px-4 max-w-4xl mb-8">
+            <img 
+              src={article.image_url} 
+              alt={article.title}
+              className="w-full h-auto rounded-lg object-contain max-h-[500px]"
+            />
+          </div>
 
           <div className="container mx-auto px-4 max-w-4xl">
             <div className="prose prose-sm md:prose-lg max-w-none mb-12">
