@@ -62,7 +62,8 @@ const Admin = () => {
     handleUpdateMemory,
     handleAuthorSubmit,
     handleDeleteAuthor,
-    handleAboutSubmit
+    handleAboutSubmit,
+    handlePublishToTelegram
   } = useAdminState();
 
   if (!authenticated) {
@@ -104,6 +105,7 @@ const Admin = () => {
               onSetFeatured={handleSetFeatured}
               onPublishDraft={handlePublishDraft}
               onEditNews={handleEditNewsOpen}
+              onPublishToTelegram={handlePublishToTelegram}
             />
           </TabsContent>
 

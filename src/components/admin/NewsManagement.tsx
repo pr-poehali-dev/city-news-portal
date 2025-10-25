@@ -16,6 +16,7 @@ interface NewsManagementProps {
   onSetFeatured: (id: number) => Promise<void>;
   onPublishDraft: (draft: any) => Promise<void>;
   onEditNews: (news: any) => void;
+  onPublishToTelegram: (news: any) => Promise<void>;
 }
 
 export const NewsManagement = ({
@@ -29,7 +30,8 @@ export const NewsManagement = ({
   onDeleteNews,
   onSetFeatured,
   onPublishDraft,
-  onEditNews
+  onEditNews,
+  onPublishToTelegram
 }: NewsManagementProps) => {
   return (
     <div className="space-y-6">
@@ -55,6 +57,7 @@ export const NewsManagement = ({
                 onEdit={onEditNews}
                 onDelete={onDeleteNews}
                 onSetFeatured={onSetFeatured}
+                onPublishToTelegram={onPublishToTelegram}
               />
             ))}
           </div>

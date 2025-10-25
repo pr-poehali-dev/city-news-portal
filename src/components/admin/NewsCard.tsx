@@ -11,6 +11,7 @@ interface NewsCardProps {
   onSetFeatured?: (id: number) => void;
   onEdit: (news: any) => void;
   onDelete: (id: number) => void;
+  onPublishToTelegram?: (news: any) => void;
 }
 
 export const NewsCard = ({
@@ -20,7 +21,8 @@ export const NewsCard = ({
   onPublish,
   onSetFeatured,
   onEdit,
-  onDelete
+  onDelete,
+  onPublishToTelegram
 }: NewsCardProps) => {
   return (
     <div className="border rounded-lg p-4 space-y-3">
@@ -75,6 +77,18 @@ export const NewsCard = ({
           >
             <Icon name="Pin" size={14} className="mr-1" />
             {news.is_featured ? 'Главная новость' : 'В главную'}
+          </Button>
+        )}
+        {!isDraft && onPublishToTelegram && (
+          <Button 
+            size="sm" 
+            variant="outline"
+            onClick={() => onPublishToTelegram(news)}
+            disabled={loading}
+            className="gap-1"
+          >
+            <Icon name="Send" size={14} />
+            Telegram
           </Button>
         )}
         <Button 

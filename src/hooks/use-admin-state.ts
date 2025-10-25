@@ -20,7 +20,6 @@ export const useAdminState = () => {
     video_url: '',
     read_time: '5 мин',
     status: 'published',
-    publish_vk: true,
     publish_telegram: true
   });
 
@@ -252,9 +251,9 @@ export const useAdminState = () => {
       console.log('Response:', response.status, data);
 
       if (response.ok) {
-        if (!isDraft && (newsForm.publish_vk || newsForm.publish_telegram)) {
+        if (!isDraft && newsForm.publish_telegram) {
           try {
-            const newsUrl = `https://gorodgovorit.ru/news/${data.id}`;
+            const newsUrl = `${window.location.origin}/news/${data.id}`;
             const socialResponse = await fetch(FUNCTIONS_URL.socialPublisher, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -263,8 +262,8 @@ export const useAdminState = () => {
                 excerpt: newsForm.content,
                 image_url: newsForm.image_url,
                 news_url: newsUrl,
-                publish_vk: newsForm.publish_vk,
-                publish_telegram: newsForm.publish_telegram
+                publish_vk: false,
+                publish_telegram: true
               })
             });
             
@@ -273,20 +272,20 @@ export const useAdminState = () => {
             if (socialData.published_count > 0) {
               toast({
                 title: 'Успешно!',
-                description: `Новость опубликована и отправлена в ${socialData.published_count} ${socialData.published_count === 1 ? 'соцсеть' : 'соцсети'}`
+                description: 'Новость опубликована и отправлена в Telegram'
               });
             } else {
               toast({
                 title: 'Частично выполнено',
-                description: 'Новость опубликована, но не удалось отправить в соцсети',
+                description: 'Новость опубликована, но не удалось отправить в Telegram',
                 variant: 'destructive'
               });
             }
           } catch (socialError) {
-            console.error('Social publish error:', socialError);
+            console.error('Telegram publish error:', socialError);
             toast({
               title: 'Частично выполнено',
-              description: 'Новость опубликована, но не удалось отправить в соцсети',
+              description: 'Новость опубликована, но не удалось отправить в Telegram',
               variant: 'destructive'
             });
           }
@@ -309,7 +308,6 @@ export const useAdminState = () => {
           video_url: '',
           read_time: '5 мин',
           status: 'published',
-          publish_vk: true,
           publish_telegram: true
         });
       } else {
@@ -962,6 +960,50 @@ export const useAdminState = () => {
     }
   };
 
+  const handlePublishToTelegram = async (news: any) => {
+    setLoading(true);
+    
+    try {
+      const newsUrl = `${window.location.origin}/news/${news.id}`;
+      const response = await fetch(FUNCTIONS_URL.socialPublisher, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: news.title,
+          excerpt: news.content,
+          image_url: news.image_url,
+          news_url: newsUrl,
+          publish_vk: false,
+          publish_telegram: true
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.published_count > 0) {
+        toast({
+          title: 'Успешно!',
+          description: 'Новость отправлена в Telegram'
+        });
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: data.results?.telegram?.error || 'Не удалось отправить в Telegram',
+          variant: 'destructive'
+        });
+      }
+    } catch (error) {
+      console.error('Telegram publish error:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось отправить в Telegram',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     authenticated,
@@ -1012,6 +1054,7 @@ export const useAdminState = () => {
     handleUpdateMemory,
     handleAuthorSubmit,
     handleDeleteAuthor,
-    handleAboutSubmit
+    handleAboutSubmit,
+    handlePublishToTelegram
   };
 };
