@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import CityMap from '@/components/CityMap';
+import { PlaceDialog } from '@/components/PlaceDialog';
 
 interface PlacesSectionProps {
   cityPlaces: any[];
@@ -25,6 +26,8 @@ export function PlacesSection({
 }: PlacesSectionProps) {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedPlace, setSelectedPlace] = useState<any>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const categories = Array.from(new Set(cityPlaces.map(p => p.category)));
   
   const filteredByCategory = selectedCategory
@@ -118,7 +121,14 @@ export function PlacesSection({
 
       <div className="grid grid-cols-2 gap-4">
         {displayedPlaces.map((place) => (
-          <Card key={place.id} className="overflow-hidden hover:shadow-lg transition-all">
+          <Card 
+            key={place.id} 
+            className="overflow-hidden hover:shadow-lg transition-all cursor-pointer"
+            onClick={() => {
+              setSelectedPlace(place);
+              setDialogOpen(true);
+            }}
+          >
             <CardContent className="p-0">
               {place.image_url && (
                 <div className="relative h-40 md:h-48 overflow-hidden">
@@ -161,6 +171,13 @@ export function PlacesSection({
           </Button>
         </div>
       )}
+
+      <PlaceDialog
+        place={selectedPlace}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        categoryColor={selectedPlace ? categoryColors[selectedPlace.category as keyof typeof categoryColors] : undefined}
+      />
     </div>
   );
 }

@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useTheme } from "@/hooks/use-theme";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { useEffect } from "react";
+import { clearCacheIfNeeded } from "@/utils/cache-manager";
 
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
@@ -30,6 +32,10 @@ const queryClient = new QueryClient({
 
 const App = () => {
   useTheme();
+  
+  useEffect(() => {
+    clearCacheIfNeeded();
+  }, []);
   
   return (
     <ErrorBoundary>

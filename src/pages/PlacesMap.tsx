@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { Card, CardContent } from '@/components/ui/card';
+import { PlaceDialog } from '@/components/PlaceDialog';
 
 const FUNCTIONS_URL = {
   cityPlaces: 'https://functions.poehali.dev/5db1b661-abf3-4bcb-8e1f-d01437219788',
@@ -29,6 +30,7 @@ export default function PlacesMap() {
   const [weather, setWeather] = useState<any>(null);
   const [activeSection, setActiveSection] = useState('Главная');
   const [selectedPlaceId, setSelectedPlaceId] = useState<number | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const sections = [
     'Главная',
@@ -174,7 +176,7 @@ export default function PlacesMap() {
           <div className="h-[calc(100vh-280px)] min-h-[500px] rounded-lg overflow-hidden">
             <CityMap 
               places={filteredPlaces} 
-              onPlaceClick={(id) => setSelectedPlaceId(id)}
+              onPlaceClick={(id) => { setSelectedPlaceId(id); const place = cityPlaces.find(p => p.id === id); if (place) { setSelectedPlace(place); setDialogOpen(true); } }}
               interactive={true}
               height="100%"
             />
@@ -182,7 +184,7 @@ export default function PlacesMap() {
 
           <div className="lg:max-h-[calc(100vh-280px)] overflow-y-auto">
             {selectedPlace ? (
-              <Card className="mb-4">
+              <Card className="mb-4 cursor-pointer" onClick={() => setDialogOpen(true)}>
                 <CardContent className="p-0">
                   {selectedPlace.image_url && (
                     <div className="relative h-48 overflow-hidden">
@@ -258,6 +260,13 @@ export default function PlacesMap() {
       <Footer 
         sections={sections}
         onSectionChange={handleSectionChange}
+      />
+
+      <PlaceDialog
+        place={selectedPlace || undefined}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        categoryColor={selectedPlace ? categoryColors[selectedPlace.category as keyof typeof categoryColors] : undefined}
       />
     </div>
   );

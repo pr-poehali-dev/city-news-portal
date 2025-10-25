@@ -5,6 +5,7 @@ import { Footer } from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import { PlaceDialog } from '@/components/PlaceDialog';
 
 const FUNCTIONS_URL = {
   cityPlaces: 'https://functions.poehali.dev/5db1b661-abf3-4bcb-8e1f-d01437219788',
@@ -24,6 +25,8 @@ const Places = () => {
   const [weather, setWeather] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState('Город говорит');
+  const [selectedPlace, setSelectedPlace] = useState<any>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const sections = [
     'Главная',
@@ -135,7 +138,7 @@ const Places = () => {
             </h2>
             <div className="grid sm:grid-cols-2 gap-6">
               {featuredPlaces.map((place) => (
-                <Card key={place.id} className="overflow-hidden hover:shadow-lg transition-all">
+                <Card key={place.id} className="overflow-hidden hover:shadow-lg transition-all cursor-pointer" onClick={() => { setSelectedPlace(place); setDialogOpen(true); }}>
                   <CardContent className="p-0">
                     {place.image_url && (
                       <div className="relative h-64 overflow-hidden">
@@ -176,7 +179,7 @@ const Places = () => {
             )}
             <div className="grid sm:grid-cols-2 gap-6">
               {regularPlaces.map((place) => (
-                <Card key={place.id} className="overflow-hidden hover:shadow-lg transition-all">
+                <Card key={place.id} className="overflow-hidden hover:shadow-lg transition-all cursor-pointer" onClick={() => { setSelectedPlace(place); setDialogOpen(true); }}>
                   <CardContent className="p-0">
                     {place.image_url && (
                       <div className="relative h-64 overflow-hidden">
@@ -223,6 +226,13 @@ const Places = () => {
             setActiveSection(section);
           }
         }}
+      />
+
+      <PlaceDialog
+        place={selectedPlace}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        categoryColor={selectedPlace ? categoryColors[selectedPlace.category as keyof typeof categoryColors] : undefined}
       />
     </div>
   );
