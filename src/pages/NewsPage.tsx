@@ -168,7 +168,7 @@ export const NewsPage = () => {
           <img 
             src={article.image_url} 
             alt={article.title}
-            className="w-full h-[300px] md:h-[500px] object-cover mb-8"
+            className="w-full h-auto mb-8"
           />
 
           <div className="container mx-auto px-4 max-w-4xl">
