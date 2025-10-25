@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,9 +7,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import Icon from '@/components/ui/icon';
-import { MapContainer, TileLayer, Marker, useMapEvents, MapContainerProps } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 
 const PLACE_CATEGORIES = [
   'Город завтракает',
@@ -47,27 +44,10 @@ interface PlacesManagementProps {
   onTogglePublish: (id: number, isPublished: boolean) => void;
 }
 
-function LocationMarker({ position, onPositionChange }: any) {
-  useMapEvents({
-    click(e) {
-      onPositionChange([e.latlng.lat, e.latlng.lng]);
-    },
-  });
-
-  const icon = L.divIcon({
-    className: 'custom-marker',
-    html: `
-      <div style="position: relative; width: 40px; height: 40px;">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="#FF6B6B" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="white" stroke-width="1"/>
-        </svg>
-      </div>
-    `,
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-  });
-
-  return position ? <Marker position={position} icon={icon} /> : null;
+declare global {
+  interface Window {
+    ymaps3: any;
+  }
 }
 
 export function PlacesManagement({
@@ -79,18 +59,134 @@ export function PlacesManagement({
   onDeletePlace,
   onTogglePublish,
 }: PlacesManagementProps) {
-  const [mapPosition, setMapPosition] = useState<[number, number]>([45.0355, 38.9753]);
-  const [mapKey, setMapKey] = useState(0);
   const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const ymapInstance = useRef<any>(null);
 
-  const handleMapClick = (position: [number, number]) => {
-    setMapPosition(position);
-    setPlaceForm({
-      ...placeForm,
-      latitude: position[0],
-      longitude: position[1],
-    });
+  useEffect(() => {
+    const apiKey = import.meta.env.VITE_YANDEX_MAPS_API_KEY;
+    
+    const loadYandexMaps = async () => {
+      if (!mapRef.current) return;
+
+      if (!window.ymaps3) {
+        await new Promise<void>((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = `https://api-maps.yandex.ru/v3/?apikey=${apiKey}&lang=ru_RU`;
+          script.async = true;
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error('Failed to load Yandex Maps'));
+          document.head.appendChild(script);
+        });
+      }
+
+      await window.ymaps3.ready;
+
+      const {
+        YMap,
+        YMapDefaultSchemeLayer,
+        YMapDefaultFeaturesLayer,
+        YMapMarker,
+        YMapListener,
+      } = window.ymaps3;
+
+      const center = [placeForm.longitude || 38.9753, placeForm.latitude || 45.0355];
+
+      if (!ymapInstance.current) {
+        ymapInstance.current = new YMap(mapRef.current, {
+          location: {
+            center,
+            zoom: 12,
+          },
+        });
+
+        ymapInstance.current.addChild(new YMapDefaultSchemeLayer());
+        ymapInstance.current.addChild(new YMapDefaultFeaturesLayer());
+
+        const listener = new YMapListener({
+          onClick: (object: any, event: any) => {
+            const coords = event.coordinates;
+            setPlaceForm({
+              ...placeForm,
+              latitude: coords[1],
+              longitude: coords[0],
+            });
+          },
+        });
+
+        ymapInstance.current.addChild(listener);
+      }
+
+      ymapInstance.current.update({ 
+        location: { 
+          center: [placeForm.longitude || 38.9753, placeForm.latitude || 45.0355],
+          zoom: 12 
+        } 
+      });
+
+      const existingMarkers = ymapInstance.current.children.filter((child: any) => 
+        child instanceof YMapMarker
+      );
+      existingMarkers.forEach((marker: any) => {
+        ymapInstance.current.removeChild(marker);
+      });
+
+      if (placeForm.latitude && placeForm.longitude) {
+        const color = categoryColors[placeForm.category as keyof typeof categoryColors] || '#FF6B6B';
+        
+        const markerElement = document.createElement('div');
+        markerElement.innerHTML = `
+          <div style="position: relative; width: 40px; height: 40px;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="${color}" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="white" stroke-width="1"/>
+            </svg>
+          </div>
+        `;
+
+        const marker = new YMapMarker(
+          {
+            coordinates: [placeForm.longitude, placeForm.latitude],
+          },
+          markerElement
+        );
+
+        ymapInstance.current.addChild(marker);
+      }
+    };
+
+    loadYandexMaps().catch(console.error);
+
+    return () => {
+      if (ymapInstance.current) {
+        ymapInstance.current.destroy();
+        ymapInstance.current = null;
+      }
+    };
+  }, [placeForm.latitude, placeForm.longitude, placeForm.category]);
+
+  const handleAddressSearch = async (query: string) => {
+    if (query.length < 3) {
+      setShowSuggestions(false);
+      return;
+    }
+
+    try {
+      const apiKey = import.meta.env.VITE_YANDEX_MAPS_API_KEY;
+      const response = await fetch(
+        `https://geocode-maps.yandex.ru/1.x/?apikey=${apiKey}&geocode=Краснодар, ${encodeURIComponent(query)}&format=json&results=5`
+      );
+      const data = await response.json();
+      const suggestions = data.response.GeoObjectCollection.featureMember.map((item: any) => ({
+        name: item.GeoObject.name,
+        description: item.GeoObject.description,
+        coordinates: item.GeoObject.Point.pos.split(' ').map(Number),
+      }));
+      setAddressSuggestions(suggestions);
+      setShowSuggestions(true);
+    } catch (error) {
+      console.error('Failed to fetch suggestions:', error);
+    }
   };
 
   return (
@@ -142,24 +238,10 @@ export function PlacesManagement({
             <Input
               id="place-address"
               value={placeForm.address}
-              onChange={async (e) => {
+              onChange={(e) => {
                 const value = e.target.value;
                 setPlaceForm({ ...placeForm, address: value });
-                
-                if (value.length > 3) {
-                  try {
-                    const response = await fetch(
-                      `https://nominatim.openstreetmap.org/search?format=json&q=Краснодар, ${encodeURIComponent(value)}&limit=5`
-                    );
-                    const data = await response.json();
-                    setAddressSuggestions(data);
-                    setShowSuggestions(true);
-                  } catch (error) {
-                    console.error('Failed to fetch suggestions:', error);
-                  }
-                } else {
-                  setShowSuggestions(false);
-                }
+                handleAddressSearch(value);
               }}
               onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
               placeholder="ул. Примерная, д. 1"
@@ -173,15 +255,15 @@ export function PlacesManagement({
                     onClick={() => {
                       setPlaceForm({
                         ...placeForm,
-                        address: suggestion.display_name,
-                        latitude: parseFloat(suggestion.lat),
-                        longitude: parseFloat(suggestion.lon)
+                        address: `${suggestion.name}, ${suggestion.description}`,
+                        latitude: suggestion.coordinates[1],
+                        longitude: suggestion.coordinates[0]
                       });
-                      setMapPosition([parseFloat(suggestion.lat), parseFloat(suggestion.lon)]);
                       setShowSuggestions(false);
                     }}
                   >
-                    {suggestion.display_name}
+                    <div className="font-medium">{suggestion.name}</div>
+                    <div className="text-xs text-muted-foreground">{suggestion.description}</div>
                   </div>
                 ))}
               </div>
@@ -230,16 +312,15 @@ export function PlacesManagement({
                     const file = e.target.files[0];
                     if (!file) return;
                     const formData = new FormData();
-                    formData.append('file', file);
+                    formData.append('image', file);
+                    
                     try {
-                      const response = await fetch('https://functions.poehali.dev/b17d7c71-2097-4cdd-91d0-e11c1285584a', {
+                      const response = await fetch('/api/upload-image', {
                         method: 'POST',
                         body: formData
                       });
                       const data = await response.json();
-                      if (data.url) {
-                        setPlaceForm({ ...placeForm, image_url: data.url });
-                      }
+                      setPlaceForm({ ...placeForm, image_url: data.url });
                     } catch (error) {
                       console.error('Upload failed:', error);
                     }
@@ -247,49 +328,27 @@ export function PlacesManagement({
                   input.click();
                 }}
               >
-                <Icon name="Upload" size={16} />
+                <Icon name="Upload" size={16} className="mr-2" />
+                Загрузить
               </Button>
             </div>
-            {placeForm.image_url && (
-              <img src={placeForm.image_url} alt="Preview" className="w-full h-40 object-cover rounded-md" />
-            )}
           </div>
 
           <div className="space-y-2">
-            <Label>Координаты</Label>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="latitude">Широта</Label>
-                <Input
-                  id="latitude"
-                  type="number"
-                  step="0.000001"
-                  value={placeForm.latitude}
-                  onChange={(e) => {
-                    const lat = parseFloat(e.target.value) || 45.0355;
-                    setPlaceForm({ ...placeForm, latitude: lat });
-                    setMapPosition([lat, placeForm.longitude]);
-                  }}
-                />
-              </div>
-              <div>
-                <Label htmlFor="longitude">Долгота</Label>
-                <Input
-                  id="longitude"
-                  type="number"
-                  step="0.000001"
-                  value={placeForm.longitude}
-                  onChange={(e) => {
-                    const lng = parseFloat(e.target.value) || 38.9753;
-                    setPlaceForm({ ...placeForm, longitude: lng });
-                    setMapPosition([placeForm.latitude, lng]);
-                  }}
-                />
-              </div>
-            </div>
+            <Label>Местоположение на карте (кликните на карту)</Label>
+            <div 
+              ref={mapRef} 
+              style={{ height: '400px', width: '100%', borderRadius: '8px' }}
+              className="border"
+            />
+            {placeForm.latitude && placeForm.longitude && (
+              <p className="text-xs text-muted-foreground">
+                Координаты: {placeForm.latitude.toFixed(6)}, {placeForm.longitude.toFixed(6)}
+              </p>
+            )}
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2">
             <Switch
               id="place-published"
               checked={placeForm.is_published}
@@ -311,53 +370,42 @@ export function PlacesManagement({
         <CardContent>
           <div className="space-y-4">
             {placesList.map((place) => (
-              <div
-                key={place.id}
-                className="flex items-start gap-4 p-4 border rounded-lg hover:bg-accent/50 transition-colors"
-              >
+              <div key={place.id} className="flex items-start gap-4 p-4 border rounded-lg">
                 {place.image_url && (
                   <img
                     src={place.image_url}
                     alt={place.title}
-                    className="w-24 h-24 object-cover rounded"
+                    className="w-20 h-20 object-cover rounded"
                   />
                 )}
                 <div className="flex-1">
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <h3 className="font-semibold">{place.title}</h3>
-                    <div
-                      className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: categoryColors[place.category as keyof typeof categoryColors] }}
-                    >
-                      <Icon name="Heart" size={14} className="text-white fill-white" />
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-1">{place.excerpt}</p>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1 mb-2">
-                    <Icon name="MapPin" size={12} />
-                    {place.address}
-                  </p>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-bold">{place.title}</h3>
                     <span
-                      className="text-xs px-2 py-1 rounded text-white"
-                      style={{ backgroundColor: categoryColors[place.category as keyof typeof categoryColors] }}
+                      className="text-xs px-2 py-1 rounded"
+                      style={{
+                        backgroundColor: categoryColors[place.category as keyof typeof categoryColors],
+                        color: 'white'
+                      }}
                     >
                       {place.category}
                     </span>
-                    <span className={`text-xs px-2 py-1 rounded ${
-                      place.is_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      {place.is_published ? 'Опубликовано' : 'Черновик'}
-                    </span>
+                    {!place.is_published && (
+                      <span className="text-xs px-2 py-1 bg-gray-200 rounded">
+                        Черновик
+                      </span>
+                    )}
                   </div>
+                  <p className="text-sm text-muted-foreground mb-1">{place.excerpt}</p>
+                  <p className="text-xs text-muted-foreground">📍 {place.address}</p>
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="flex gap-2">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => onTogglePublish(place.id, !place.is_published)}
                   >
-                    <Icon name={place.is_published ? 'EyeOff' : 'Eye'} size={16} />
+                    {place.is_published ? 'Скрыть' : 'Опубликовать'}
                   </Button>
                   <Button
                     variant="destructive"
@@ -371,7 +419,7 @@ export function PlacesManagement({
             ))}
             {placesList.length === 0 && (
               <p className="text-center text-muted-foreground py-8">
-                Пока нет добавленных мест
+                Нет добавленных мест
               </p>
             )}
           </div>
