@@ -1,0 +1,38 @@
+{
+  "tests": [
+    {
+      "name": "Handle OPTIONS for CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": "",
+      "bodyMatcher": "exact"
+    },
+    {
+      "name": "Chat with user message",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "message": "Какие новости сегодня?"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "response": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Reject empty message",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "message": ""
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
