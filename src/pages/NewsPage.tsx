@@ -136,24 +136,24 @@ export const NewsPage = () => {
       />
 
       <main className="mt-16">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-2">
           <Button 
             variant="ghost" 
             onClick={() => navigate(-1)}
-            className="mb-2"
+            className="mb-0"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
         </div>
 
-        <article className="max-w-4xl mx-auto">
-          <div className="px-4 mb-6">
-            <span className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm mb-4">
+        <article>
+          <div className="container mx-auto px-4 mb-4 max-w-4xl">
+            <span className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm mb-3">
               {article.section}
             </span>
-            <h1 className="text-2xl md:text-4xl font-bold mb-4 break-words">{article.title}</h1>
-            <div className="flex items-center gap-4 text-muted-foreground mb-6">
+            <h1 className="text-2xl md:text-4xl font-bold mb-3 break-words">{article.title}</h1>
+            <div className="flex items-center gap-4 text-muted-foreground">
               <span className="flex items-center gap-2">
                 <Icon name="User" size={16} />
                 {article.author}
@@ -171,59 +171,60 @@ export const NewsPage = () => {
             className="w-full h-[300px] md:h-[500px] object-cover mb-8"
           />
 
-          <div className="px-4 prose prose-sm md:prose-lg max-w-none mb-12">
-            <p className="whitespace-pre-wrap text-foreground leading-relaxed break-words">
-              {article.content}
-            </p>
-          </div>
-
-          <div className="px-4 border-t border-border pt-8 mb-12">
-            <h3 className="text-lg md:text-xl font-semibold mb-4">Поделиться:</h3>
-            <div className="flex flex-wrap gap-3">
-              <Button variant="outline" onClick={handleCopyLink} className="text-xs md:text-sm">
-                <Icon name="Link" size={16} className="mr-1 md:mr-2" />
-                <span className="hidden sm:inline">Копировать ссылку</span>
-                <span className="sm:hidden">Ссылка</span>
-              </Button>
-              <Button variant="outline" onClick={() => handleShare('vk')} className="text-xs md:text-sm">
-                <Icon name="Share2" size={16} className="mr-1 md:mr-2" />
-                ВКонтакте
-              </Button>
-              <Button variant="outline" onClick={() => handleShare('telegram')} className="text-xs md:text-sm">
-                <Icon name="Send" size={16} className="mr-1 md:mr-2" />
-                Telegram
-              </Button>
-              <Button variant="outline" onClick={() => handleShare('whatsapp')} className="text-xs md:text-sm">
-                <Icon name="MessageCircle" size={16} className="mr-1 md:mr-2" />
-                WhatsApp
-              </Button>
+          <div className="container mx-auto px-4 max-w-4xl">
+            <div className="prose prose-sm md:prose-lg max-w-none mb-12">
+              <p className="whitespace-pre-wrap text-foreground leading-relaxed break-words">
+                {article.content}
+              </p>
             </div>
-          </div>
 
-          {relatedNews.length > 0 && (
-            <div className="px-4 border-t border-border pt-12 mb-12">
-              <h3 className="text-xl md:text-2xl font-semibold mb-6">Читайте также</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {relatedNews.map((news) => (
-                  <MiniNewsCard
-                    key={news.id}
-                    news={news}
-                    onClick={() => {
-                      navigate(`/news/${news.id}`);
-                      window.scrollTo(0, 0);
-                    }}
-                  />
-                ))}
+            <div className="border-t border-border pt-8 mb-12">
+              <h3 className="text-lg md:text-xl font-semibold mb-4">Поделиться:</h3>
+              <div className="flex flex-wrap gap-3">
+                <Button variant="outline" onClick={handleCopyLink} className="text-xs md:text-sm">
+                  <Icon name="Link" size={16} className="mr-1 md:mr-2" />
+                  <span className="hidden sm:inline">Копировать ссылку</span>
+                  <span className="sm:hidden">Ссылка</span>
+                </Button>
+                <Button variant="outline" onClick={() => handleShare('vk')} className="text-xs md:text-sm">
+                  <Icon name="Share2" size={16} className="mr-1 md:mr-2" />
+                  ВКонтакте
+                </Button>
+                <Button variant="outline" onClick={() => handleShare('telegram')} className="text-xs md:text-sm">
+                  <Icon name="Send" size={16} className="mr-1 md:mr-2" />
+                  Telegram
+                </Button>
+                <Button variant="outline" onClick={() => handleShare('whatsapp')} className="text-xs md:text-sm">
+                  <Icon name="MessageCircle" size={16} className="mr-1 md:mr-2" />
+                  WhatsApp
+                </Button>
               </div>
             </div>
-          )}
 
-          <div className="px-4 border-t border-border pt-12">
-            <h3 className="text-xl md:text-2xl font-semibold mb-6">
-              Комментарии ({comments.length})
-            </h3>
+            {relatedNews.length > 0 && (
+              <div className="border-t border-border pt-12 mb-12">
+                <h3 className="text-xl md:text-2xl font-semibold mb-6">Читайте также</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {relatedNews.map((news) => (
+                    <MiniNewsCard
+                      key={news.id}
+                      news={news}
+                      onClick={() => {
+                        navigate(`/news/${news.id}`);
+                        window.scrollTo(0, 0);
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
 
-            <div className="space-y-6 mb-8">
+            <div className="border-t border-border pt-12">
+              <h3 className="text-xl md:text-2xl font-semibold mb-6">
+                Комментарии ({comments.length})
+              </h3>
+
+              <div className="space-y-6 mb-8">
               {comments.map((comment) => (
                 <div key={comment.id} className="bg-muted/50 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-2">
@@ -235,23 +236,24 @@ export const NewsPage = () => {
               ))}
             </div>
 
-            <div className="bg-card rounded-lg p-6 border border-border">
-              <h4 className="text-lg font-semibold mb-4">Оставить комментарий</h4>
-              <div className="space-y-4">
-                <Input
-                  placeholder="Ваше имя"
-                  value={commentName}
-                  onChange={(e) => setCommentName(e.target.value)}
-                />
-                <Textarea
-                  placeholder="Ваш комментарий"
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  rows={4}
-                />
-                <Button onClick={handleAddComment} className="w-full">
-                  Отправить комментарий
-                </Button>
+              <div className="bg-card rounded-lg p-6 border border-border">
+                <h4 className="text-lg font-semibold mb-4">Оставить комментарий</h4>
+                <div className="space-y-4">
+                  <Input
+                    placeholder="Ваше имя"
+                    value={commentName}
+                    onChange={(e) => setCommentName(e.target.value)}
+                  />
+                  <Textarea
+                    placeholder="Ваш комментарий"
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    rows={4}
+                  />
+                  <Button onClick={handleAddComment} className="w-full">
+                    Отправить комментарий
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
