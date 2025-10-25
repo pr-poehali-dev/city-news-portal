@@ -50,7 +50,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     conn.close()
     
-    base_url = 'https://webapp.poehali.dev'
+    base_url = 'https://ggkrasnodar.ru'
     
     rss_items = []
     for item in news_items:
