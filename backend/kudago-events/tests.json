@@ -1,0 +1,15 @@
+{
+  "tests": [
+    {
+      "name": "Get Krasnodar events",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "count": "number",
+        "events": []
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

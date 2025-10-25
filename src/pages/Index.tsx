@@ -19,7 +19,8 @@ const FUNCTIONS_URL = {
   weather: 'https://functions.poehali.dev/5531fc0c-ecba-421c-bfb4-245613816060',
   comments: 'https://functions.poehali.dev/e442a5de-b5ed-4ff1-b15c-da8b0bfea9b5',
   cityPlaces: 'https://functions.poehali.dev/5db1b661-abf3-4bcb-8e1f-d01437219788',
-  memory: 'https://functions.poehali.dev/524497f7-1b8d-4d18-9293-548392f10987'
+  memory: 'https://functions.poehali.dev/524497f7-1b8d-4d18-9293-548392f10987',
+  kudagoEvents: 'https://functions.poehali.dev/ab80cd05-8ada-45de-8a5f-dd7debe04ea3'
 };
 
 const categoryColors = {
@@ -167,9 +168,9 @@ const Index = () => {
 
   const loadEvents = async () => {
     try {
-      const response = await fetch(FUNCTIONS_URL.events);
+      const response = await fetch(FUNCTIONS_URL.kudagoEvents);
       const data = await response.json();
-      setEvents(data);
+      setEvents(data.events || []);
     } catch (error) {
       console.error('Failed to load events:', error);
     }
