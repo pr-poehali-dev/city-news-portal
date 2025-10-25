@@ -91,7 +91,7 @@ export const useAdminNotifications = () => {
       }
     };
 
-    const interval = setInterval(checkForUpdates, 30000);
+    const interval = setInterval(checkForUpdates, 5000);
     checkForUpdates();
 
     return () => clearInterval(interval);
