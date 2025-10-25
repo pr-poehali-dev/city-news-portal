@@ -319,8 +319,6 @@ const Index = () => {
               onLike={handleLike}
               likedArticles={likedArticles}
             />
-
-            <SocialSubscribe />
           </>
         )}
       </main>
