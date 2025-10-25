@@ -79,10 +79,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Access-Control-Allow-Origin': '*'
             },
             'isBase64Encoded': False,
-            'body': json.dumps({'response': ai_response}, ensure_ascii=False)
+            'body': json.dumps({
+                'response': ai_response,
+                'debug': {
+                    'news_count': len(context_data.get('news', [])),
+                    'places_count': len(context_data.get('places', [])),
+                    'has_gigachat_key': bool(gigachat_key)
+                }
+            }, ensure_ascii=False)
         }
     
     except Exception as e:
+        import traceback
         return {
             'statusCode': 500,
             'headers': {
@@ -90,7 +98,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Access-Control-Allow-Origin': '*'
             },
             'isBase64Encoded': False,
-            'body': json.dumps({'error': str(e)}, ensure_ascii=False)
+            'body': json.dumps({
+                'error': str(e),
+                'traceback': traceback.format_exc()
+            }, ensure_ascii=False)
         }
     
     finally:
@@ -196,16 +207,24 @@ def get_ai_response(user_message: str, context: Dict[str, Any], gigachat_key: st
     try:
         auth_response = requests.post(
             'https://ngw.devices.sberbank.ru:9443/api/v2/oauth',
-            headers={'Authorization': f'Bearer {gigachat_key}', 'RqUID': f'chat-{hash(user_message)}'},
+            headers={
+                'Authorization': f'Bearer {gigachat_key}',
+                'RqUID': f'chat-{abs(hash(user_message))}'
+            },
             data={'scope': 'GIGACHAT_API_PERS'},
             verify=False,
             timeout=10
         )
         
         if auth_response.status_code != 200:
-            return "Извините, сервис временно недоступен. Попробуйте позже."
+            error_detail = auth_response.text if auth_response.text else 'No details'
+            return f"[DEBUG] Auth failed: {auth_response.status_code} - {error_detail}"
         
-        access_token = auth_response.json()['access_token']
+        auth_data = auth_response.json()
+        access_token = auth_data.get('access_token')
+        
+        if not access_token:
+            return f"[DEBUG] No access token in response: {auth_data}"
         
         chat_response = requests.post(
             'https://gigachat.devices.sberbank.ru/api/v1/chat/completions',
@@ -217,20 +236,27 @@ def get_ai_response(user_message: str, context: Dict[str, Any], gigachat_key: st
                 'model': 'GigaChat',
                 'messages': [
                     {'role': 'system', 'content': system_prompt},
-                    {'role': 'user', 'content': f'Вопрос пользователя: {user_message}\n\nДай точный ответ на основе данных выше.'}
+                    {'role': 'user', 'content': user_message}
                 ],
                 'temperature': 0.3,
-                'max_tokens': 250
+                'max_tokens': 300
             },
             verify=False,
-            timeout=15
+            timeout=20
         )
         
         if chat_response.status_code != 200:
-            return "Не удалось получить ответ. Попробуйте переформулировать вопрос."
+            error_detail = chat_response.text if chat_response.text else 'No details'
+            return f"[DEBUG] Chat API failed: {chat_response.status_code} - {error_detail}"
         
-        response_text = chat_response.json()['choices'][0]['message']['content'].strip()
+        chat_data = chat_response.json()
+        response_text = chat_data.get('choices', [{}])[0].get('message', {}).get('content', '').strip()
+        
+        if not response_text:
+            return f"[DEBUG] Empty response from GigaChat: {chat_data}"
+        
         return response_text
     
-    except Exception:
-        return "Извините, произошла ошибка. Пожалуйста, попробуйте еще раз."
+    except Exception as e:
+        import traceback
+        return f"[DEBUG] Exception: {str(e)}\n{traceback.format_exc()}"
