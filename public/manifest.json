@@ -9,15 +9,15 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/73d9a617-f287-4960-91f4-49ead8981af4.jpg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png",
+      "src": "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/eb987673-3184-4113-ba7d-4352a83d6cf7.jpg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     }
   ],

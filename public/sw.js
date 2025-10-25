@@ -11,8 +11,8 @@ self.addEventListener('push', function(event) {
     const data = event.data.json();
     const options = {
       body: data.body,
-      icon: data.icon || '/icon-192.png',
-      badge: '/icon-192.png',
+      icon: data.icon || 'https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/73d9a617-f287-4960-91f4-49ead8981af4.jpg',
+      badge: 'https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/73d9a617-f287-4960-91f4-49ead8981af4.jpg',
       data: {
         url: data.url || '/'
       },
