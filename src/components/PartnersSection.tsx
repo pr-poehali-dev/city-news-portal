@@ -8,15 +8,18 @@ interface Partner {
   url: string;
   category: string;
   highlights: string[];
-  logo?: string;
+  image: string;
+  discount?: string;
 }
 
 const partners: Partner[] = [
   {
     name: 'LaaKids',
-    description: 'Агентство детских праздников полного цикла — от идеи до воплощения! Создаём яркие, запоминающиеся события для детей любого возраста.',
+    description: 'Агентство стильных детских праздников полного цикла — от идеи до воплощения! Создаём яркие, незабываемые события для детей любого возраста.',
     url: 'https://laakids.ru',
     category: 'Детские праздники',
+    image: 'https://static.tildacdn.com/tild6434-3136-4734-b335-656166336665/IMG_7073.PNG',
+    discount: '500 ₽ скидка при переходе с «Город говорит»',
     highlights: [
       'Профессиональные аниматоры',
       'Уникальные сценарии',
@@ -40,30 +43,43 @@ export const PartnersSection = () => {
             key={idx}
             className="overflow-hidden hover:shadow-2xl transition-all duration-300 border-2 hover:border-primary/40 bg-gradient-to-br from-background via-primary/5 to-secondary/10"
           >
-            <div className="grid md:grid-cols-[200px_1fr] gap-0">
-              <div className="relative bg-gradient-to-br from-orange-400 via-pink-400 to-purple-500 flex items-center justify-center p-8 group overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative z-10 text-center">
-                  <div className="bg-white rounded-full w-24 h-24 flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform">
-                    <Icon name="PartyPopper" size={48} className="text-orange-500" />
-                  </div>
-                  <Badge className="bg-white text-orange-600 font-bold text-xs shadow-md">
-                    {partner.category}
-                  </Badge>
-                </div>
+            <div className="grid md:grid-cols-[280px_1fr] gap-0">
+              <div className="relative bg-white flex items-center justify-center p-6 overflow-hidden">
+                <img 
+                  src={partner.image} 
+                  alt={partner.name}
+                  className="w-full h-full object-contain"
+                />
               </div>
 
               <div className="p-6 md:p-8">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <h3 className="text-2xl font-bold text-foreground">
                       {partner.name}
-                      <Icon name="ExternalLink" size={20} className="text-primary" />
                     </h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {partner.description}
-                    </p>
+                    <Badge className="bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold">
+                      {partner.category}
+                    </Badge>
                   </div>
+                  <p className="text-muted-foreground leading-relaxed mb-4">
+                    {partner.description}
+                  </p>
+                  {partner.discount && (
+                    <div className="bg-gradient-to-r from-orange-500/10 to-pink-500/10 border-2 border-orange-500/30 rounded-lg p-4 mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-gradient-to-r from-orange-500 to-pink-500 p-2 rounded-full">
+                          <Icon name="Gift" size={24} className="text-white" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-foreground mb-1">Специальное предложение!</p>
+                          <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-pink-600">
+                            {partner.discount}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 mb-6">
