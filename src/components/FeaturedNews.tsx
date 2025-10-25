@@ -31,15 +31,15 @@ export const FeaturedNews = ({ news, currentIndex = 0, totalCount = 1 }: Feature
   return (
     <Card className="mb-8 overflow-hidden hover:shadow-xl transition-shadow bg-gradient-to-r from-primary/5 to-secondary/5 border-2 border-primary/20 cursor-pointer">
       <div className="grid md:grid-cols-[40%_60%] gap-0">
-        <div className="relative overflow-hidden group">
+        <div className="relative overflow-hidden group h-[250px] md:h-[320px]">
           {news.image_url ? (
             <img
               src={news.image_url}
               alt={news.title}
-              className="w-full h-full min-h-[200px] md:min-h-[400px] object-cover transition-transform group-hover:scale-105"
+              className="w-full h-full object-cover transition-transform group-hover:scale-105"
             />
           ) : (
-            <div className="w-full min-h-[200px] md:min-h-[400px] bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+            <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
               <Icon name="FileText" size={64} className="text-primary/40" />
             </div>
           )}
