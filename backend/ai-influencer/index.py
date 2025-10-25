@@ -4,7 +4,7 @@ from typing import Dict, Any, List, Optional
 from datetime import datetime, time
 import psycopg2
 from psycopg2.extras import RealDictCursor
-import openai
+import requests
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -122,51 +122,61 @@ def generate_daily_posts(conn) -> Dict[str, Any]:
         """)
         news = cur.fetchall()
         
-        openai_key = os.environ.get('OPENAI_API_KEY')
-        if not openai_key:
+        gigachat_key = os.environ.get('GIGACHAT_API_KEY')
+        if not gigachat_key:
             posts = generate_fallback_posts(conn)
-            return {'message': 'Generated fallback posts (no OpenAI key)', 'count': len(posts)}
+            return {'message': 'Generated fallback posts (no GigaChat key)', 'count': len(posts)}
         
-        posts = generate_ai_posts(conn, news, openai_key)
+        posts = generate_ai_posts(conn, news, gigachat_key)
         return {'message': 'Generated AI posts successfully', 'count': len(posts)}
 
 
-def generate_ai_posts(conn, news: List[Dict], openai_key: str) -> List[int]:
-    client = openai.OpenAI(api_key=openai_key, base_url="https://api.openai.com/v1")
-    
+def generate_ai_posts(conn, news: List[Dict], gigachat_key: str) -> List[int]:
     news_summary = "\n".join([f"- {n['title']}: {n['excerpt']}" for n in news]) if news else "Новостей сегодня пока нет"
     
-    prompt = f"""You are the city of Miami writing short social media posts in first person about local news and city life.
+    prompt = f"""Ты — город Краснодар, который пишет короткие заметки от первого лица.
 
-Today's news:
+Новости за сегодня:
 {news_summary}
 
-Write 3 short posts (1-2 sentences each) for three times of day:
-1. Morning (8:00 AM) - energetic, optimistic
-2. Afternoon (2:00 PM) - busy, informative
-3. Evening (8:00 PM) - calm, reflective
+Напиши 3 короткие заметки (по 1-2 предложения каждая) от имени города для трех времен суток:
+1. Утро (8:00) - бодрое, оптимистичное
+2. День (14:00) - деловое, информативное  
+3. Вечер (20:00) - спокойное, рефлексивное
 
-Requirements:
-- Short (max 120 characters)
-- Safe, positive tone
-- First person ("I", "my streets", "my residents")
-- If there's news - briefly mention it
-- If no news - just a neutral observation about the city
-- Add 1 emoji at the end
-- Write in Russian language
+Требования:
+- Короткие (макс 120 символов)
+- Безобидные, позитивные
+- От первого лица ("я", "мои улицы", "мои жители")
+- Если есть новости - кратко упомяни их суть
+- Если новостей нет - просто нейтральное наблюдение о городе
+- Добавь 1 эмодзи в конец
 
-Response format (JSON only, no markdown):
-{{"morning": "morning post text in Russian", "afternoon": "afternoon post text in Russian", "evening": "evening post text in Russian"}}"""
+Формат ответа (только JSON, без markdown):
+{{"morning": "текст утренней заметки", "afternoon": "текст дневной заметки", "evening": "текст вечерней заметки"}}"""
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.8,
-            max_tokens=300
+        auth_response = requests.post(
+            'https://ngw.devices.sberbank.ru:9443/api/v2/oauth',
+            headers={'Authorization': f'Bearer {gigachat_key}', 'RqUID': 'city-ai-posts'},
+            data={'scope': 'GIGACHAT_API_PERS'},
+            verify=False
+        )
+        access_token = auth_response.json()['access_token']
+        
+        response = requests.post(
+            'https://gigachat.devices.sberbank.ru/api/v1/chat/completions',
+            headers={'Authorization': f'Bearer {access_token}', 'Content-Type': 'application/json'},
+            json={
+                'model': 'GigaChat',
+                'messages': [{'role': 'user', 'content': prompt}],
+                'temperature': 0.8,
+                'max_tokens': 300
+            },
+            verify=False
         )
         
-        content = response.choices[0].message.content.strip()
+        content = response.json()['choices'][0]['message']['content'].strip()
         if content.startswith('```'):
             content = content.split('```')[1]
             if content.startswith('json'):
