@@ -1,0 +1,47 @@
+{
+  "tests": [
+    {
+      "name": "Test OPTIONS request for CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": "",
+      "bodyMatcher": "exact"
+    },
+    {
+      "name": "Test POST without credentials (should return partial success)",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "title": "Тестовая новость",
+        "excerpt": "Краткое описание тестовой новости",
+        "image_url": "https://example.com/image.jpg",
+        "news_url": "https://gorodgovorit.ru/news/1",
+        "publish_vk": true,
+        "publish_telegram": true
+      },
+      "expectedStatus": 500,
+      "expectedBody": {
+        "success": false,
+        "results": {
+          "vk": {
+            "success": false
+          },
+          "telegram": {
+            "success": false
+          }
+        }
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Test POST with missing title",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "excerpt": "Описание без заголовка"
+      },
+      "expectedStatus": 400
+    }
+  ]
+}

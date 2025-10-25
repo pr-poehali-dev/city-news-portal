@@ -19,7 +19,9 @@ export const useAdminState = () => {
     image_url: '',
     video_url: '',
     read_time: '5 мин',
-    status: 'published'
+    status: 'published',
+    publish_vk: true,
+    publish_telegram: true
   });
 
   const [eventForm, setEventForm] = useState({
@@ -250,13 +252,54 @@ export const useAdminState = () => {
       console.log('Response:', response.status, data);
 
       if (response.ok) {
+        if (!isDraft && (newsForm.publish_vk || newsForm.publish_telegram)) {
+          try {
+            const newsUrl = `https://gorodgovorit.ru/news/${data.id}`;
+            const socialResponse = await fetch(FUNCTIONS_URL.socialPublisher, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                title: newsForm.title,
+                excerpt: newsForm.excerpt,
+                image_url: newsForm.image_url,
+                news_url: newsUrl,
+                publish_vk: newsForm.publish_vk,
+                publish_telegram: newsForm.publish_telegram
+              })
+            });
+            
+            const socialData = await socialResponse.json();
+            
+            if (socialData.published_count > 0) {
+              toast({
+                title: 'Успешно!',
+                description: `Новость опубликована и отправлена в ${socialData.published_count} ${socialData.published_count === 1 ? 'соцсеть' : 'соцсети'}`
+              });
+            } else {
+              toast({
+                title: 'Частично выполнено',
+                description: 'Новость опубликована, но не удалось отправить в соцсети',
+                variant: 'destructive'
+              });
+            }
+          } catch (socialError) {
+            console.error('Social publish error:', socialError);
+            toast({
+              title: 'Частично выполнено',
+              description: 'Новость опубликована, но не удалось отправить в соцсети',
+              variant: 'destructive'
+            });
+          }
+        } else {
+          toast({
+            title: 'Успешно!',
+            description: isDraft ? 'Черновик сохранён' : 'Новость опубликована'
+          });
+        }
+        
         await loadNews();
         await loadDrafts();
         
-        toast({
-          title: 'Успешно!',
-          description: isDraft ? 'Черновик сохранён' : 'Новость опубликована'
-        });
         setNewsForm({
           title: '',
           category: 'Политика',
@@ -265,7 +308,9 @@ export const useAdminState = () => {
           image_url: '',
           video_url: '',
           read_time: '5 мин',
-          status: 'published'
+          status: 'published',
+          publish_vk: true,
+          publish_telegram: true
         });
       } else {
         toast({

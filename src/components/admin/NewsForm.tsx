@@ -16,10 +16,12 @@ interface NewsFormProps {
     image_url: string;
     video_url: string;
     read_time: string;
+    publish_vk?: boolean;
+    publish_telegram?: boolean;
   };
   categories: string[];
   loading: boolean;
-  onFormChange: (field: string, value: string) => void;
+  onFormChange: (field: string, value: string | boolean) => void;
   onSubmit: (e: React.FormEvent, isDraft: boolean) => void;
 }
 
@@ -205,6 +207,33 @@ export const NewsForm = ({ newsForm, categories, loading, onFormChange, onSubmit
           <div className="text-sm text-muted-foreground bg-muted p-3 rounded-lg">
             <Icon name="User" size={16} className="inline mr-2" />
             Автор: <strong>Никита Москвин</strong>
+          </div>
+
+          <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
+            <div className="text-sm font-medium mb-2">Автоматическая публикация в соцсети</div>
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={newsForm.publish_vk ?? true}
+                  onChange={(e) => onFormChange('publish_vk', e.target.checked)}
+                  className="w-4 h-4 rounded border-gray-300"
+                />
+                <span className="text-sm">ВКонтакте</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={newsForm.publish_telegram ?? true}
+                  onChange={(e) => onFormChange('publish_telegram', e.target.checked)}
+                  className="w-4 h-4 rounded border-gray-300"
+                />
+                <span className="text-sm">Telegram</span>
+              </label>
+            </div>
+            <div className="text-xs text-muted-foreground">
+              Новость будет автоматически опубликована в выбранных соцсетях при публикации
+            </div>
           </div>
 
           <div className="flex gap-2">
