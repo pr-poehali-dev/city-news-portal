@@ -2,6 +2,9 @@
   RewriteEngine On
   RewriteBase /
   
+  # Redirect favicon.ico to actual favicon image
+  RewriteRule ^favicon\.ico$ https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/d3c8aa3c-b9de-4bbc-9dd3-a5fbd1d4e30a.jpg [R=301,L]
+  
   # Don't rewrite files or directories
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
