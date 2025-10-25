@@ -1,0 +1,40 @@
+{
+  "tests": [
+    {
+      "name": "Subscribe to notifications",
+      "method": "POST",
+      "body": {
+        "action": "subscribe",
+        "subscription": {
+          "endpoint": "https://example.com/push",
+          "keys": {
+            "p256dh": "test-key",
+            "auth": "test-auth"
+          }
+        }
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Queue notification",
+      "method": "POST",
+      "body": {
+        "action": "queue",
+        "content_type": "news",
+        "content_id": 1,
+        "title": "Test news",
+        "body": "Test notification",
+        "url": "/news/1"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
