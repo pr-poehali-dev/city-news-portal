@@ -24,7 +24,7 @@ export const NotificationSubscribe = ({ compact = false }: NotificationSubscribe
     const promoDismissed = localStorage.getItem('notification-promo-dismissed');
     const promoShownAt = localStorage.getItem('notification-promo-shown-at');
     
-    if (!promoDismissed && !promoShownAt) {
+    if (!promoDismissed && !promoShownAt && 'Notification' in window) {
       const timer = setTimeout(() => {
         if (Notification.permission === 'default') {
           setShowPromo(true);
@@ -70,11 +70,13 @@ export const NotificationSubscribe = ({ compact = false }: NotificationSubscribe
           description: 'Теперь вы будете получать уведомления о новостях с 10:00 до 20:00'
         });
 
-        new Notification('Город говорит', {
-          body: 'Вы успешно подписались на уведомления',
-          icon: '/icon-192.png',
-          badge: '/icon-192.png'
-        });
+        if ('Notification' in window) {
+          new Notification('Город говорит', {
+            body: 'Вы успешно подписались на уведомления',
+            icon: '/icon-192.png',
+            badge: '/icon-192.png'
+          });
+        }
       }
     } catch (error) {
       toast({

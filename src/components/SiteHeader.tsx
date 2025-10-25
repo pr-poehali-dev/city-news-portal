@@ -51,7 +51,7 @@ export const SiteHeader = ({ weather, sections, activeSection, onSectionChange }
               variant="ghost" 
               size="sm"
               onClick={() => window.location.href = '/admin'}
-              className="hidden sm:flex"
+              title="Админка"
             >
               <Icon name="Settings" size={20} />
             </Button>
