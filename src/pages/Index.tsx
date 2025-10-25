@@ -199,7 +199,7 @@ const Index = () => {
       if (!response.ok) return;
       const data = await response.json();
       if (Array.isArray(data)) {
-        setMemoryArticles(data.filter((a: any) => a.is_published));
+        setMemoryArticles(data);
       }
     } catch (error) {
       console.error('Failed to load memory articles:', error);
@@ -346,7 +346,7 @@ const Index = () => {
 
             <MemorySection
               articles={memoryArticles}
-              onArticleClick={handleArticleClick}
+              onArticleClick={(id) => navigate(`/memory/${id}`)}
             />
 
             <Separator className="my-12" />

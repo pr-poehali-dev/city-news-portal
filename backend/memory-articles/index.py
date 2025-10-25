@@ -30,12 +30,24 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cur = conn.cursor()
         
         if method == 'GET':
-            cur.execute("""
-                SELECT id, title, excerpt, content, year, decade, event_date, 
-                       image_url, is_published, created_at, updated_at
-                FROM memory_articles
-                ORDER BY year DESC, event_date DESC NULLS LAST, created_at DESC
-            """)
+            params = event.get('queryStringParameters', {})
+            show_all = params.get('show_all') == 'true'
+            
+            if show_all:
+                cur.execute("""
+                    SELECT id, title, excerpt, content, year, decade, event_date, 
+                           image_url, is_published, created_at, updated_at
+                    FROM memory_articles
+                    ORDER BY year DESC, event_date DESC NULLS LAST, created_at DESC
+                """)
+            else:
+                cur.execute("""
+                    SELECT id, title, excerpt, content, year, decade, event_date, 
+                           image_url, is_published, created_at, updated_at
+                    FROM memory_articles
+                    WHERE is_published = true
+                    ORDER BY year DESC, event_date DESC NULLS LAST, created_at DESC
+                """)
             
             rows = cur.fetchall()
             articles = []

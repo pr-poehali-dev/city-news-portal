@@ -9,6 +9,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import NewsPage from "./pages/NewsPage";
+import MemoryPage from "./pages/MemoryPage";
 import Places from "./pages/Places";
 import PlacesMap from "./pages/PlacesMap";
 import About from "./pages/About";
@@ -41,6 +42,7 @@ const App = () => {
               <Route path="/" element={<Index />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/news/:id" element={<NewsPage />} />
+              <Route path="/memory/:id" element={<MemoryPage />} />
               <Route path="/places" element={<Places />} />
               <Route path="/places/map" element={<PlacesMap />} />
               <Route path="/about" element={<About />} />

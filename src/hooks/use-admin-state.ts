@@ -213,7 +213,7 @@ export const useAdminState = () => {
 
   const loadMemory = async () => {
     try {
-      const response = await fetch(FUNCTIONS_URL.memory);
+      const response = await fetch(`${FUNCTIONS_URL.memory}?show_all=true`);
       if (!response.ok) throw new Error('Failed to fetch memory');
       const data = await response.json();
       setMemoryList(data || []);
