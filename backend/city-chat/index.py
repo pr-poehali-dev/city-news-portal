@@ -143,43 +143,55 @@ def get_site_context(conn) -> Dict[str, Any]:
 
 
 def get_ai_response(user_message: str, context: Dict[str, Any], gigachat_key: str) -> str:
-    news_summary = "\n".join([
-        f"- {n['title']} ({n['category']}, {n['created_at'].strftime('%d.%m')}): {n['excerpt'][:100]}"
-        for n in context['news'][:10]
-    ])
+    news_list = []
+    for n in context['news'][:15]:
+        title = n['title']
+        category = n['category']
+        excerpt = n['excerpt'][:150] if n.get('excerpt') else ''
+        date = n['created_at'].strftime('%d.%m.%Y') if n.get('created_at') else ''
+        news_list.append(f"{title} | {category} | {date}\n   {excerpt}")
     
-    places_summary = "\n".join([
-        f"- {p['title']} ({p['category']}): {p['address']}"
-        for p in context['places'][:10]
-    ])
+    places_list = []
+    for p in context['places'][:12]:
+        title = p['title']
+        category = p.get('category', 'Место')
+        address = p.get('address', '')
+        desc = p.get('description', '')[:100] if p.get('description') else ''
+        places_list.append(f"{title} ({category})\n   Адрес: {address}\n   {desc}")
     
-    memories_summary = "\n".join([
-        f"- {m['title']}: {m['preview_text'][:80]}"
-        for m in context['memories'][:5]
-    ])
+    memories_list = []
+    for m in context['memories'][:8]:
+        title = m['title']
+        preview = m.get('preview_text', '')[:120] if m.get('preview_text') else ''
+        memories_list.append(f"{title}\n   {preview}")
     
-    system_prompt = f"""Ты — AI-ассистент городского портала Краснодара. Твоя задача — отвечать на вопросы пользователей о городе, новостях, местах и событиях на основе данных сайта.
+    news_text = "\n\n".join(news_list) if news_list else "Новостей пока нет"
+    places_text = "\n\n".join(places_list) if places_list else "Мест пока нет"
+    memories_text = "\n\n".join(memories_list) if memories_list else "Материалов пока нет"
+    
+    system_prompt = f"""Ты — помощник городского портала Краснодара. Отвечай СТРОГО на основе данных ниже.
 
-ВАЖНО:
-- Отвечай кратко и по делу (макс 3-4 предложения)
-- Используй только информацию из контекста ниже
-- Если информации нет в контексте — честно скажи "Такой информации пока нет на портале"
-- Говори дружелюбно и помогай пользователю
-- НЕ повторяй вопрос пользователя в ответе
-- Пиши от имени портала ("на нашем портале", "у нас есть")
+КРИТИЧЕСКИ ВАЖНО:
+1. Читай вопрос пользователя внимательно
+2. Ищи ТОЧНОЕ совпадение в данных
+3. Отвечай ТОЛЬКО по данным из контекста
+4. Если точного ответа нет — скажи "Такой информации нет на портале"
+5. НЕ выдумывай факты
+6. Ответ должен быть 2-3 предложения максимум
+7. БЕЗ повтора вопроса в ответе
 
-ДОСТУПНАЯ ИНФОРМАЦИЯ:
+═══════════════════════════════════════
+НОВОСТИ КРАСНОДАРА:
+{news_text}
 
-Последние новости Краснодара:
-{news_summary or "Новостей пока нет"}
+═══════════════════════════════════════
+МЕСТА ГОРОДА:
+{places_text}
 
-Интересные места города:
-{places_summary or "Мест пока нет"}
-
-Материалы о памяти города:
-{memories_summary or "Материалов пока нет"}
-
-Отвечай на вопрос пользователя, используя эту информацию."""
+═══════════════════════════════════════
+МАТЕРИАЛЫ О ПАМЯТИ:
+{memories_text}
+═══════════════════════════════════════"""
 
     try:
         auth_response = requests.post(
@@ -205,10 +217,10 @@ def get_ai_response(user_message: str, context: Dict[str, Any], gigachat_key: st
                 'model': 'GigaChat',
                 'messages': [
                     {'role': 'system', 'content': system_prompt},
-                    {'role': 'user', 'content': user_message}
+                    {'role': 'user', 'content': f'Вопрос пользователя: {user_message}\n\nДай точный ответ на основе данных выше.'}
                 ],
-                'temperature': 0.7,
-                'max_tokens': 200
+                'temperature': 0.3,
+                'max_tokens': 250
             },
             verify=False,
             timeout=15
