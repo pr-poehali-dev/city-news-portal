@@ -175,6 +175,9 @@ export const useAdminState = () => {
       console.log('Response:', response.status, data);
 
       if (response.ok) {
+        await loadNews();
+        await loadDrafts();
+        
         toast({
           title: 'Успешно!',
           description: isDraft ? 'Черновик сохранён' : 'Новость опубликована'
@@ -189,8 +192,6 @@ export const useAdminState = () => {
           read_time: '5 мин',
           status: 'published'
         });
-        await loadNews();
-        await loadDrafts();
       } else {
         toast({
           title: 'Ошибка',
