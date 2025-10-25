@@ -70,6 +70,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if method == 'POST':
             body_data = json.loads(event.get('body', '{}'))
             
+            event_date = body_data.get('event_date')
+            if event_date == '':
+                event_date = None
+            
             cur.execute("""
                 INSERT INTO memory_articles 
                 (title, excerpt, content, year, decade, event_date, image_url, is_published)
@@ -80,8 +84,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 body_data.get('excerpt', ''),
                 body_data.get('content'),
                 body_data.get('year'),
-                body_data.get('decade'),
-                body_data.get('event_date'),
+                body_data.get('decade', ''),
+                event_date,
                 body_data.get('image_url', ''),
                 body_data.get('is_published', False)
             ))
@@ -125,7 +129,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 update_values.append(body_data['decade'])
             if 'event_date' in body_data:
                 update_fields.append('event_date = %s')
-                update_values.append(body_data['event_date'])
+                event_date_val = body_data['event_date'] if body_data['event_date'] != '' else None
+                update_values.append(event_date_val)
             if 'image_url' in body_data:
                 update_fields.append('image_url = %s')
                 update_values.append(body_data['image_url'])
