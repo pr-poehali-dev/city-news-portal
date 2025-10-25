@@ -227,44 +227,56 @@ export const NewsPage = () => {
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-background border-2 border-primary/20 p-6 md:p-8 mb-12 hover:shadow-xl hover:border-primary/40 transition-all duration-300 cursor-pointer group"
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-pink-50 via-purple-50 to-orange-50 border-4 border-pink-400 p-6 md:p-8 mb-12 hover:shadow-2xl transition-all duration-500 cursor-pointer group"
                  onClick={() => {
                    navigate('/');
                    setTimeout(() => {
                      document.getElementById('partner')?.scrollIntoView({ behavior: 'smooth' });
                    }, 100);
                  }}>
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
+              <div className="absolute top-4 right-4 animate-bounce">
+                <Icon name="Sparkles" size={32} className="text-pink-500 drop-shadow-lg" />
+              </div>
+              <div className="absolute top-4 left-4 animate-pulse">
+                <Icon name="PartyPopper" size={32} className="text-orange-500 drop-shadow-lg" />
+              </div>
               
               <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="bg-primary/20 p-3 rounded-xl group-hover:scale-110 transition-transform">
-                    <Icon name="Gift" size={28} className="text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                      Забрать подарок от партнёра
-                    </h3>
-                    <p className="text-sm text-muted-foreground mt-1">Эксклюзивное предложение для читателей</p>
-                  </div>
+                <div className="mb-4">
+                  <h3 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                    🎁 Подарок от LaaKids для читателей!
+                  </h3>
+                  <p className="text-sm md:text-base text-muted-foreground">
+                    Агентство детских праздников дарит специальную скидку
+                  </p>
                 </div>
                 
-                <div className="bg-background/80 backdrop-blur-sm rounded-xl p-4 border border-primary/20 mb-4">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex-1">
-                      <p className="text-sm text-muted-foreground mb-1">Промокод на скидку:</p>
-                      <p className="text-2xl md:text-3xl font-bold text-primary tracking-wider">GORODGOVORIT</p>
+                <div className="bg-gradient-to-r from-orange-500/10 to-pink-500/10 border-2 border-orange-500/30 rounded-xl p-4 md:p-5 mb-4">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="bg-gradient-to-r from-orange-500 to-pink-500 p-2 rounded-full flex-shrink-0">
+                      <Icon name="Gift" size={24} className="text-white" />
                     </div>
-                    <div className="bg-primary/10 p-4 rounded-lg">
-                      <Icon name="Percent" size={32} className="text-primary" />
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-foreground mb-1">Специальное предложение!</p>
+                      <p className="text-lg md:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-pink-600">
+                        500 ₽ скидка при переходе с «Город говорит»
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-orange-300/30 pt-3">
+                    <p className="text-xs text-muted-foreground mb-2">Промокод для скидки:</p>
+                    <div className="bg-white border-2 border-dashed border-pink-400 rounded-lg px-4 py-3 text-center">
+                      <p className="font-mono font-bold text-xl md:text-2xl text-pink-600 tracking-wider">
+                        Праздник500
+                      </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-sm text-muted-foreground group-hover:text-primary transition-colors">
-                  <span>Перейти к партнёру</span>
-                  <Icon name="ArrowRight" size={18} className="group-hover:translate-x-1 transition-transform" />
+                <div className="flex items-center gap-2 text-sm font-semibold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600 group-hover:scale-105 transition-transform">
+                  <span>Перейти к партнёру LaaKids</span>
+                  <Icon name="ArrowRight" size={18} className="text-pink-600 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </div>
