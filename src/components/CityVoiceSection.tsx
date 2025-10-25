@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
@@ -10,21 +10,130 @@ interface Message {
   timestamp: Date;
 }
 
+interface CityPost {
+  id: number;
+  text: string;
+  mood: string;
+  location: string;
+  timestamp: string;
+  author: string;
+  type: string;
+}
+
 const FUNCTION_URL = 'https://functions.poehali.dev/d7440490-2756-4be6-9013-fc14e99c0a76';
 
-const QUESTIONS = [
+const ALL_QUESTIONS = [
   'Город, как ты?',
   'Что нового?',
   'Как настроение?',
   'Расскажи о сегодняшнем дне',
   'Что происходит на улицах?',
-  'Как твои жители?'
+  'Как твои жители?',
+  'Какая погода у тебя на душе?',
+  'Что радует сегодня?',
+  'Есть новости?',
+  'О чём думаешь?',
+  'Что беспокоит?',
+  'Как прошёл день?',
+  'Чем гордишься?',
+  'Что изменилось?',
+  'Видел что-то интересное?',
+  'Какие планы?',
+  'Что порекомендуешь?',
+  'Расскажи шутку про Краснодар',
+  'Что говорят люди?',
+  'Какое у тебя впечатление от дня?'
 ];
+
+const KRASNODAR_JOKES = [
+  'У нас две беды: дороги и дороги. Одни разбитые, другие — в вечном ремонте! 😄',
+  'Краснодарцы не опаздывают — они попадают в пробку на Красной. Это разные вещи! 🚗',
+  'Погода в Краснодаре: утром +5, днём +25, вечером дождь. Одевайся слоями, как капуста! 🌦️',
+  'Говорят, в других городах есть метро. Мы про это только в байках слышали 🚇',
+  'Краснодар: где арбузы дешевле, чем проезд на маршрутке! 🍉',
+  'Главная достопримечательность города? Правильно, пробка на мосту! 😅',
+  'В Краснодаре три сезона: жара, дождь и снова жара 🌡️',
+  'Местные делятся на две категории: кто с моря, и кто едет на море 🏖️',
+  'Краснодарское гостеприимство: "Заходи, чай-кофе-борщ-пирожки-компот-ещё-что-то!" ☕',
+  'У нас не говорят "пойду в центр", говорят "встретимся на Красной" 🎭'
+];
+
+const generatePersonalizedAnswer = (question: string, posts: CityPost[]): string => {
+  const lowerQuestion = question.toLowerCase();
+  
+  if (lowerQuestion.includes('шутк') || lowerQuestion.includes('посмей') || lowerQuestion.includes('рассмеши')) {
+    return KRASNODAR_JOKES[Math.floor(Math.random() * KRASNODAR_JOKES.length)];
+  }
+
+  if (posts.length === 0) {
+    return 'Сегодня спокойный день, наслаждаюсь тишиной и солнцем ☀️';
+  }
+
+  const recentPosts = posts.slice(-10);
+  
+  if (lowerQuestion.includes('настроение') || lowerQuestion.includes('погода') || lowerQuestion.includes('душ')) {
+    const moods = recentPosts.map(p => p.mood);
+    const moodCount: Record<string, number> = {};
+    moods.forEach(m => moodCount[m] = (moodCount[m] || 0) + 1);
+    const dominantMood = Object.entries(moodCount).sort((a, b) => b[1] - a[1])[0]?.[0];
+    
+    const moodResponses: Record<string, string> = {
+      playful: 'Игривое! Хочется веселиться и радоваться жизни 😊',
+      appreciative: 'Благодарное! Ценю каждый момент сегодняшнего дня ✨',
+      warm: 'Тёплое и уютное, как домашний плед 🤗',
+      caring: 'Забочусь о своих жителях, как всегда ❤️',
+      proud: 'Горжусь тем, что происходит на моих улицах! 🏆',
+      cheerful: 'Бодрое и солнечное! Отличный день ☀️',
+      peaceful: 'Спокойное и умиротворённое 🍃',
+      excited: 'Воодушевлённое! Столько всего интересного 🎉'
+    };
+    
+    return moodResponses[dominantMood] || 'Настроение отличное! Живу и радуюсь 😊';
+  }
+
+  if (lowerQuestion.includes('нового') || lowerQuestion.includes('новост') || lowerQuestion.includes('происходит')) {
+    const randomPost = recentPosts[Math.floor(Math.random() * recentPosts.length)];
+    return `${randomPost.text}\n\n📍 ${randomPost.location}`;
+  }
+
+  if (lowerQuestion.includes('жител') || lowerQuestion.includes('люд') || lowerQuestion.includes('говорят')) {
+    return `Мои жители, как всегда, в движении! Кто-то спешит на работу, кто-то гуляет в парках, кто-то строит планы. Люблю наблюдать за этой суетой 🚶‍♂️`;
+  }
+
+  if (lowerQuestion.includes('день') || lowerQuestion.includes('прошёл') || lowerQuestion.includes('как ты')) {
+    const latestPost = recentPosts[recentPosts.length - 1];
+    return latestPost ? latestPost.text : 'День как день — живу, дышу, наблюдаю за своими улицами 🌆';
+  }
+
+  if (lowerQuestion.includes('горд') || lowerQuestion.includes('радует')) {
+    return `Горжусь своими жителями — трудолюбивыми, гостеприимными, весёлыми! И, конечно, своей природой: морем рядом, горами на горизонте 🏔️`;
+  }
+
+  if (lowerQuestion.includes('измени') || lowerQuestion.includes('стало')) {
+    return `Меняюсь каждый день: новые дома, новые лица, новые истории. Но суть остаётся — я южный, тёплый, душевный город ❤️`;
+  }
+
+  if (lowerQuestion.includes('план') || lowerQuestion.includes('будущ')) {
+    return `Планирую продолжать расти, развиваться и радовать своих жителей! А ещё хочу меньше пробок 😄`;
+  }
+
+  if (lowerQuestion.includes('рекоменд') || lowerQuestion.includes('посовет')) {
+    return `Рекомендую прогуляться по Красной улице вечером, посидеть в парке Галицкого, а потом съесть шаурму на Рашпилевской. Вот это настоящий Краснодар! 🌆`;
+  }
+
+  const randomPost = recentPosts[Math.floor(Math.random() * recentPosts.length)];
+  return randomPost ? randomPost.text : 'Спасибо за вопрос! Сегодня обычный день в жизни города 😊';
+};
 
 export const CityVoiceSection = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
-  const [hasInitialPost, setHasInitialPost] = useState(false);
+  const [cityPosts, setCityPosts] = useState<CityPost[]>([]);
+
+  const displayedQuestions = useMemo(() => {
+    const shuffled = [...ALL_QUESTIONS].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 6);
+  }, []);
 
   useEffect(() => {
     const saved = localStorage.getItem('cityDialogHistory');
@@ -32,23 +141,22 @@ export const CityVoiceSection = () => {
       try {
         const parsed = JSON.parse(saved);
         setMessages(parsed.map((m: any) => ({ ...m, timestamp: new Date(m.timestamp) })));
-        setHasInitialPost(true);
       } catch (e) {
         console.error('Error loading history:', e);
       }
-    } else {
-      loadInitialPost();
     }
+    loadCityPosts();
   }, []);
 
-  const loadInitialPost = async () => {
-    setLoading(true);
+  const loadCityPosts = async () => {
     try {
       const response = await fetch(FUNCTION_URL);
       if (response.ok) {
         const data = await response.json();
-        const posts = Array.isArray(data) ? data : [];
-        if (posts.length > 0) {
+        const posts = Array.isArray(data) ? data : [data];
+        setCityPosts(posts);
+        
+        if (messages.length === 0 && posts.length > 0) {
           const latestPost = posts[posts.length - 1];
           const initialMessage: Message = {
             id: Date.now().toString(),
@@ -57,13 +165,11 @@ export const CityVoiceSection = () => {
             timestamp: new Date()
           };
           setMessages([initialMessage]);
-          setHasInitialPost(true);
+          localStorage.setItem('cityDialogHistory', JSON.stringify([initialMessage]));
         }
       }
     } catch (error) {
-      console.error('Error loading initial post:', error);
-    } finally {
-      setLoading(false);
+      console.error('Error loading city posts:', error);
     }
   };
 
@@ -78,32 +184,23 @@ export const CityVoiceSection = () => {
     setMessages(prev => [...prev, userMessage]);
     setLoading(true);
 
+    await new Promise(resolve => setTimeout(resolve, 800));
+
     try {
-      const response = await fetch(FUNCTION_URL);
-      if (response.ok) {
-        const data = await response.json();
-        const posts = Array.isArray(data) ? data : [];
-        
-        let answerText = 'Спасибо за вопрос! Сегодня прекрасный день 😊';
-        
-        if (posts.length > 0) {
-          const randomPost = posts[Math.floor(Math.random() * posts.length)];
-          answerText = randomPost.text;
-        }
+      const answerText = generatePersonalizedAnswer(question, cityPosts);
 
-        const cityMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          type: 'city',
-          text: answerText,
-          timestamp: new Date()
-        };
+      const cityMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        type: 'city',
+        text: answerText,
+        timestamp: new Date()
+      };
 
-        setMessages(prev => {
-          const updated = [...prev, cityMessage];
-          localStorage.setItem('cityDialogHistory', JSON.stringify(updated));
-          return updated;
-        });
-      }
+      setMessages(prev => {
+        const updated = [...prev, cityMessage];
+        localStorage.setItem('cityDialogHistory', JSON.stringify(updated));
+        return updated;
+      });
     } catch (error) {
       console.error('Error asking question:', error);
     } finally {
@@ -113,9 +210,8 @@ export const CityVoiceSection = () => {
 
   const clearHistory = () => {
     setMessages([]);
-    setHasInitialPost(false);
     localStorage.removeItem('cityDialogHistory');
-    loadInitialPost();
+    loadCityPosts();
   };
 
   return (
@@ -176,7 +272,7 @@ export const CityVoiceSection = () => {
                     : 'bg-muted rounded-bl-none'
                 }`}
               >
-                <p className="text-sm leading-relaxed">{message.text}</p>
+                <p className="text-sm leading-relaxed whitespace-pre-line">{message.text}</p>
                 <span className="text-xs opacity-70 mt-1 block">
                   {message.timestamp.toLocaleTimeString('ru-RU', {
                     hour: '2-digit',
@@ -211,7 +307,7 @@ export const CityVoiceSection = () => {
 
         <div className="p-4 border-t bg-muted/30">
           <div className="flex flex-wrap gap-2">
-            {QUESTIONS.map((question, index) => (
+            {displayedQuestions.map((question, index) => (
               <Button
                 key={index}
                 variant="outline"
@@ -225,13 +321,16 @@ export const CityVoiceSection = () => {
               </Button>
             ))}
           </div>
+          <p className="text-xs text-muted-foreground mt-3 text-center">
+            Вопросы обновляются при перезагрузке страницы
+          </p>
         </div>
 
         <div className="px-6 py-4 bg-blue-500/5 border-t border-blue-500/20">
           <div className="flex items-start gap-2 text-sm">
             <Icon name="Info" size={16} className="text-blue-600 mt-0.5 flex-shrink-0" />
             <p className="text-muted-foreground">
-              <strong className="text-foreground">Как это работает?</strong> Город отвечает на основе сегодняшних новостей и настроения. AI генерирует уникальные ответы 3 раза в день. Твоя переписка сохраняется только у тебя в браузере.
+              <strong className="text-foreground">Как это работает?</strong> Город отвечает на основе последних новостей и локального юмора Краснодара. Ответы персонализированы под каждый вопрос. Твоя переписка сохраняется только у тебя в браузере.
             </p>
           </div>
         </div>
