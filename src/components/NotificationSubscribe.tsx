@@ -64,7 +64,7 @@ export const NotificationSubscribe = ({ compact = false }: NotificationSubscribe
           try {
             const registration = await navigator.serviceWorker.ready;
             
-            const vapidPublicKey = 'BJthRLSPR5F7cbZdLvq-xq-xBn6q6iJP_VDP3xVGGWqO7hCvF-5jVvjN3xBpJhm3tqJN1qSZvPjJ8-xN5xFqMxE';
+            const vapidPublicKey = 'BEl62F_rJwHB-FX0eKGBwZ7TXLGvXqJZ6HGvHVQx9vL8kF3jN2qP5xR8wT4yU9vK7mN1sQ6pL3hG8fJ2xC5vE4w';
             
             const subscription = await registration.pushManager.subscribe({
               userVisibleOnly: true,
