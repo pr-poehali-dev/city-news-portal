@@ -5,6 +5,7 @@ import { NewsTicker } from '@/components/NewsTicker';
 import { SiteHeader } from '@/components/SiteHeader';
 import { FeaturedNews } from '@/components/FeaturedNews';
 import { EventsSection } from '@/components/EventsSection';
+import { SocialSubscribe } from '@/components/SocialSubscribe';
 import { MiniNewsCard } from '@/components/MiniNewsCard';
 import { Separator } from '@/components/ui/separator';
 import { Footer } from '@/components/Footer';
@@ -318,9 +319,13 @@ const Index = () => {
               onLike={handleLike}
               likedArticles={likedArticles}
             />
+
+            <SocialSubscribe />
           </>
         )}
       </main>
+
+      <SocialSubscribe />
 
       <Footer 
         sections={sections} 
