@@ -136,11 +136,11 @@ export const NewsPage = () => {
       />
 
       <main className="mt-16">
-        <div className="container mx-auto px-4 py-2">
+        <div className="container mx-auto px-4">
           <Button 
             variant="ghost" 
             onClick={() => navigate(-1)}
-            className="mb-0"
+            className="-ml-3"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
@@ -148,7 +148,7 @@ export const NewsPage = () => {
         </div>
 
         <article>
-          <div className="container mx-auto px-4 mb-4 max-w-4xl">
+          <div className="container mx-auto px-4 mb-3 max-w-4xl">
             <span className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm mb-3">
               {article.section}
             </span>
