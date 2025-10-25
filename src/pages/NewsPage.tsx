@@ -26,9 +26,9 @@ interface NewsArticle {
 
 interface Comment {
   id: number;
-  name: string;
+  author_name: string;
   text: string;
-  date: string;
+  created_at: string;
 }
 
 export const NewsPage = () => {
@@ -59,6 +59,12 @@ export const NewsPage = () => {
             .filter((n: NewsArticle) => n.section === currentArticle.section && n.id !== currentArticle.id)
             .slice(0, 4);
           setRelatedNews(related);
+          
+          const commentsResponse = await fetch(`${FUNCTIONS_URL.comments}?news_id=${id}`);
+          if (commentsResponse.ok) {
+            const commentsData = await commentsResponse.json();
+            setComments(commentsData || []);
+          }
         }
 
         const allSections = ['Главная', 'Спорт', 'Культура', 'Экономика', 'Политика', 'Общество'];
@@ -94,17 +100,31 @@ export const NewsPage = () => {
     }
   }, [loading, article, promoUsageCount]);
 
-  const handleAddComment = () => {
-    if (commentName.trim() && commentText.trim()) {
-      const newComment: Comment = {
-        id: Date.now(),
-        name: commentName,
-        text: commentText,
-        date: new Date().toLocaleDateString('ru-RU')
-      };
-      setComments([...comments, newComment]);
-      setCommentName('');
-      setCommentText('');
+  const handleAddComment = async () => {
+    if (commentName.trim() && commentText.trim() && id) {
+      try {
+        const response = await fetch('https://functions.poehali.dev/e442a5de-b5ed-4ff1-b15c-da8b0bfea9b5', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            news_id: parseInt(id),
+            author_name: commentName.trim(),
+            text: commentText.trim()
+          })
+        });
+        
+        if (response.ok) {
+          const newComment = await response.json();
+          setComments([newComment, ...comments]);
+          setCommentName('');
+          setCommentText('');
+        }
+      } catch (error) {
+        console.error('Failed to add comment:', error);
+        alert('Не удалось добавить комментарий. Попробуйте позже.');
+      }
     }
   };
 
@@ -356,8 +376,16 @@ export const NewsPage = () => {
               {comments.map((comment) => (
                 <div key={comment.id} className="bg-muted/50 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="font-semibold">{comment.name}</span>
-                    <span className="text-sm text-muted-foreground">{comment.date}</span>
+                    <span className="font-semibold">{comment.author_name}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {new Date(comment.created_at).toLocaleDateString('ru-RU', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </span>
                   </div>
                   <p className="text-foreground">{comment.text}</p>
                 </div>
