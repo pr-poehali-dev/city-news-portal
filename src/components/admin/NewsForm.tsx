@@ -43,11 +43,11 @@ export const NewsForm = ({ newsForm, categories, loading, onFormChange, onSubmit
           <div>
             <label className="text-sm font-medium mb-2 block">Категория (тег)</label>
             <Select
-              value={newsForm.category}
+              value={newsForm.category || ''}
               onValueChange={(value) => onFormChange('category', value)}
             >
               <SelectTrigger>
-                <SelectValue />
+                <SelectValue placeholder="Выберите категорию" />
               </SelectTrigger>
               <SelectContent>
                 {categories.map(cat => (
