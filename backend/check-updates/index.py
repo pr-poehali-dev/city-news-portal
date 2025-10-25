@@ -66,10 +66,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 subscription = subscription_data if isinstance(subscription_data, dict) else json.loads(subscription_data)
                 
                 notification_data = {
-                    "title": "Новый комментарий",
+                    "title": "💬 Новый комментарий",
                     "body": f"+{new_comments} {new_comments == 1 and 'комментарий' or new_comments < 5 and 'комментария' or 'комментариев'}",
                     "url": "/admin",
-                    "icon": "/icon-192.png"
+                    "icon": "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/73d9a617-f287-4960-91f4-49ead8981af4.jpg"
                 }
                 
                 webpush(
@@ -100,7 +100,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     "title": "👁 Новые просмотры",
                     "body": f"+{new_views} {new_views == 1 and 'просмотр' or new_views < 5 and 'просмотра' or 'просмотров'}",
                     "url": "/admin",
-                    "icon": "/icon-192.png"
+                    "icon": "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/73d9a617-f287-4960-91f4-49ead8981af4.jpg"
                 }
                 
                 webpush(
