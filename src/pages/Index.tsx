@@ -271,24 +271,18 @@ const Index = () => {
               />
             )}
 
-            <div className="grid lg:grid-cols-3 gap-8 mb-12">
-              <div className="lg:col-span-2">
-                <h2 className="text-2xl font-bold mb-6">Последние новости</h2>
-                <div className="grid gap-6">
-                  {articles.slice(0, 6).map((article) => (
-                    <MiniNewsCard
-                      key={article.id}
-                      news={article}
-                      onClick={() => handleArticleClick(article.id)}
-                      onLike={() => handleLike(article.id)}
-                      isLiked={likedArticles.has(article.id)}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <EventsSection events={events} />
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold mb-6">Последние новости</h2>
+              <div className="grid gap-6">
+                {articles.slice(0, 6).map((article) => (
+                  <MiniNewsCard
+                    key={article.id}
+                    news={article}
+                    onClick={() => handleArticleClick(article.id)}
+                    onLike={() => handleLike(article.id)}
+                    isLiked={likedArticles.has(article.id)}
+                  />
+                ))}
               </div>
             </div>
 
@@ -307,6 +301,10 @@ const Index = () => {
               articles={memoryArticles}
               onArticleClick={handleArticleClick}
             />
+
+            <Separator className="my-12" />
+
+            <EventsSection events={events} />
 
             <Separator className="my-12" />
 

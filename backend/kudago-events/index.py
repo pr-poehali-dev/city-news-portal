@@ -77,9 +77,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 if description and len(description) > 200:
                     description = description[:200] + '...'
                 
+                title = item.get('title', '')
+                if title:
+                    title = title[0].upper() + title[1:] if len(title) > 0 else title
+                
                 events.append({
                     'id': item.get('id'),
-                    'title': item.get('title', ''),
+                    'title': title,
                     'description': description,
                     'event_date': event_date,
                     'event_date_display': event_date_display,
