@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import Icon from '@/components/ui/icon';
+import { Helmet } from 'react-helmet';
 
 const FUNCTIONS_URL = {
   news: 'https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe',
@@ -122,8 +123,31 @@ export const NewsPage = () => {
     );
   }
 
+  const pageTitle = article ? `${article.title} — Город говорит` : 'Город говорит — новостной портал Краснодара';
+  const pageDescription = article?.content?.substring(0, 155) || 'Актуальные новости Краснодара';
+  const pageImage = article?.image_url || 'https://cdn.poehali.dev/intertnal/img/og.png';
+  const pageUrl = `https://ggkrasnodar.ru/news/${id}`;
+
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:image" content={pageImage} />
+        <meta property="og:site_name" content="Город говорит" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={pageUrl} />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={pageImage} />
+      </Helmet>
+
       <SiteHeader 
         sections={sections} 
         onSectionChange={(section) => {

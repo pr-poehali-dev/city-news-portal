@@ -63,11 +63,11 @@ export function NewsSection({
           >
             <CardContent className="p-0">
               {article.image_url && (
-                <div className="relative h-48 overflow-hidden rounded-t-lg bg-muted flex items-center justify-center">
+                <div className="relative h-48 overflow-hidden rounded-t-lg">
                   <img
                     src={article.image_url}
                     alt={article.title}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-cover"
                   />
                 </div>
               )}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import { NewsTicker } from '@/components/NewsTicker';
 import { SiteHeader } from '@/components/SiteHeader';
 import { FeaturedNews } from '@/components/FeaturedNews';
@@ -219,6 +220,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Город говорит — новостной портал Краснодара</title>
+        <meta name="description" content="Актуальные новости Краснодара: политика, экономика, культура, спорт. Читайте последние события города каждый день." />
+        <link rel="canonical" href="https://ggkrasnodar.ru/" />
+      </Helmet>
+
       <NewsTicker latestNews={latestNews} />
       
       <SiteHeader 
