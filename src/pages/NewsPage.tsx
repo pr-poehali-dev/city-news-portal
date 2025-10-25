@@ -280,11 +280,12 @@ export const NewsPage = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
+                    className="relative inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 animate-pulse"
                   >
-                    <Icon name="MessageCircle" size={20} />
-                    Написать в WhatsApp
-                    <Icon name="ArrowRight" size={20} />
+                    <span className="absolute inset-0 rounded-lg bg-green-400 opacity-30 animate-ping"></span>
+                    <Icon name="MessageCircle" size={20} className="relative z-10" />
+                    <span className="relative z-10">Написать в WhatsApp</span>
+                    <Icon name="ArrowRight" size={20} className="relative z-10" />
                   </a>
                   
                   <button className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300">
