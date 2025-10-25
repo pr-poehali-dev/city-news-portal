@@ -193,16 +193,28 @@ export const PartnersSection = () => {
                   ))}
                 </div>
 
-                <a
-                  href={partner.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
-                >
-                  <Icon name="Globe" size={20} />
-                  Посетить сайт
-                  <Icon name="ArrowRight" size={20} />
-                </a>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a
+                    href={`https://wa.me/79508270441?text=${encodeURIComponent('Праздник500')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
+                  >
+                    <Icon name="MessageCircle" size={20} />
+                    Написать в WhatsApp
+                    <Icon name="ArrowRight" size={20} />
+                  </a>
+                  
+                  <a
+                    href={partner.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
+                  >
+                    <Icon name="Globe" size={20} />
+                    Посетить сайт
+                  </a>
+                </div>
 
                 <div className="mt-4 pt-4 border-t border-border/50">
                   <p className="text-xs text-muted-foreground flex items-center gap-2">
