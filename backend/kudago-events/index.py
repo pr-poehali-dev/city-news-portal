@@ -55,10 +55,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             for item in data.get('results', []):
                 dates_info = item.get('dates', [])
                 event_date = None
+                event_date_display = 'Постоянная выставка'
+                
                 if dates_info and len(dates_info) > 0:
                     start_timestamp = dates_info[0].get('start')
-                    if start_timestamp:
-                        event_date = datetime.fromtimestamp(start_timestamp).strftime('%Y-%m-%d %H:%M')
+                    if start_timestamp and start_timestamp > 0:
+                        try:
+                            dt = datetime.fromtimestamp(int(start_timestamp))
+                            event_date = dt.strftime('%Y-%m-%d %H:%M')
+                            event_date_display = None
+                        except (ValueError, TypeError, OSError):
+                            pass
                 
                 images = item.get('images', [])
                 image_url = images[0].get('image') if images and len(images) > 0 else None
@@ -75,6 +82,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'title': item.get('title', ''),
                     'description': description,
                     'event_date': event_date,
+                    'event_date_display': event_date_display,
                     'location': location,
                     'image_url': image_url,
                     'is_free': item.get('is_free', False),

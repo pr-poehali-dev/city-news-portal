@@ -6,7 +6,8 @@ interface Event {
   id: number;
   title: string;
   description: string;
-  event_date: string;
+  event_date: string | null;
+  event_date_display?: string | null;
   location: string;
   image_url: string;
   is_free: boolean;
@@ -78,11 +79,11 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
                     </h3>
                     
                     <div className="space-y-1">
-                      {event.event_date && (
+                      {(event.event_date || event.event_date_display) && (
                         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                           <Icon name="Clock" size={12} className="flex-shrink-0" />
                           <span className="truncate">
-                            {new Date(event.event_date).toLocaleDateString('ru-RU', {
+                            {event.event_date_display || new Date(event.event_date!).toLocaleDateString('ru-RU', {
                               day: 'numeric',
                               month: 'short',
                               hour: '2-digit',

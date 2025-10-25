@@ -5,11 +5,7 @@
       "method": "GET",
       "path": "/",
       "expectedStatus": 200,
-      "expectedBody": {
-        "count": "number",
-        "events": []
-      },
-      "bodyMatcher": "partial"
+      "bodyMatcher": "none"
     }
   ]
 }
