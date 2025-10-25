@@ -1,5 +1,5 @@
 """
-Business: Send push notifications to admin subscribers
+Business: Send push notifications to admin subscribers via Web Push API
 Args: event with httpMethod, body containing notification data
 Returns: HTTP response confirming notification sent
 """
