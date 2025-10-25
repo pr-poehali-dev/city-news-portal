@@ -26,7 +26,7 @@ export const NotificationSubscribe = ({ compact = false }: NotificationSubscribe
     
     if (!promoDismissed && !promoShownAt && 'Notification' in window) {
       const timer = setTimeout(() => {
-        if (Notification.permission === 'default') {
+        if ('Notification' in window && Notification.permission === 'default') {
           setShowPromo(true);
           localStorage.setItem('notification-promo-shown-at', Date.now().toString());
         }
