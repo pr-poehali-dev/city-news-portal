@@ -22,9 +22,10 @@ interface NewsFormProps {
   loading: boolean;
   onFormChange: (field: string, value: string | boolean) => void;
   onSubmit: (e: React.FormEvent, isDraft: boolean) => void;
+  onSaveVkDraft?: () => void;
 }
 
-export const NewsForm = ({ newsForm, categories, loading, onFormChange, onSubmit }: NewsFormProps) => {
+export const NewsForm = ({ newsForm, categories, loading, onFormChange, onSubmit, onSaveVkDraft }: NewsFormProps) => {
   const [imageUrlForInsert, setImageUrlForInsert] = useState('');
   const contentTextareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -226,8 +227,8 @@ export const NewsForm = ({ newsForm, categories, loading, onFormChange, onSubmit
             </div>
           </div>
 
-          <div className="flex gap-2">
-            <Button type="submit" className="flex-1" disabled={loading}>
+          <div className="flex gap-2 flex-wrap">
+            <Button type="submit" className="flex-1 min-w-[200px]" disabled={loading}>
               {loading ? 'Публикация...' : 'Опубликовать'}
             </Button>
             <Button 
@@ -235,9 +236,22 @@ export const NewsForm = ({ newsForm, categories, loading, onFormChange, onSubmit
               variant="outline"
               onClick={(e) => onSubmit(e as any, true)}
               disabled={loading}
+              className="min-w-[150px]"
             >
               Сохранить черновик
             </Button>
+            {onSaveVkDraft && (
+              <Button 
+                type="button" 
+                variant="secondary"
+                onClick={onSaveVkDraft}
+                disabled={loading}
+                className="gap-1 min-w-[150px]"
+              >
+                <Icon name="FileText" size={14} />
+                Черновик VK
+              </Button>
+            )}
           </div>
         </form>
       </CardContent>

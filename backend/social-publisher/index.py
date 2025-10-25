@@ -42,6 +42,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     news_url: Optional[str] = body_data.get('news_url')
     publish_vk: bool = body_data.get('publish_vk', True)
     publish_telegram: bool = body_data.get('publish_telegram', True)
+    save_vk_draft: bool = body_data.get('save_vk_draft', False)
     
     if not title or not excerpt:
         return {
@@ -52,8 +53,27 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     results: Dict[str, Any] = {
         'vk': {'success': False, 'error': None, 'post_id': None},
-        'telegram': {'success': False, 'error': None, 'message_id': None}
+        'telegram': {'success': False, 'error': None, 'message_id': None},
+        'vk_draft': {'success': False, 'error': None, 'post_id': None}
     }
+    
+    if save_vk_draft:
+        vk_draft_result = save_vk_draft_post(title, excerpt, image_url, news_url)
+        results['vk_draft'] = vk_draft_result
+        
+        return {
+            'statusCode': 200 if vk_draft_result['success'] else 500,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'isBase64Encoded': False,
+            'body': json.dumps({
+                'success': vk_draft_result['success'],
+                'results': results,
+                'draft_saved': vk_draft_result['success']
+            })
+        }
     
     if publish_vk:
         vk_result = publish_to_vk(title, excerpt, image_url, news_url)
@@ -258,6 +278,80 @@ def upload_photo_to_vk_user_token(image_url: str, access_token: str, group_id: s
     except Exception as e:
         print(f'Photo upload error: {str(e)}')
         return None
+
+
+def save_vk_draft_post(title: str, excerpt: str, image_url: Optional[str], news_url: Optional[str]) -> Dict[str, Any]:
+    '''Save news as postponed post in VK group (acts as draft - publish date set to +1 year)'''
+    group_token = os.environ.get('VK_ACCESS_TOKEN')
+    user_token = os.environ.get('VK_USER_ACCESS_TOKEN')
+    group_id = os.environ.get('VK_GROUP_ID')
+    
+    if not group_token or not group_id:
+        return {
+            'success': False,
+            'error': 'VK credentials not configured',
+            'post_id': None
+        }
+    
+    access_token = user_token if user_token and image_url else group_token
+    
+    clean_text = truncate_text(excerpt, 1000)
+    message_parts: List[str] = [title, '', clean_text]
+    if news_url:
+        message_parts.extend(['', f'Читать полностью: {news_url}'])
+    
+    message = '\n'.join(message_parts)
+    
+    import time
+    future_timestamp = int(time.time()) + 31536000
+    
+    params = {
+        'owner_id': f'-{group_id}',
+        'message': message,
+        'from_group': '1',
+        'publish_date': str(future_timestamp),
+        'access_token': access_token,
+        'v': '5.131'
+    }
+    
+    if image_url and user_token:
+        photo_data = upload_photo_to_vk_user_token(image_url, access_token, group_id)
+        if photo_data:
+            params['attachments'] = photo_data
+    
+    url = 'https://api.vk.com/method/wall.post'
+    
+    try:
+        data = urllib.parse.urlencode(params).encode('utf-8')
+        req = urllib.request.Request(url, data=data)
+        
+        with urllib.request.urlopen(req, timeout=10) as response:
+            result = json.loads(response.read().decode('utf-8'))
+            
+            if 'response' in result and 'post_id' in result['response']:
+                return {
+                    'success': True,
+                    'error': None,
+                    'post_id': result['response']['post_id']
+                }
+            elif 'error' in result:
+                return {
+                    'success': False,
+                    'error': result['error'].get('error_msg', 'Unknown VK error'),
+                    'post_id': None
+                }
+            else:
+                return {
+                    'success': False,
+                    'error': 'Invalid VK API response',
+                    'post_id': None
+                }
+    except Exception as e:
+        return {
+            'success': False,
+            'error': str(e),
+            'post_id': None
+        }
 
 
 def publish_to_telegram(title: str, excerpt: str, image_url: Optional[str], news_url: Optional[str]) -> Dict[str, Any]:

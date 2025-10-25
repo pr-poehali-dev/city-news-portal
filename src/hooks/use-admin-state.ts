@@ -1004,6 +1004,53 @@ export const useAdminState = () => {
     }
   };
 
+  const handleSaveVkDraft = async (news?: any) => {
+    setLoading(true);
+    
+    const data = news || newsForm;
+    const newsUrl = news ? `${window.location.origin}/news/${news.id}` : '';
+    
+    try {
+      const response = await fetch(FUNCTIONS_URL.socialPublisher, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: data.title,
+          excerpt: data.content,
+          image_url: data.image_url,
+          news_url: newsUrl,
+          publish_vk: false,
+          publish_telegram: false,
+          save_vk_draft: true
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.draft_saved) {
+        toast({
+          title: 'Успешно!',
+          description: 'Черновик сохранён в VK (отложенная запись на 1 год)'
+        });
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: result.results?.vk_draft?.error || 'Не удалось сохранить черновик в VK',
+          variant: 'destructive'
+        });
+      }
+    } catch (error) {
+      console.error('VK draft save error:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось сохранить черновик в VK',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     authenticated,
@@ -1055,6 +1102,7 @@ export const useAdminState = () => {
     handleAuthorSubmit,
     handleDeleteAuthor,
     handleAboutSubmit,
-    handlePublishToTelegram
+    handlePublishToTelegram,
+    handleSaveVkDraft
   };
 };

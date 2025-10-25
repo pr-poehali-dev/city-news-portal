@@ -17,6 +17,7 @@ interface NewsManagementProps {
   onPublishDraft: (draft: any) => Promise<void>;
   onEditNews: (news: any) => void;
   onPublishToTelegram: (news: any) => Promise<void>;
+  onSaveVkDraft: (news?: any) => Promise<void>;
 }
 
 export const NewsManagement = ({
@@ -31,7 +32,8 @@ export const NewsManagement = ({
   onSetFeatured,
   onPublishDraft,
   onEditNews,
-  onPublishToTelegram
+  onPublishToTelegram,
+  onSaveVkDraft
 }: NewsManagementProps) => {
   return (
     <div className="space-y-6">
@@ -41,6 +43,7 @@ export const NewsManagement = ({
         loading={loading}
         onFormChange={(field, value) => setNewsForm({ ...newsForm, [field]: value })}
         onSubmit={onNewsSubmit}
+        onSaveVkDraft={() => onSaveVkDraft()}
       />
 
       <Card>
@@ -58,6 +61,7 @@ export const NewsManagement = ({
                 onDelete={onDeleteNews}
                 onSetFeatured={onSetFeatured}
                 onPublishToTelegram={onPublishToTelegram}
+                onSaveVkDraft={() => onSaveVkDraft(news)}
               />
             ))}
           </div>

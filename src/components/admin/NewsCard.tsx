@@ -12,6 +12,7 @@ interface NewsCardProps {
   onEdit: (news: any) => void;
   onDelete: (id: number) => void;
   onPublishToTelegram?: (news: any) => void;
+  onSaveVkDraft?: () => void;
 }
 
 export const NewsCard = ({
@@ -22,7 +23,8 @@ export const NewsCard = ({
   onSetFeatured,
   onEdit,
   onDelete,
-  onPublishToTelegram
+  onPublishToTelegram,
+  onSaveVkDraft
 }: NewsCardProps) => {
   return (
     <div className="border rounded-lg p-4 space-y-3">
@@ -89,6 +91,18 @@ export const NewsCard = ({
           >
             <Icon name="Send" size={14} />
             Telegram
+          </Button>
+        )}
+        {!isDraft && onSaveVkDraft && (
+          <Button 
+            size="sm" 
+            variant="outline"
+            onClick={onSaveVkDraft}
+            disabled={loading}
+            className="gap-1"
+          >
+            <Icon name="FileText" size={14} />
+            VK черновик
           </Button>
         )}
         <Button 
