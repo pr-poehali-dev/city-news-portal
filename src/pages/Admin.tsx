@@ -82,13 +82,13 @@ const Admin = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="news" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="news">Новости</TabsTrigger>
-            <TabsTrigger value="events">События</TabsTrigger>
-            <TabsTrigger value="places">Город оценил</TabsTrigger>
-            <TabsTrigger value="memory">Город помнит</TabsTrigger>
-            <TabsTrigger value="authors">Авторы</TabsTrigger>
-            <TabsTrigger value="settings">Настройки</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+            <TabsTrigger value="news" className="text-xs md:text-sm">Новости</TabsTrigger>
+            <TabsTrigger value="events" className="text-xs md:text-sm">События</TabsTrigger>
+            <TabsTrigger value="places" className="text-xs md:text-sm">Оценил</TabsTrigger>
+            <TabsTrigger value="memory" className="text-xs md:text-sm">Помнит</TabsTrigger>
+            <TabsTrigger value="authors" className="text-xs md:text-sm">Авторы</TabsTrigger>
+            <TabsTrigger value="settings" className="text-xs md:text-sm">Настройки</TabsTrigger>
           </TabsList>
 
           <TabsContent value="news">

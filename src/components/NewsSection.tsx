@@ -114,10 +114,6 @@ export function NewsSection({
                     <Icon name="MessageCircle" size={16} />
                     <span>{article.comments_count || 0}</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Icon name="Eye" size={16} />
-                    <span>{article.views || 0}</span>
-                  </div>
                 </div>
               </div>
             </CardContent>
