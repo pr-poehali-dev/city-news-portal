@@ -178,24 +178,36 @@ export function PlacesManagement({
           </div>
 
           <div className="space-y-2">
-            <Label>Координаты на карте (кликните на карте)</Label>
-            <div className="h-[400px] rounded-lg overflow-hidden border">
-              <MapContainer
-                key={mapKey}
-                center={mapPosition}
-                zoom={12}
-                style={{ height: '100%', width: '100%' }}
-              >
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            <Label>Координаты</Label>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="latitude">Широта</Label>
+                <Input
+                  id="latitude"
+                  type="number"
+                  step="0.000001"
+                  value={placeForm.latitude}
+                  onChange={(e) => {
+                    const lat = parseFloat(e.target.value) || 45.0355;
+                    setPlaceForm({ ...placeForm, latitude: lat });
+                    setMapPosition([lat, placeForm.longitude]);
+                  }}
                 />
-                <LocationMarker position={mapPosition} onPositionChange={handleMapClick} />
-              </MapContainer>
-            </div>
-            <div className="flex gap-4 text-sm text-muted-foreground">
-              <span>Широта: {placeForm.latitude.toFixed(6)}</span>
-              <span>Долгота: {placeForm.longitude.toFixed(6)}</span>
+              </div>
+              <div>
+                <Label htmlFor="longitude">Долгота</Label>
+                <Input
+                  id="longitude"
+                  type="number"
+                  step="0.000001"
+                  value={placeForm.longitude}
+                  onChange={(e) => {
+                    const lng = parseFloat(e.target.value) || 38.9753;
+                    setPlaceForm({ ...placeForm, longitude: lng });
+                    setMapPosition([placeForm.latitude, lng]);
+                  }}
+                />
+              </div>
             </div>
           </div>
 
