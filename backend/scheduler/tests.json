@@ -1,15 +1,9 @@
 {
   "tests": [
     {
-      "name": "Get today's posts",
+      "name": "Check scheduler status",
       "method": "GET",
       "path": "/",
-      "expectedStatus": 200
-    },
-    {
-      "name": "Generate posts",
-      "method": "GET",
-      "path": "/?action=generate",
       "expectedStatus": 200
     },
     {

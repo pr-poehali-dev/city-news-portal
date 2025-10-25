@@ -1,4 +1,5 @@
 {
+  "scheduler": "https://functions.poehali.dev/1e3b546d-9d3e-48cc-987f-5db39cab2ed5",
   "ai-influencer": "https://functions.poehali.dev/d7440490-2756-4be6-9013-fc14e99c0a76",
   "auth": "https://functions.poehali.dev/4ef2ae45-ab8c-4653-a9b9-7584f2aeb05d",
   "social-publisher": "https://functions.poehali.dev/a82256af-0286-4392-a152-571238c8af04",

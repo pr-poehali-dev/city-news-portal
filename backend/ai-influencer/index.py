@@ -1,14 +1,17 @@
 import json
-import random
-from typing import Dict, Any
-from datetime import datetime
+import os
+from typing import Dict, Any, List, Optional
+from datetime import datetime, time
+import psycopg2
+from psycopg2.extras import RealDictCursor
+import openai
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Generate AI influencer posts for "Город говорит" section
-    Args: event - dict with httpMethod, queryStringParameters
+    Business: Generate and manage AI influencer posts based on daily news
+    Args: event - dict with httpMethod, queryStringParameters (action: get/generate)
           context - object with request_id, function_name
-    Returns: HTTP response with generated post
+    Returns: HTTP response with posts or generation status
     '''
     method: str = event.get('httpMethod', 'GET')
     
@@ -17,14 +20,52 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'statusCode': 200,
             'headers': {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Max-Age': '86400'
             },
             'body': ''
         }
     
-    if method != 'GET':
+    db_url = os.environ.get('DATABASE_URL')
+    if not db_url:
+        return {
+            'statusCode': 500,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'DATABASE_URL not configured'})
+        }
+    
+    conn = psycopg2.connect(db_url)
+    
+    try:
+        if method == 'GET':
+            params = event.get('queryStringParameters', {}) or {}
+            action = params.get('action', 'get')
+            
+            if action == 'generate':
+                result = generate_daily_posts(conn)
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps(result, ensure_ascii=False)
+                }
+            else:
+                posts = get_todays_posts(conn)
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps(posts, ensure_ascii=False)
+                }
+        
         return {
             'statusCode': 405,
             'headers': {
@@ -34,104 +75,149 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({'error': 'Method not allowed'})
         }
     
-    templates = [
-        {
-            'text': 'Сегодня я услышал смех в парке Галицкого. Пожалуйста, не мусорите — я всё вижу 😉',
-            'mood': 'playful',
-            'location': 'Парк Галицкого'
-        },
-        {
-            'text': 'Сегодня я замерз, но зато улица Красная украсили новыми фонарями. Красота! ✨',
-            'mood': 'appreciative',
-            'location': 'улица Красная'
-        },
-        {
-            'text': 'Вчера видел, как на Театральной площади дети играли в снежки. Я улыбнулся (если бы мог) ☺️',
-            'mood': 'warm',
-            'location': 'Театральная площадь'
-        },
-        {
-            'text': 'Мои светофоры на проспекте Чекистов работают исправно. Берегите себя на дорогах! 🚦',
-            'mood': 'caring',
-            'location': 'проспект Чекистов'
-        },
-        {
-            'text': 'Сегодня пахнет пирожками с углов моих улиц. Я горжусь своими пекарнями! 🥐',
-            'mood': 'proud',
-            'location': 'центр города'
-        },
-        {
-            'text': 'Видел, как бабушка кормила голубей у фонтана. Простые радости — это и есть счастье 💙',
-            'mood': 'philosophical',
-            'location': 'центральный фонтан'
-        },
-        {
-            'text': 'Мои троллейбусы сегодня особенно дружелюбные. Или это я в хорошем настроении? 🚎',
-            'mood': 'cheerful',
-            'location': 'транспортные маршруты'
-        },
-        {
-            'text': 'Ночью я люблю смотреть на огни набережной. Тишина и красота... 🌃',
-            'mood': 'romantic',
-            'location': 'набережная'
-        },
-        {
-            'text': 'Сегодня на рынке такое оживление! Я люблю, когда мои жители общаются и смеются 🛒',
-            'mood': 'lively',
-            'location': 'городской рынок'
-        },
-        {
-            'text': 'Дождь смыл пыль с моих улиц. Я чувствую себя обновленным! 🌧️',
-            'mood': 'refreshed',
-            'location': 'весь город'
-        },
-        {
-            'text': 'Заметил, что в сквере появились новые скамейки. Спасибо тем, кто обо мне заботится! 🪑',
-            'mood': 'grateful',
-            'location': 'городской сквер'
-        },
-        {
-            'text': 'Слышал музыку из окон — кто-то учится играть на гитаре. Я поддерживаю творчество! 🎸',
-            'mood': 'supportive',
-            'location': 'жилой район'
-        },
-        {
-            'text': 'Утром меня будят птицы в парке. Лучший будильник на свете! 🐦',
-            'mood': 'peaceful',
-            'location': 'парк'
-        },
-        {
-            'text': 'Видел, как волонтеры убирали мусор на набережной. Вы — настоящие герои! 🦸',
-            'mood': 'inspired',
-            'location': 'набережная'
-        },
-        {
-            'text': 'Мои фонтаны снова заработали после зимы. Весна пришла! 💦',
-            'mood': 'excited',
-            'location': 'городские фонтаны'
-        }
+    finally:
+        conn.close()
+
+
+def get_todays_posts(conn) -> List[Dict[str, Any]]:
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute("""
+            SELECT id, text, mood, location, created_at, time_of_day
+            FROM city_posts
+            WHERE DATE(created_at) = CURRENT_DATE
+            ORDER BY created_at ASC
+        """)
+        posts = cur.fetchall()
+        
+        return [{
+            'id': post['id'],
+            'text': post['text'],
+            'mood': post['mood'],
+            'location': post['location'],
+            'timestamp': post['created_at'].isoformat(),
+            'timeOfDay': post['time_of_day'],
+            'author': 'Краснодар',
+            'type': 'ai_influencer'
+        } for post in posts]
+
+
+def generate_daily_posts(conn) -> Dict[str, Any]:
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute("""
+            SELECT COUNT(*) as count
+            FROM city_posts
+            WHERE DATE(created_at) = CURRENT_DATE
+        """)
+        result = cur.fetchone()
+        
+        if result and result['count'] >= 3:
+            return {'message': 'Posts already generated for today', 'count': result['count']}
+        
+        cur.execute("""
+            SELECT title, excerpt, category, created_at
+            FROM news
+            WHERE DATE(created_at) = CURRENT_DATE
+            ORDER BY views DESC, created_at DESC
+            LIMIT 10
+        """)
+        news = cur.fetchall()
+        
+        openai_key = os.environ.get('OPENAI_API_KEY')
+        if not openai_key:
+            posts = generate_fallback_posts(conn)
+            return {'message': 'Generated fallback posts (no OpenAI key)', 'count': len(posts)}
+        
+        posts = generate_ai_posts(conn, news, openai_key)
+        return {'message': 'Generated AI posts successfully', 'count': len(posts)}
+
+
+def generate_ai_posts(conn, news: List[Dict], openai_key: str) -> List[int]:
+    openai.api_key = openai_key
+    
+    news_summary = "\n".join([f"- {n['title']}: {n['excerpt']}" for n in news]) if news else "Новостей сегодня пока нет"
+    
+    prompt = f"""Ты — город Краснодар, который пишет короткие заметки от первого лица.
+
+Новости за сегодня:
+{news_summary}
+
+Напиши 3 короткие заметки (по 1-2 предложения каждая) от имени города для трех времен суток:
+1. Утро (8:00) - бодрое, оптимистичное
+2. День (14:00) - деловое, информативное  
+3. Вечер (20:00) - спокойное, рефлексивное
+
+Требования:
+- Короткие (макс 120 символов)
+- Безобидные, позитивные
+- От первого лица ("я", "мои улицы", "мои жители")
+- Если есть новости - кратко упомяни их суть
+- Если новостей нет - просто нейтральное наблюдение о городе
+- Добавь 1 эмодзи в конец
+
+Формат ответа (только JSON, без markdown):
+{{"morning": "текст утренней заметки", "afternoon": "текст дневной заметки", "evening": "текст вечерней заметки"}}"""
+
+    try:
+        response = openai.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.8,
+            max_tokens=300
+        )
+        
+        content = response.choices[0].message.content.strip()
+        if content.startswith('```'):
+            content = content.split('```')[1]
+            if content.startswith('json'):
+                content = content[4:]
+            content = content.strip()
+        
+        posts_data = json.loads(content)
+        
+        times = [
+            ('morning', 'утро', 'cheerful'),
+            ('afternoon', 'день', 'lively'),
+            ('evening', 'вечер', 'peaceful')
+        ]
+        
+        post_ids = []
+        with conn.cursor() as cur:
+            for key, time_of_day, mood in times:
+                text = posts_data.get(key, 'Сегодня прекрасный день! ☀️')
+                cur.execute("""
+                    INSERT INTO city_posts (text, mood, location, time_of_day)
+                    VALUES (%s, %s, %s, %s)
+                    RETURNING id
+                """, (text, mood, 'Краснодар', time_of_day))
+                post_id = cur.fetchone()[0]
+                post_ids.append(post_id)
+            
+            conn.commit()
+        
+        return post_ids
+    
+    except Exception:
+        return generate_fallback_posts(conn)
+
+
+def generate_fallback_posts(conn) -> List[int]:
+    fallback_posts = [
+        ('Доброе утро! Сегодня я просыпаюсь под пение птиц в парках 🌅', 'cheerful', 'утро'),
+        ('День в самом разгаре. Мои улицы полны жизни и движения 🚶', 'lively', 'день'),
+        ('Вечер приносит спокойствие. Я любуюсь закатом над Кубанью 🌆', 'peaceful', 'вечер')
     ]
     
-    post = random.choice(templates)
+    post_ids = []
+    with conn.cursor() as cur:
+        for text, mood, time_of_day in fallback_posts:
+            cur.execute("""
+                INSERT INTO city_posts (text, mood, location, time_of_day)
+                VALUES (%s, %s, %s, %s)
+                RETURNING id
+            """, (text, mood, 'Краснодар', time_of_day))
+            post_id = cur.fetchone()[0]
+            post_ids.append(post_id)
+        
+        conn.commit()
     
-    current_time = datetime.now().isoformat()
-    
-    response_data = {
-        'id': random.randint(1000, 9999),
-        'text': post['text'],
-        'mood': post['mood'],
-        'location': post['location'],
-        'timestamp': current_time,
-        'author': 'Краснодар',
-        'type': 'ai_influencer'
-    }
-    
-    return {
-        'statusCode': 200,
-        'headers': {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-        },
-        'isBase64Encoded': False,
-        'body': json.dumps(response_data, ensure_ascii=False)
-    }
+    return post_ids
