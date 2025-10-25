@@ -7,6 +7,7 @@ export const useAdminState = () => {
   const [loading, setLoading] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
   const [loginForm, setLoginForm] = useState({ login: '', password: '' });
+  const [sessionId] = useState(() => `session_${Date.now()}_${Math.random()}`);
   const [editingNews, setEditingNews] = useState<any>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
@@ -47,11 +48,37 @@ export const useAdminState = () => {
   });
 
   useEffect(() => {
-    const authStatus = localStorage.getItem('admin_auth');
-    if (authStatus === 'true') {
-      setAuthenticated(true);
+    const storedSessionId = localStorage.getItem('admin_session_id');
+    
+    if (storedSessionId && storedSessionId !== sessionId) {
+      localStorage.removeItem('admin_session_id');
+      setAuthenticated(false);
+      toast({
+        title: 'Сессия завершена',
+        description: 'Вход выполнен на другом устройстве',
+        variant: 'destructive'
+      });
     }
   }, []);
+
+  useEffect(() => {
+    if (!authenticated) return;
+
+    const checkSession = () => {
+      const storedSessionId = localStorage.getItem('admin_session_id');
+      if (storedSessionId !== sessionId) {
+        setAuthenticated(false);
+        toast({
+          title: 'Сессия завершена',
+          description: 'Вход выполнен на другом устройстве',
+          variant: 'destructive'
+        });
+      }
+    };
+
+    const interval = setInterval(checkSession, 2000);
+    return () => clearInterval(interval);
+  }, [authenticated, sessionId]);
 
   useEffect(() => {
     if (authenticated) {
@@ -66,8 +93,8 @@ export const useAdminState = () => {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (loginForm.login === ADMIN_CREDENTIALS.login && loginForm.password === ADMIN_CREDENTIALS.password) {
+      localStorage.setItem('admin_session_id', sessionId);
       setAuthenticated(true);
-      localStorage.setItem('admin_auth', 'true');
       toast({
         title: 'Успешно!',
         description: 'Вы вошли в админ-панель'
@@ -83,7 +110,7 @@ export const useAdminState = () => {
 
   const handleLogout = () => {
     setAuthenticated(false);
-    localStorage.removeItem('admin_auth');
+    localStorage.removeItem('admin_session_id');
     window.location.href = '/';
   };
 
