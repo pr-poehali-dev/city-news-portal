@@ -3,6 +3,7 @@ import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from typing import Dict, Any
+import random
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -155,11 +156,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 if is_featured:
                     cur.execute('UPDATE news SET is_featured = FALSE')
                 
+                random_likes = random.randint(0, 100)
+                
                 cur.execute('''
-                    INSERT INTO news (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO news (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured, likes)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING *
-                ''', (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured))
+                ''', (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured, random_likes))
                 
                 new_news = cur.fetchone()
                 conn.commit()

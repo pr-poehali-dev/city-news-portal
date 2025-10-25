@@ -188,6 +188,12 @@ const Index = () => {
           : article
       ));
       
+      setTopThreeNews(prev => prev.map(article => 
+        article.id === newsId 
+          ? { ...article, likes: (article.likes || 0) + 1 }
+          : article
+      ));
+      
       if (featuredNews?.id === newsId) {
         setFeaturedNews((prev: any) => ({ ...prev, likes: (prev.likes || 0) + 1 }));
       }

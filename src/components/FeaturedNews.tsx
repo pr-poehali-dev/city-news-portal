@@ -44,14 +44,14 @@ export const FeaturedNews = ({ news, currentIndex = 0, totalCount = 1 }: Feature
             </div>
           )}
           <div className="absolute top-3 left-3">
-            <Badge className="bg-red-600 text-white font-bold px-3 py-1 text-xs">
+            <Badge className="bg-white text-red-600 font-bold px-3 py-1 text-xs shadow-lg border border-red-600">
               <Icon name="Pin" size={12} className="mr-1 inline" />
               ГЛАВНАЯ
             </Badge>
           </div>
         </div>
         <div className="p-4 md:p-6 flex flex-col justify-center overflow-hidden">
-          <Badge className="w-fit mb-2 bg-primary/10 text-primary hover:bg-primary/20 text-xs">
+          <Badge className="w-fit mb-2 bg-white text-primary hover:bg-primary/20 text-xs border border-primary">
             {news.category}
           </Badge>
           <h2 className="text-base md:text-lg font-serif font-bold mb-3 text-foreground leading-snug break-all line-clamp-3">
