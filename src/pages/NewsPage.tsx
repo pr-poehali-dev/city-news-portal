@@ -56,7 +56,7 @@ export const NewsPage = () => {
           const allNewsResponse = await fetch(FUNCTIONS_URL.news);
           const allNews = await allNewsResponse.json();
           const related = allNews
-            .filter((n: NewsArticle) => n.category === currentArticle.category && n.id !== currentArticle.id)
+            .filter((n: NewsArticle) => n.section === currentArticle.section && n.id !== currentArticle.id)
             .slice(0, 4);
           setRelatedNews(related);
         }
