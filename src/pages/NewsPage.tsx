@@ -60,10 +60,14 @@ export const NewsPage = () => {
             .slice(0, 4);
           setRelatedNews(related);
           
-          const commentsResponse = await fetch(`${FUNCTIONS_URL.comments}?news_id=${id}`);
-          if (commentsResponse.ok) {
-            const commentsData = await commentsResponse.json();
-            setComments(commentsData || []);
+          try {
+            const commentsResponse = await fetch(`${FUNCTIONS_URL.comments}?news_id=${id}`);
+            if (commentsResponse.ok) {
+              const commentsData = await commentsResponse.json();
+              setComments(commentsData || []);
+            }
+          } catch (error) {
+            console.error('Error loading comments:', error);
           }
         }
 

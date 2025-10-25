@@ -1,7 +1,5 @@
 {
-  "check-updates": "https://functions.poehali.dev/ad6dbc40-341f-468c-bf43-bc78691be642",
-  "send-notification": "https://functions.poehali.dev/227fae44-9767-44d7-afee-02b9dd2252dc",
-  "notifications": "https://functions.poehali.dev/b67aed3b-df61-46cb-9e8e-05d4950ef6d1",
+  "auth": "https://functions.poehali.dev/4ef2ae45-ab8c-4653-a9b9-7584f2aeb05d",
   "social-publisher": "https://functions.poehali.dev/a82256af-0286-4392-a152-571238c8af04",
   "sync-kudago-events": "https://functions.poehali.dev/9b3befac-d5bd-4a98-8d2b-f45edc14eb56",
   "kudago-events": "https://functions.poehali.dev/ab80cd05-8ada-45de-8a5f-dd7debe04ea3",

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { FUNCTIONS_URL, ADMIN_CREDENTIALS } from '@/lib/admin-constants';
+import { FUNCTIONS_URL } from '@/lib/admin-constants';
 
 export const useAdminState = () => {
   const { toast } = useToast();
@@ -119,21 +119,44 @@ export const useAdminState = () => {
     }
   }, [authenticated]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loginForm.login === ADMIN_CREDENTIALS.login && loginForm.password === ADMIN_CREDENTIALS.password) {
-      localStorage.setItem('admin_session_id', sessionId);
-      setAuthenticated(true);
-      toast({
-        title: 'Успешно!',
-        description: 'Вы вошли в админ-панель'
+    setLoading(true);
+    
+    try {
+      const response = await fetch(FUNCTIONS_URL.auth, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          login: loginForm.login,
+          password: loginForm.password
+        })
       });
-    } else {
+      
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        localStorage.setItem('admin_session_id', sessionId);
+        setAuthenticated(true);
+        toast({
+          title: 'Успешно!',
+          description: 'Вы вошли в админ-панель'
+        });
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: 'Неверный логин или пароль',
+          variant: 'destructive'
+        });
+      }
+    } catch (error) {
       toast({
         title: 'Ошибка',
-        description: 'Неверный логин или пароль',
+        description: 'Не удалось подключиться к серверу',
         variant: 'destructive'
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -146,16 +169,19 @@ export const useAdminState = () => {
   const loadNews = async () => {
     try {
       const response = await fetch(`${FUNCTIONS_URL.news}?status=published`);
+      if (!response.ok) throw new Error('Failed to fetch news');
       const data = await response.json();
       setNewsList(data);
     } catch (error) {
       console.error('Failed to load news:', error);
+      toast({ title: 'Ошибка', description: 'Не удалось загрузить новости', variant: 'destructive' });
     }
   };
 
   const loadDrafts = async () => {
     try {
       const response = await fetch(`${FUNCTIONS_URL.news}?status=draft`);
+      if (!response.ok) throw new Error('Failed to fetch drafts');
       const data = await response.json();
       setDraftsList(data);
     } catch (error) {
@@ -166,6 +192,7 @@ export const useAdminState = () => {
   const loadEvents = async () => {
     try {
       const response = await fetch(FUNCTIONS_URL.events);
+      if (!response.ok) throw new Error('Failed to fetch events');
       const data = await response.json();
       setEventsList(data);
     } catch (error) {
@@ -176,6 +203,7 @@ export const useAdminState = () => {
   const loadPlaces = async () => {
     try {
       const response = await fetch(FUNCTIONS_URL.cityPlaces);
+      if (!response.ok) throw new Error('Failed to fetch places');
       const data = await response.json();
       setPlacesList(data);
     } catch (error) {
@@ -186,6 +214,7 @@ export const useAdminState = () => {
   const loadMemory = async () => {
     try {
       const response = await fetch(FUNCTIONS_URL.memory);
+      if (!response.ok) throw new Error('Failed to fetch memory');
       const data = await response.json();
       setMemoryList(data || []);
     } catch (error) {
