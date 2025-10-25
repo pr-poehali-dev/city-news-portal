@@ -99,15 +99,18 @@ def truncate_text(text: str, max_length: int = 800) -> str:
 
 def publish_to_vk(title: str, excerpt: str, image_url: Optional[str], news_url: Optional[str]) -> Dict[str, Any]:
     '''Publish news to VK group wall'''
-    access_token = os.environ.get('VK_ACCESS_TOKEN')
+    group_token = os.environ.get('VK_ACCESS_TOKEN')
+    user_token = os.environ.get('VK_USER_ACCESS_TOKEN')
     group_id = os.environ.get('VK_GROUP_ID')
     
-    if not access_token or not group_id:
+    if not group_token or not group_id:
         return {
             'success': False,
             'error': 'VK credentials not configured',
             'post_id': None
         }
+    
+    access_token = user_token if user_token and image_url else group_token
     
     clean_text = truncate_text(excerpt, 1000)
     message_parts: List[str] = [title, '', clean_text]
@@ -125,7 +128,7 @@ def publish_to_vk(title: str, excerpt: str, image_url: Optional[str], news_url: 
     }
     
     if image_url:
-        photo_data = upload_photo_to_vk(image_url, access_token, group_id)
+        photo_data = upload_photo_to_vk_user_token(image_url, access_token, group_id)
         if photo_data:
             params['attachments'] = photo_data
     
@@ -164,11 +167,14 @@ def publish_to_vk(title: str, excerpt: str, image_url: Optional[str], news_url: 
         }
 
 
-def upload_photo_to_vk(image_url: str, access_token: str, group_id: str) -> Optional[str]:
-    '''Upload photo to VK and return attachment string'''
+def upload_photo_to_vk_user_token(image_url: str, access_token: str, group_id: str) -> Optional[str]:
+    '''Upload photo to VK using user token (not group token)'''
     try:
+        if not image_url or not image_url.startswith('http'):
+            print(f'Invalid image URL: {image_url}')
+            return None
+        
         params = {
-            'group_id': group_id,
             'access_token': access_token,
             'v': '5.131'
         }
@@ -177,17 +183,29 @@ def upload_photo_to_vk(image_url: str, access_token: str, group_id: str) -> Opti
         data = urllib.parse.urlencode(params).encode('utf-8')
         req = urllib.request.Request(url, data=data)
         
-        with urllib.request.urlopen(req, timeout=10) as response:
+        with urllib.request.urlopen(req, timeout=15) as response:
             result = json.loads(response.read().decode('utf-8'))
             
+            if 'error' in result:
+                print(f'VK getWallUploadServer error: {result["error"]}')
+                return None
+            
             if 'response' not in result or 'upload_url' not in result['response']:
+                print(f'No upload_url in response: {result}')
                 return None
             
             upload_url = result['response']['upload_url']
         
-        image_req = urllib.request.Request(image_url)
-        with urllib.request.urlopen(image_req, timeout=10) as img_response:
+        image_req = urllib.request.Request(
+            image_url,
+            headers={'User-Agent': 'Mozilla/5.0'}
+        )
+        with urllib.request.urlopen(image_req, timeout=15) as img_response:
             image_data = img_response.read()
+        
+        if len(image_data) == 0:
+            print('Downloaded image is empty')
+            return None
         
         boundary = '----WebKitFormBoundary7MA4YWxkTrZu0gW'
         body = (
@@ -202,10 +220,11 @@ def upload_photo_to_vk(image_url: str, access_token: str, group_id: str) -> Opti
             headers={'Content-Type': f'multipart/form-data; boundary={boundary}'}
         )
         
-        with urllib.request.urlopen(upload_req, timeout=10) as upload_response:
+        with urllib.request.urlopen(upload_req, timeout=15) as upload_response:
             upload_result = json.loads(upload_response.read().decode('utf-8'))
             
             if 'photo' not in upload_result:
+                print(f'No photo in upload result: {upload_result}')
                 return None
         
         save_params = {
@@ -221,15 +240,23 @@ def upload_photo_to_vk(image_url: str, access_token: str, group_id: str) -> Opti
         save_data = urllib.parse.urlencode(save_params).encode('utf-8')
         save_req = urllib.request.Request(save_url, data=save_data)
         
-        with urllib.request.urlopen(save_req, timeout=10) as save_response:
+        with urllib.request.urlopen(save_req, timeout=15) as save_response:
             save_result = json.loads(save_response.read().decode('utf-8'))
+            
+            if 'error' in save_result:
+                print(f'VK saveWallPhoto error: {save_result["error"]}')
+                return None
             
             if 'response' in save_result and len(save_result['response']) > 0:
                 photo = save_result['response'][0]
-                return f"photo{photo['owner_id']}_{photo['id']}"
+                attachment = f"photo{photo['owner_id']}_{photo['id']}"
+                print(f'Successfully uploaded photo: {attachment}')
+                return attachment
             
+            print(f'No photos in save result: {save_result}')
             return None
-    except Exception:
+    except Exception as e:
+        print(f'Photo upload error: {str(e)}')
         return None
 
 
