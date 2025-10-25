@@ -7,7 +7,7 @@
       "expectedStatus": 200
     },
     {
-      "name": "Get sitemap.xml",
+      "name": "Get sitemap XML",
       "method": "GET",
       "path": "/",
       "expectedStatus": 200,

@@ -7,10 +7,10 @@ from datetime import datetime
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Generate dynamic sitemap.xml with all news articles and pages
+    Business: Generate sitemap.xml from database and return as text
     Args: event with httpMethod
           context with request_id
-    Returns: XML sitemap response
+    Returns: XML sitemap as plain text
     '''
     method: str = event.get('httpMethod', 'GET')
     
@@ -51,16 +51,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'isBase64Encoded': False
         }
     
-    conn = psycopg2.connect(dsn)
-    
     try:
+        conn = psycopg2.connect(dsn)
         cursor = conn.cursor(cursor_factory=RealDictCursor)
         
         # Get all published news
         cursor.execute("""
             SELECT id, created_at, updated_at 
             FROM news 
-            WHERE is_published = true 
+            WHERE status = 'published' 
             ORDER BY created_at DESC
         """)
         news_articles = cursor.fetchall()
@@ -86,16 +85,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         # Main pages
         static_pages = [
-            {'loc': f'{base_url}/', 'changefreq': 'hourly', 'priority': '1.0'},
-            {'loc': f'{base_url}/places', 'changefreq': 'daily', 'priority': '0.8'},
-            {'loc': f'{base_url}/places/map', 'changefreq': 'daily', 'priority': '0.7'},
-            {'loc': f'{base_url}/about', 'changefreq': 'monthly', 'priority': '0.5'},
-            {'loc': f'{base_url}/contacts', 'changefreq': 'monthly', 'priority': '0.5'},
+            {'loc': f'{base_url}/', 'changefreq': 'hourly', 'priority': '1.0', 'lastmod': datetime.now().strftime('%Y-%m-%d')},
+            {'loc': f'{base_url}/places', 'changefreq': 'daily', 'priority': '0.8', 'lastmod': datetime.now().strftime('%Y-%m-%d')},
+            {'loc': f'{base_url}/places/map', 'changefreq': 'daily', 'priority': '0.7', 'lastmod': datetime.now().strftime('%Y-%m-%d')},
+            {'loc': f'{base_url}/about', 'changefreq': 'monthly', 'priority': '0.5', 'lastmod': datetime.now().strftime('%Y-%m-%d')},
+            {'loc': f'{base_url}/contacts', 'changefreq': 'monthly', 'priority': '0.5', 'lastmod': datetime.now().strftime('%Y-%m-%d')},
         ]
         
         for page in static_pages:
             xml_parts.append('  <url>')
             xml_parts.append(f'    <loc>{page["loc"]}</loc>')
+            xml_parts.append(f'    <lastmod>{page["lastmod"]}</lastmod>')
             xml_parts.append(f'    <changefreq>{page["changefreq"]}</changefreq>')
             xml_parts.append(f'    <priority>{page["priority"]}</priority>')
             xml_parts.append('  </url>')
@@ -146,8 +146,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
         
     except Exception as e:
-        if conn:
-            conn.close()
         return {
             'statusCode': 500,
             'headers': {

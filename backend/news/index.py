@@ -7,6 +7,15 @@ import random
 import urllib.request
 import urllib.error
 
+SITEMAP_FUNCTION_URL = 'https://functions.poehali.dev/0d0f69b6-8c6c-441f-ba89-36f59adf440b'
+
+def trigger_sitemap_regeneration():
+    '''Trigger sitemap regeneration in background'''
+    try:
+        urllib.request.urlopen(SITEMAP_FUNCTION_URL, timeout=1)
+    except:
+        pass
+
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
     Business: Manage news articles - get all, get by id, create, update, delete
@@ -169,6 +178,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 new_news = cur.fetchone()
                 conn.commit()
                 
+                # Trigger sitemap regeneration
+                if status == 'published':
+                    trigger_sitemap_regeneration()
+                
                 return {
                     'statusCode': 201,
                     'headers': {
@@ -240,6 +253,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 updated_news = cur.fetchone()
                 conn.commit()
+                
+                # Trigger sitemap regeneration if status changed to published
+                if body.get('status') == 'published':
+                    trigger_sitemap_regeneration()
                 
                 if not updated_news:
                     return {

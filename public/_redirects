@@ -1,2 +1,3 @@
 # Netlify/Vercel style redirects for SPA
+/sitemap.xml https://functions.poehali.dev/0d0f69b6-8c6c-441f-ba89-36f59adf440b 200
 /*    /index.html   200
