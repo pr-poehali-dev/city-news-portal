@@ -1,7 +1,14 @@
 {
   "tests": [
     {
-      "name": "Get comments requires news_id",
+      "name": "Get all comments with action=list_all",
+      "method": "GET",
+      "path": "/?action=list_all",
+      "expectedStatus": 200,
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Get comments requires news_id or action",
       "method": "GET",
       "path": "/",
       "expectedStatus": 400,

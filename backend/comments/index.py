@@ -44,25 +44,34 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     try:
         if method == 'GET':
             params = event.get('queryStringParameters') or {}
+            action = params.get('action')
             news_id = params.get('news_id')
             
-            if not news_id:
-                return {
-                    'statusCode': 400,
-                    'headers': {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    },
-                    'body': json.dumps({'error': 'news_id required'}),
-                    'isBase64Encoded': False
-                }
-            
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                cur.execute('''
-                    SELECT * FROM comments 
-                    WHERE news_id = %s
-                    ORDER BY created_at DESC
-                ''', (news_id,))
+                if action == 'list_all':
+                    cur.execute('''
+                        SELECT c.*, n.title as news_title
+                        FROM comments c
+                        LEFT JOIN news n ON c.news_id = n.id
+                        ORDER BY c.created_at DESC
+                    ''')
+                elif news_id:
+                    news_id_safe = news_id.replace("'", "''")
+                    cur.execute(f'''
+                        SELECT * FROM comments 
+                        WHERE news_id = '{news_id_safe}'
+                        ORDER BY created_at DESC
+                    ''')
+                else:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'body': json.dumps({'error': 'news_id or action=list_all required'}),
+                        'isBase64Encoded': False
+                    }
                 
                 comments = cur.fetchall()
                 
@@ -94,12 +103,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
+            author_name_safe = author_name.replace("'", "''")
+            text_safe = text.replace("'", "''")
+            
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                cur.execute('''
+                cur.execute(f'''
                     INSERT INTO comments (news_id, author_name, text)
-                    VALUES (%s, %s, %s)
+                    VALUES ({news_id}, '{author_name_safe}', '{text_safe}')
                     RETURNING *
-                ''', (news_id, author_name, text))
+                ''')
                 
                 new_comment = cur.fetchone()
                 conn.commit()

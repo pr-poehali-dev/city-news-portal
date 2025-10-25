@@ -163,7 +163,7 @@ export function AnalyticsManagement({ loading }: AnalyticsManagementProps) {
                       </p>
                     </div>
                   </div>
-                  <p className="text-sm md:text-base">{comment.content}</p>
+                  <p className="text-sm md:text-base">{comment.text}</p>
                   {comment.parent_id && (
                     <div className="pl-3 md:pl-4 border-l-2 border-muted">
                       <p className="text-xs text-muted-foreground">Ответ на комментарий #{comment.parent_id}</p>
