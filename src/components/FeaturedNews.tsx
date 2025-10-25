@@ -36,7 +36,7 @@ export const FeaturedNews = ({ news, currentIndex = 0, totalCount = 1 }: Feature
             <img
               src={news.image_url}
               alt={news.title}
-              className="w-full h-[200px] md:h-[280px] object-cover transition-transform group-hover:scale-105"
+              className="w-full h-[200px] md:h-[280px] object-contain bg-muted transition-transform group-hover:scale-105"
             />
           ) : (
             <div className="w-full h-[200px] md:h-[280px] bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">

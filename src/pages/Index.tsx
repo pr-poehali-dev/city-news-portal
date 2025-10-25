@@ -285,7 +285,7 @@ const Index = () => {
             <div className="mb-12">
               <h2 className="text-2xl font-bold mb-6">Последние новости</h2>
               <div className="grid gap-6">
-                {articles.slice(0, 6).map((article) => (
+                {articles.slice(3, 9).map((article) => (
                   <MiniNewsCard
                     key={article.id}
                     news={article}
