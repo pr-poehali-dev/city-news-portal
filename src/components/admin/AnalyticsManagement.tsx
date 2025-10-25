@@ -24,17 +24,29 @@ export function AnalyticsManagement({ loading }: AnalyticsManagementProps) {
   const loadAnalytics = async () => {
     try {
       const newsResponse = await fetch('https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe?status=published');
+      if (!newsResponse.ok) {
+        console.error('Failed to fetch news');
+        return;
+      }
       const newsData = await newsResponse.json();
       
-      const totalViews = newsData.reduce((sum: number, news: any) => sum + (news.views || 0), 0);
+      const totalViews = Array.isArray(newsData) ? newsData.reduce((sum: number, news: any) => sum + (news.views || 0), 0) : 0;
       
-      const subsResponse = await fetch('https://functions.poehali.dev/b67aed3b-df61-46cb-9e8e-05d4950ef6d1?action=subscriptions');
-      const subsData = await subsResponse.json();
+      let subscribersCount = 0;
+      try {
+        const subsResponse = await fetch('https://functions.poehali.dev/b67aed3b-df61-46cb-9e8e-05d4950ef6d1?action=subscriptions');
+        if (subsResponse.ok) {
+          const subsData = await subsResponse.json();
+          subscribersCount = Array.isArray(subsData) ? subsData.length : 0;
+        }
+      } catch (e) {
+        console.error('Failed to load subscriptions:', e);
+      }
       
       setAnalytics({
         totalViews,
-        subscribersCount: subsData.length,
-        newsCount: newsData.length,
+        subscribersCount,
+        newsCount: Array.isArray(newsData) ? newsData.length : 0,
         commentsCount: 0
       });
     } catch (error) {
@@ -45,11 +57,17 @@ export function AnalyticsManagement({ loading }: AnalyticsManagementProps) {
   const loadComments = async () => {
     try {
       const response = await fetch('https://functions.poehali.dev/e442a5de-b5ed-4ff1-b15c-da8b0bfea9b5?action=list_all');
+      if (!response.ok) {
+        console.error('Failed to fetch comments');
+        return;
+      }
       const data = await response.json();
-      setComments(data || []);
-      setAnalytics(prev => ({ ...prev, commentsCount: data.length }));
+      const commentsArray = Array.isArray(data) ? data : [];
+      setComments(commentsArray);
+      setAnalytics(prev => ({ ...prev, commentsCount: commentsArray.length }));
     } catch (error) {
       console.error('Failed to load comments:', error);
+      setComments([]);
     }
   };
 

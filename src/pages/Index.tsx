@@ -139,7 +139,16 @@ const Index = () => {
     try {
       const url = category ? `${FUNCTIONS_URL.news}?category=${encodeURIComponent(category)}` : FUNCTIONS_URL.news;
       const response = await fetch(url);
+      if (!response.ok) {
+        console.error('Failed to fetch news:', response.status);
+        return;
+      }
       const data = await response.json();
+      
+      if (!Array.isArray(data)) {
+        console.error('Invalid news data format');
+        return;
+      }
       
       const sortedData = data.sort((a: any, b: any) => 
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -151,56 +160,74 @@ const Index = () => {
       setArticles(sortedData);
     } catch (error) {
       console.error('Failed to load news:', error);
+      setArticles([]);
+      setTopThreeNews([]);
     }
   };
 
   const loadLatestForTicker = async () => {
     try {
       const response = await fetch(FUNCTIONS_URL.news);
+      if (!response.ok) return;
       const data = await response.json();
-      setLatestNews(data.slice(0, 5));
+      if (Array.isArray(data)) {
+        setLatestNews(data.slice(0, 5));
+      }
     } catch (error) {
       console.error('Failed to load latest news:', error);
+      setLatestNews([]);
     }
   };
 
   const loadCityPlaces = async () => {
     try {
       const response = await fetch(FUNCTIONS_URL.cityPlaces);
+      if (!response.ok) return;
       const data = await response.json();
-      setCityPlaces(data.filter((p: any) => p.is_published));
+      if (Array.isArray(data)) {
+        setCityPlaces(data.filter((p: any) => p.is_published));
+      }
     } catch (error) {
       console.error('Failed to load city places:', error);
+      setCityPlaces([]);
     }
   };
 
   const loadMemoryArticles = async () => {
     try {
       const response = await fetch(FUNCTIONS_URL.memory);
+      if (!response.ok) return;
       const data = await response.json();
-      setMemoryArticles(data.filter((a: any) => a.is_published));
+      if (Array.isArray(data)) {
+        setMemoryArticles(data.filter((a: any) => a.is_published));
+      }
     } catch (error) {
       console.error('Failed to load memory articles:', error);
+      setMemoryArticles([]);
     }
   };
 
   const loadEvents = async () => {
     try {
       const response = await fetch(FUNCTIONS_URL.kudagoEvents);
+      if (!response.ok) return;
       const data = await response.json();
-      setEvents(data.events || []);
+      setEvents(data?.events || []);
     } catch (error) {
       console.error('Failed to load events:', error);
+      setEvents([]);
     }
   };
 
   const loadWeather = async () => {
     try {
       const response = await fetch(FUNCTIONS_URL.weather);
+      if (!response.ok) return;
       const data = await response.json();
       setWeather(data);
     } catch (error) {
       console.error('Failed to load weather:', error);
+      setWeather(null);
     }
   };
 
