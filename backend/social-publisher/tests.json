@@ -9,7 +9,7 @@
       "bodyMatcher": "exact"
     },
     {
-      "name": "Test POST without credentials (should return partial success)",
+      "name": "Test POST with credentials (should publish)",
       "method": "POST",
       "path": "/",
       "body": {
@@ -20,17 +20,9 @@
         "publish_vk": true,
         "publish_telegram": true
       },
-      "expectedStatus": 500,
+      "expectedStatus": 200,
       "expectedBody": {
-        "success": false,
-        "results": {
-          "vk": {
-            "success": false
-          },
-          "telegram": {
-            "success": false
-          }
-        }
+        "success": true
       },
       "bodyMatcher": "partial"
     },

@@ -260,7 +260,7 @@ export const useAdminState = () => {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 title: newsForm.title,
-                excerpt: newsForm.excerpt,
+                excerpt: newsForm.content,
                 image_url: newsForm.image_url,
                 news_url: newsUrl,
                 publish_vk: newsForm.publish_vk,

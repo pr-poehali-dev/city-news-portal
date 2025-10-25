@@ -3,6 +3,7 @@ import os
 import urllib.request
 import urllib.parse
 import urllib.error
+import re
 from typing import Dict, Any, Optional, List
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
@@ -79,6 +80,23 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     }
 
 
+def clean_markdown(text: str) -> str:
+    '''Remove markdown syntax from text'''
+    text = re.sub(r'!\[.*?\]\(.*?\)', '', text)
+    text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', text)
+    text = re.sub(r'[#*_`~]', '', text)
+    text = re.sub(r'\n{3,}', '\n\n', text)
+    return text.strip()
+
+def truncate_text(text: str, max_length: int = 800) -> str:
+    '''Truncate text to max length, keeping whole words'''
+    text = clean_markdown(text)
+    if len(text) <= max_length:
+        return text
+    
+    truncated = text[:max_length].rsplit(' ', 1)[0]
+    return truncated + '...'
+
 def publish_to_vk(title: str, excerpt: str, image_url: Optional[str], news_url: Optional[str]) -> Dict[str, Any]:
     '''Publish news to VK group wall'''
     access_token = os.environ.get('VK_ACCESS_TOKEN')
@@ -91,7 +109,8 @@ def publish_to_vk(title: str, excerpt: str, image_url: Optional[str], news_url: 
             'post_id': None
         }
     
-    message_parts: List[str] = [title, '', excerpt]
+    clean_text = truncate_text(excerpt, 1000)
+    message_parts: List[str] = [title, '', clean_text]
     if news_url:
         message_parts.extend(['', f'Читать полностью: {news_url}'])
     
@@ -226,7 +245,8 @@ def publish_to_telegram(title: str, excerpt: str, image_url: Optional[str], news
             'message_id': None
         }
     
-    caption_parts: List[str] = [f'<b>{title}</b>', '', excerpt]
+    clean_text = truncate_text(excerpt, 800)
+    caption_parts: List[str] = [f'<b>{title}</b>', '', clean_text]
     if news_url:
         caption_parts.extend(['', f'<a href="{news_url}">Читать полностью</a>'])
     
