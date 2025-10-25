@@ -44,14 +44,14 @@ export const FeaturedNews = ({ news, currentIndex = 0, totalCount = 1 }: Feature
             </div>
           )}
           <div className="absolute top-3 left-3">
-            <Badge className="bg-white text-red-600 font-bold px-3 py-1 text-xs shadow-lg border border-red-600">
+            <Badge className="bg-orange-500 text-white font-bold px-3 py-1 text-xs shadow-lg">
               <Icon name="Pin" size={12} className="mr-1 inline" />
               ГЛАВНАЯ
             </Badge>
           </div>
         </div>
         <div className="p-4 md:p-6 flex flex-col justify-center overflow-hidden">
-          <Badge className="w-fit mb-2 bg-white text-primary hover:bg-primary/20 text-xs border border-primary">
+          <Badge className="w-fit mb-2 bg-orange-500 text-white text-xs">
             {news.category}
           </Badge>
           <h2 className="text-base md:text-lg font-serif font-bold mb-3 text-foreground leading-snug break-all line-clamp-3">
@@ -75,18 +75,7 @@ export const FeaturedNews = ({ news, currentIndex = 0, totalCount = 1 }: Feature
             </div>
           </div>
           
-          {totalCount > 1 && (
-            <div className="flex gap-2 mt-4">
-              {Array.from({ length: totalCount }).map((_, index) => (
-                <div
-                  key={index}
-                  className={`h-1 flex-1 rounded-full transition-all ${
-                    index === currentIndex ? 'bg-primary' : 'bg-primary/20'
-                  }`}
-                />
-              ))}
-            </div>
-          )}
+
         </div>
       </div>
       {news.video_url && (

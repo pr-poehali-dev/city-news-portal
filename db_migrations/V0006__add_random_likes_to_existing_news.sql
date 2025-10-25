@@ -1,0 +1,1 @@
+UPDATE news SET likes = FLOOR(RANDOM() * 100) WHERE likes IS NULL OR likes = 0;
