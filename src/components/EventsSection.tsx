@@ -184,11 +184,11 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
                     TICKET-{currentEvent.id}
                   </div>
                   
-                  <div className="mb-5 pr-32">
+                  <div className="mb-5">
                     <div className="inline-block mb-2 px-2 py-0.5 bg-primary/5 border border-primary/20 rounded text-[10px] text-primary uppercase tracking-wider font-bold">
                       Краснодар
                     </div>
-                    <h3 className="text-2xl font-bold mb-2 leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                    <h3 className="text-xl sm:text-2xl font-bold mb-2 leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
                       {capitalizeFirst(currentEvent.title)}
                     </h3>
                     
@@ -232,36 +232,38 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
                     )}
                   </div>
 
-                  <div className="flex items-center justify-between pt-3 border-t-2 border-dashed border-primary/20">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {currentEvent.price && !currentEvent.is_free && (
-                        <div className="px-3 py-1 bg-white/60 border border-primary/30 rounded text-xs font-bold text-primary shadow-sm">
-                          {currentEvent.price}
-                        </div>
-                      )}
-                      {currentEvent.age_restriction && (
-                        <div className="px-2 py-1 bg-white/60 border border-primary/20 rounded text-xs font-semibold text-muted-foreground">
-                          {currentEvent.age_restriction}+
-                        </div>
-                      )}
+                  <div className="flex items-start justify-between pt-3 border-t-2 border-dashed border-primary/20 gap-3">
+                    <div className="flex flex-col gap-2 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {currentEvent.price && !currentEvent.is_free && (
+                          <div className="px-3 py-1 bg-white/60 border border-primary/30 rounded text-xs font-bold text-primary shadow-sm">
+                            {currentEvent.price}
+                          </div>
+                        )}
+                        {currentEvent.age_restriction && (
+                          <div className="px-2 py-1 bg-white/60 border border-primary/20 rounded text-xs font-semibold text-muted-foreground">
+                            {currentEvent.age_restriction}+
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex items-center gap-1.5 text-xs font-semibold text-primary group-hover:gap-2 transition-all">
+                        <span>Подробнее</span>
+                        <Icon name="ExternalLink" size={12} className="opacity-60" />
+                      </div>
                     </div>
-                    
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-primary group-hover:gap-2 transition-all">
-                      <span>Подробнее</span>
-                      <Icon name="ExternalLink" size={12} className="opacity-60" />
-                    </div>
-                  </div>
 
-                  {currentEvent.image_url && (
-                    <div className="absolute top-6 right-6 w-24 h-24 rounded overflow-hidden shadow-xl border-4 border-white/80 dark:border-gray-800/80 rotate-2 group-hover:rotate-0 group-hover:scale-110 transition-all duration-300">
-                      <img 
-                        src={currentEvent.image_url}
-                        alt={capitalizeFirst(currentEvent.title)}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 ring-1 ring-inset ring-black/5" />
-                    </div>
-                  )}
+                    {currentEvent.image_url && (
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded overflow-hidden shadow-xl border-4 border-white/80 dark:border-gray-800/80 rotate-2 group-hover:rotate-0 group-hover:scale-105 transition-all duration-300 flex-shrink-0">
+                        <img 
+                          src={currentEvent.image_url}
+                          alt={capitalizeFirst(currentEvent.title)}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 ring-1 ring-inset ring-black/5" />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
