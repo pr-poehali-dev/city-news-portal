@@ -258,12 +258,12 @@ const Index = () => {
                   </div>
                 )}
 
-                {/* Остальные новости - только заголовки */}
+                {/* 5 заголовков новостей */}
                 {articles.length > 4 && (
                   <div className="mb-8">
-                    <h3 className="text-xl font-serif font-bold mb-4 border-b pb-2">Все новости</h3>
+                    <h3 className="text-xl font-serif font-bold mb-4 border-b pb-2">Последние новости</h3>
                     <div className="space-y-3">
-                      {articles.slice(4).map((article) => (
+                      {articles.slice(4, 9).map((article) => (
                         <div 
                           key={article.id}
                           onClick={() => handleArticleClick(article.id)}
@@ -289,6 +289,49 @@ const Index = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Новости по категориям */}
+                {['Политика', 'Экономика', 'Культура', 'Спорт'].map((category) => {
+                  const categoryNews = articles.filter(a => a.category === category).slice(0, 4);
+                  if (categoryNews.length === 0) return null;
+                  
+                  return (
+                    <div key={category} className="mb-8">
+                      <h3 className="text-2xl font-serif font-bold mb-4 border-b-2 border-primary pb-2">{category}</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {categoryNews.map((article) => (
+                          <Card
+                            key={article.id}
+                            className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                            onClick={() => handleArticleClick(article.id)}
+                          >
+                            {article.image_url && (
+                              <div className="relative overflow-hidden h-48">
+                                <img
+                                  src={article.image_url}
+                                  alt={article.title}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            )}
+                            <CardContent className="p-4">
+                              <div className="flex items-center gap-2 mb-2 text-xs text-muted-foreground">
+                                <Icon name="Clock" size={12} />
+                                {new Date(article.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                              </div>
+                              <h4 className="font-bold text-lg mb-2 line-clamp-2 leading-snug">
+                                {article.title}
+                              </h4>
+                              <p className="text-sm text-muted-foreground line-clamp-2">
+                                {article.excerpt}
+                              </p>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </>
             )}
 
