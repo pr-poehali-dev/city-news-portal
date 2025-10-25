@@ -15,6 +15,8 @@ export const NotificationSubscribe = ({ compact = false }: NotificationSubscribe
   const [permission, setPermission] = useState<NotificationPermission>('default');
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     if ('Notification' in window) {
       setPermission(Notification.permission);
       const subscribed = localStorage.getItem('notifications-subscribed') === 'true';
