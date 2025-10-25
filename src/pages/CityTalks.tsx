@@ -185,7 +185,7 @@ const CityTalks = () => {
         )}
       </main>
 
-      <Footer />
+      <Footer sections={[]} onSectionChange={() => {}} />
     </div>
   );
 };
