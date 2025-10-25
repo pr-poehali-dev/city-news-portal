@@ -117,7 +117,7 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
               />
 
               <div 
-                className="grid md:grid-cols-[120px_1fr] min-h-[300px] rounded-lg overflow-hidden"
+                className="grid md:grid-cols-[100px_1fr] min-h-[240px] rounded-lg overflow-hidden"
                 style={{
                   background: 'linear-gradient(135deg, #fefdfb 0%, #fef9f3 50%, #fef5eb 100%)',
                   backgroundImage: `
@@ -128,7 +128,7 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
                   boxShadow: '0 10px 40px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.5)'
                 }}
               >
-                <div className="relative p-6 flex flex-col items-center justify-center border-r-2 border-dashed border-primary/30">
+                <div className="relative p-4 flex flex-col items-center justify-center border-r-2 border-dashed border-primary/30">
                   <div 
                     className="absolute inset-0"
                     style={{
@@ -140,74 +140,64 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
                     }}
                   />
                   
-                  <div className="text-center space-y-5 relative z-10">
-                    <div className="space-y-2">
-                      <div className="text-[10px] text-primary/60 uppercase tracking-widest font-bold border-b border-primary/20 pb-1">
-                        Входной билет
-                      </div>
-                      <div className="inline-flex items-center justify-center w-14 h-14 rounded-sm bg-white/50 border border-primary/20 shadow-sm">
-                        <Icon name="Ticket" size={24} className="text-primary" />
+                  <div className="text-center space-y-3 relative z-10">
+                    <div className="space-y-1">
+                      <div className="inline-flex items-center justify-center w-10 h-10 rounded-sm bg-white/50 border border-primary/20 shadow-sm">
+                        <Icon name="Ticket" size={18} className="text-primary" />
                       </div>
                     </div>
                     
                     {currentEvent.is_free && (
                       <div className="relative -rotate-12">
-                        <Badge className="bg-green-600 hover:bg-green-700 text-white border-0 px-2 py-0.5 text-[10px] font-bold shadow-md">
+                        <Badge className="bg-green-600 hover:bg-green-700 text-white border-0 px-1.5 py-0.5 text-[9px] font-bold shadow-md">
                           FREE
                         </Badge>
                       </div>
                     )}
 
-                    <div className="space-y-1 pt-2 border-t border-primary/20">
-                      <div className="text-[9px] text-muted-foreground uppercase tracking-widest">
-                        № события
+                    <div className="space-y-0.5">
+                      <div className="text-[8px] text-muted-foreground uppercase tracking-widest">
+                        №
                       </div>
-                      <div className="text-3xl font-bold text-primary font-serif">
+                      <div className="text-2xl font-bold text-primary font-serif">
                         {currentIndex + 1}
                       </div>
-                      <div className="text-[9px] text-muted-foreground">
+                      <div className="text-[8px] text-muted-foreground">
                         из {events.length}
                       </div>
-                    </div>
-                    
-                    <div 
-                      className="text-[8px] text-primary/40 uppercase tracking-wider rotate-90 absolute -right-8 top-1/2 -translate-y-1/2 whitespace-nowrap font-bold"
-                      style={{ writingMode: 'vertical-rl' }}
-                    >
-                      KudaGo
                     </div>
                   </div>
                 </div>
                 
-                <div className="p-8 flex flex-col justify-center relative">
+                <div className="p-5 flex flex-col justify-center relative">
                   <div className="absolute top-4 right-4 text-[10px] text-primary/30 uppercase tracking-widest font-mono">
                     TICKET-{currentEvent.id}
                   </div>
                   
-                  <div className="mb-5">
-                    <div className="inline-block mb-2 px-2 py-0.5 bg-primary/5 border border-primary/20 rounded text-[10px] text-primary uppercase tracking-wider font-bold">
+                  <div className="mb-4">
+                    <div className="inline-block mb-1.5 px-1.5 py-0.5 bg-primary/5 border border-primary/20 rounded text-[9px] text-primary uppercase tracking-wider font-bold">
                       Краснодар
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-bold mb-2 leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                    <h3 className="text-lg sm:text-xl font-bold mb-1.5 leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
                       {capitalizeFirst(currentEvent.title)}
                     </h3>
                     
                     {currentEvent.description && (
-                      <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
+                      <p className="text-muted-foreground text-xs leading-relaxed line-clamp-1">
                         {currentEvent.description}
                       </p>
                     )}
                   </div>
 
-                  <div className="space-y-3 mb-4 p-4 bg-primary/[0.02] rounded-md border border-primary/10">
+                  <div className="space-y-2 mb-3 p-3 bg-primary/[0.02] rounded-md border border-primary/10">
                     {(currentEvent.event_date || currentEvent.event_date_display) && (
-                      <div className="flex items-start gap-3">
-                        <div className="w-9 h-9 rounded bg-white/80 flex items-center justify-center flex-shrink-0 border border-primary/20 shadow-sm">
-                          <Icon name="Clock" size={18} className="text-primary" />
+                      <div className="flex items-start gap-2">
+                        <div className="w-7 h-7 rounded bg-white/80 flex items-center justify-center flex-shrink-0 border border-primary/20 shadow-sm">
+                          <Icon name="Clock" size={14} className="text-primary" />
                         </div>
                         <div className="flex-1">
-                          <div className="text-[10px] text-primary/60 uppercase tracking-widest mb-0.5 font-bold">Дата и время</div>
-                          <div className="text-sm font-semibold text-foreground">
+                          <div className="text-[9px] text-primary/60 uppercase tracking-widest mb-0.5 font-bold">Когда</div>
+                          <div className="text-xs font-semibold text-foreground">
                             {currentEvent.event_date_display || new Date(currentEvent.event_date!).toLocaleDateString('ru-RU', {
                               day: 'numeric',
                               month: 'long',
@@ -220,41 +210,41 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
                     )}
                     
                     {currentEvent.location && (
-                      <div className="flex items-start gap-3 pt-2 border-t border-primary/10">
-                        <div className="w-9 h-9 rounded bg-white/80 flex items-center justify-center flex-shrink-0 border border-primary/20 shadow-sm">
-                          <Icon name="MapPin" size={18} className="text-primary" />
+                      <div className="flex items-start gap-2 pt-1.5 border-t border-primary/10">
+                        <div className="w-7 h-7 rounded bg-white/80 flex items-center justify-center flex-shrink-0 border border-primary/20 shadow-sm">
+                          <Icon name="MapPin" size={14} className="text-primary" />
                         </div>
                         <div className="flex-1">
-                          <div className="text-[10px] text-primary/60 uppercase tracking-widest mb-0.5 font-bold">Место проведения</div>
-                          <div className="text-sm font-semibold text-foreground line-clamp-1">{currentEvent.location}</div>
+                          <div className="text-[9px] text-primary/60 uppercase tracking-widest mb-0.5 font-bold">Где</div>
+                          <div className="text-xs font-semibold text-foreground line-clamp-1">{currentEvent.location}</div>
                         </div>
                       </div>
                     )}
                   </div>
 
-                  <div className="flex items-start justify-between pt-3 border-t-2 border-dashed border-primary/20 gap-3">
+                  <div className="flex items-start justify-between pt-2 border-t-2 border-dashed border-primary/20 gap-2">
                     <div className="flex flex-col gap-2 flex-1">
-                      <div className="flex items-center gap-2 flex-wrap">
+                      <div className="flex items-center gap-1.5 flex-wrap">
                         {currentEvent.price && !currentEvent.is_free && (
-                          <div className="px-3 py-1 bg-white/60 border border-primary/30 rounded text-xs font-bold text-primary shadow-sm">
+                          <div className="px-2 py-0.5 bg-white/60 border border-primary/30 rounded text-[10px] font-bold text-primary shadow-sm">
                             {currentEvent.price}
                           </div>
                         )}
                         {currentEvent.age_restriction && (
-                          <div className="px-2 py-1 bg-white/60 border border-primary/20 rounded text-xs font-semibold text-muted-foreground">
+                          <div className="px-1.5 py-0.5 bg-white/60 border border-primary/20 rounded text-[10px] font-semibold text-muted-foreground">
                             {currentEvent.age_restriction}+
                           </div>
                         )}
                       </div>
                       
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-primary group-hover:gap-2 transition-all">
+                      <div className="flex items-center gap-1 text-[10px] font-semibold text-primary group-hover:gap-1.5 transition-all">
                         <span>Подробнее</span>
-                        <Icon name="ExternalLink" size={12} className="opacity-60" />
+                        <Icon name="ExternalLink" size={10} className="opacity-60" />
                       </div>
                     </div>
 
                     {currentEvent.image_url && (
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded overflow-hidden shadow-xl border-4 border-white/80 dark:border-gray-800/80 rotate-2 group-hover:rotate-0 group-hover:scale-105 transition-all duration-300 flex-shrink-0">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded overflow-hidden shadow-xl border-3 border-white/80 dark:border-gray-800/80 rotate-2 group-hover:rotate-0 group-hover:scale-105 transition-all duration-300 flex-shrink-0">
                         <img 
                           src={currentEvent.image_url}
                           alt={capitalizeFirst(currentEvent.title)}
