@@ -365,13 +365,14 @@ export function PlacesManagement({
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Список мест ({placesList.length})</CardTitle>
-            <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <CardTitle className="text-lg sm:text-xl">Список мест ({placesList.length})</CardTitle>
+            <div className="flex flex-wrap gap-2">
               <Button
                 variant={filterFeatured === 'all' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setFilterFeatured('all')}
+                className="text-xs sm:text-sm"
               >
                 Все
               </Button>
@@ -379,22 +380,23 @@ export function PlacesManagement({
                 variant={filterFeatured === 'featured' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setFilterFeatured('featured')}
-                className={filterFeatured === 'featured' ? 'bg-yellow-500 hover:bg-yellow-600' : ''}
+                className={`text-xs sm:text-sm ${filterFeatured === 'featured' ? 'bg-yellow-500 hover:bg-yellow-600' : ''}`}
               >
-                ⭐ Город оценил
+                ⭐ Оценил
               </Button>
               <Button
                 variant={filterFeatured === 'regular' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setFilterFeatured('regular')}
+                className="text-xs sm:text-sm"
               >
                 Обычные
               </Button>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+        <CardContent className="p-2 sm:p-6">
+          <div className="space-y-3 sm:space-y-4 max-h-[600px] overflow-y-auto pr-2">
             {placesList
               .filter(place => {
                 if (filterFeatured === 'featured') return place.is_featured;
@@ -402,19 +404,19 @@ export function PlacesManagement({
                 return true;
               })
               .map((place) => (
-              <div key={place.id} className="flex items-start gap-4 p-4 border rounded-lg">
+              <div key={place.id} className="flex flex-col sm:flex-row items-start gap-3 p-3 sm:p-4 border rounded-lg bg-card">
                 {place.image_url && (
                   <img
                     src={place.image_url}
                     alt={place.title}
-                    className="w-20 h-20 object-cover rounded"
+                    className="w-full sm:w-20 h-32 sm:h-20 object-cover rounded flex-shrink-0"
                   />
                 )}
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-bold">{place.title}</h3>
+                <div className="flex-1 min-w-0 w-full">
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <h3 className="font-bold text-sm sm:text-base break-words">{place.title}</h3>
                     <span
-                      className="text-xs px-2 py-1 rounded"
+                      className="text-xs px-2 py-0.5 rounded whitespace-nowrap"
                       style={{
                         backgroundColor: categoryColors[place.category as keyof typeof categoryColors],
                         color: 'white'
@@ -423,50 +425,49 @@ export function PlacesManagement({
                       {place.category}
                     </span>
                     {!place.is_published && (
-                      <span className="text-xs px-2 py-1 bg-gray-200 rounded">
+                      <span className="text-xs px-2 py-0.5 bg-gray-200 dark:bg-gray-700 rounded">
                         Черновик
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground mb-1">{place.excerpt}</p>
-                  <p className="text-xs text-muted-foreground">📍 {place.address}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground mb-1 line-clamp-2">{place.excerpt}</p>
+                  <p className="text-xs text-muted-foreground truncate">📍 {place.address}</p>
                 </div>
-                <div className="flex gap-2 flex-col">
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onEditPlace(place)}
-                    >
-                      <Icon name="Edit" size={16} className="mr-1" />
-                      Редактировать
-                    </Button>
-                    <Button
-                      variant={place.is_featured ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => onToggleFeatured(place.id, !place.is_featured)}
-                      className={place.is_featured ? "bg-yellow-500 hover:bg-yellow-600" : ""}
-                    >
-                      <span className="mr-1">⭐</span>
-                      {place.is_featured ? 'Убрать' : 'Город оценил'}
-                    </Button>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onTogglePublish(place.id, !place.is_published)}
-                    >
-                      {place.is_published ? 'Скрыть' : 'Опубликовать'}
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => onDeletePlace(place.id)}
-                    >
-                      <Icon name="Trash2" size={16} />
-                    </Button>
-                  </div>
+                <div className="flex sm:flex-col gap-2 flex-wrap w-full sm:w-auto">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEditPlace(place)}
+                    className="flex-1 sm:flex-none text-xs"
+                  >
+                    <Icon name="Edit" size={14} className="sm:mr-1" />
+                    <span className="hidden sm:inline">Редактировать</span>
+                  </Button>
+                  <Button
+                    variant={place.is_featured ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => onToggleFeatured(place.id, !place.is_featured)}
+                    className={`flex-1 sm:flex-none text-xs ${place.is_featured ? "bg-yellow-500 hover:bg-yellow-600" : ""}`}
+                  >
+                    <span>⭐</span>
+                    <span className="hidden sm:inline ml-1">{place.is_featured ? 'Убрать' : 'Оценил'}</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onTogglePublish(place.id, !place.is_published)}
+                    className="flex-1 sm:flex-none text-xs"
+                  >
+                    {place.is_published ? 'Скрыть' : 'Опубликовать'}
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => onDeletePlace(place.id)}
+                    className="flex-1 sm:flex-none"
+                  >
+                    <Icon name="Trash2" size={14} />
+                  </Button>
                 </div>
               </div>
             ))}
