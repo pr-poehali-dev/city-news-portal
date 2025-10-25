@@ -41,6 +41,7 @@ export const NewsPage = () => {
   const [commentText, setCommentText] = useState('');
   const [sections, setSections] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [promoUsageCount] = useState(() => Math.floor(Math.random() * 100) + 1);
 
   useEffect(() => {
     const loadData = async () => {
@@ -272,6 +273,11 @@ export const NewsPage = () => {
                       </p>
                     </div>
                   </div>
+                </div>
+
+                <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
+                  <Icon name="Users" size={16} className="text-green-600" />
+                  <span>Промокодом уже воспользовались <span className="font-bold text-green-600">{promoUsageCount}</span> {promoUsageCount === 1 ? 'человек' : promoUsageCount < 5 ? 'человека' : 'человек'}</span>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3">
