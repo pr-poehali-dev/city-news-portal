@@ -59,7 +59,8 @@ export default function CityMap({ places, onPlaceClick }: CityMapProps) {
       mapRef.current = L.map(containerRef.current).setView(center, 12);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | Краснодар',
+        attribution: '&copy; OpenStreetMap | Краснодар',
+        maxZoom: 19,
       }).addTo(mapRef.current);
     }
 
@@ -109,7 +110,8 @@ export default function CityMap({ places, onPlaceClick }: CityMapProps) {
         mapRef.current = L.map(containerRef.current).setView(center, 12);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | Краснодар',
+          attribution: '&copy; OpenStreetMap | Краснодар',
+          maxZoom: 19,
         }).addTo(mapRef.current);
       }
     }

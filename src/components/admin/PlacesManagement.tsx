@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -81,6 +81,8 @@ export function PlacesManagement({
 }: PlacesManagementProps) {
   const [mapPosition, setMapPosition] = useState<[number, number]>([45.0355, 38.9753]);
   const [mapKey, setMapKey] = useState(0);
+  const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const handleMapClick = (position: [number, number]) => {
     setMapPosition(position);
@@ -135,14 +137,55 @@ export function PlacesManagement({
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 relative">
             <Label htmlFor="place-address">Адрес</Label>
             <Input
               id="place-address"
               value={placeForm.address}
-              onChange={(e) => setPlaceForm({ ...placeForm, address: e.target.value })}
+              onChange={async (e) => {
+                const value = e.target.value;
+                setPlaceForm({ ...placeForm, address: value });
+                
+                if (value.length > 3) {
+                  try {
+                    const response = await fetch(
+                      `https://nominatim.openstreetmap.org/search?format=json&q=Краснодар, ${encodeURIComponent(value)}&limit=5`
+                    );
+                    const data = await response.json();
+                    setAddressSuggestions(data);
+                    setShowSuggestions(true);
+                  } catch (error) {
+                    console.error('Failed to fetch suggestions:', error);
+                  }
+                } else {
+                  setShowSuggestions(false);
+                }
+              }}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
               placeholder="ул. Примерная, д. 1"
             />
+            {showSuggestions && addressSuggestions.length > 0 && (
+              <div className="absolute z-10 w-full bg-background border rounded-md shadow-lg mt-1 max-h-60 overflow-y-auto">
+                {addressSuggestions.map((suggestion, idx) => (
+                  <div
+                    key={idx}
+                    className="p-2 hover:bg-accent cursor-pointer text-sm"
+                    onClick={() => {
+                      setPlaceForm({
+                        ...placeForm,
+                        address: suggestion.display_name,
+                        latitude: parseFloat(suggestion.lat),
+                        longitude: parseFloat(suggestion.lon)
+                      });
+                      setMapPosition([parseFloat(suggestion.lat), parseFloat(suggestion.lon)]);
+                      setShowSuggestions(false);
+                    }}
+                  >
+                    {suggestion.display_name}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -168,13 +211,48 @@ export function PlacesManagement({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="place-image">URL изображения</Label>
-            <Input
-              id="place-image"
-              value={placeForm.image_url}
-              onChange={(e) => setPlaceForm({ ...placeForm, image_url: e.target.value })}
-              placeholder="https://..."
-            />
+            <Label htmlFor="place-image">Изображение</Label>
+            <div className="flex gap-2">
+              <Input
+                id="place-image"
+                value={placeForm.image_url}
+                onChange={(e) => setPlaceForm({ ...placeForm, image_url: e.target.value })}
+                placeholder="https://... или загрузите файл"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  const input = document.createElement('input');
+                  input.type = 'file';
+                  input.accept = 'image/*';
+                  input.onchange = async (e: any) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    try {
+                      const response = await fetch('https://functions.poehali.dev/b17d7c71-2097-4cdd-91d0-e11c1285584a', {
+                        method: 'POST',
+                        body: formData
+                      });
+                      const data = await response.json();
+                      if (data.url) {
+                        setPlaceForm({ ...placeForm, image_url: data.url });
+                      }
+                    } catch (error) {
+                      console.error('Upload failed:', error);
+                    }
+                  };
+                  input.click();
+                }}
+              >
+                <Icon name="Upload" size={16} />
+              </Button>
+            </div>
+            {placeForm.image_url && (
+              <img src={placeForm.image_url} alt="Preview" className="w-full h-40 object-cover rounded-md" />
+            )}
           </div>
 
           <div className="space-y-2">

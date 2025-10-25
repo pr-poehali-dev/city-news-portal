@@ -1,9 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import Icon from '@/components/ui/icon';
 import { NewsTicker } from '@/components/NewsTicker';
 import { SiteHeader } from '@/components/SiteHeader';
 import { FeaturedNews } from '@/components/FeaturedNews';
@@ -11,7 +7,9 @@ import { EventsSection } from '@/components/EventsSection';
 import { MiniNewsCard } from '@/components/MiniNewsCard';
 import { Separator } from '@/components/ui/separator';
 import { Footer } from '@/components/Footer';
-import CityMap from '@/components/CityMap';
+import { NewsSection } from '@/components/NewsSection';
+import { PlacesSection } from '@/components/PlacesSection';
+import { CategoryPreview } from '@/components/CategoryPreview';
 
 const FUNCTIONS_URL = {
   news: 'https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe',
@@ -30,9 +28,6 @@ const categoryColors = {
 
 const Index = () => {
   const navigate = useNavigate();
-  const [selectedArticle, setSelectedArticle] = useState<number | null>(null);
-  const [commentName, setCommentName] = useState('');
-  const [commentText, setCommentText] = useState('');
   const [articles, setArticles] = useState<any[]>([]);
   const [featuredNews, setFeaturedNews] = useState<any>(null);
   const [latestNews, setLatestNews] = useState<any[]>([]);
@@ -41,7 +36,6 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showAllPlaces, setShowAllPlaces] = useState(false);
   const [weather, setWeather] = useState<any>(null);
-  const [comments, setComments] = useState<Record<number, any[]>>({});
   const [activeSection, setActiveSection] = useState('Главная');
   const [likedArticles, setLikedArticles] = useState<Set<number>>(new Set());
   const [topThreeNews, setTopThreeNews] = useState<any[]>([]);
@@ -113,19 +107,13 @@ const Index = () => {
       const response = await fetch(url);
       const data = await response.json();
       
-      // Сортируем по дате (новые первыми)
       const sortedData = data.sort((a: any, b: any) => 
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
       
-      // Берем топ-3 новости для ротации в главной
       const top3 = sortedData.slice(0, 3);
       setTopThreeNews(top3);
-      
-      // Главная новость: первая из топ-3
       setFeaturedNews(top3[0]);
-      
-      // Все новости (включая топ-3)
       setArticles(sortedData);
     } catch (error) {
       console.error('Failed to load news:', error);
@@ -172,40 +160,6 @@ const Index = () => {
     }
   };
 
-  const loadComments = async (newsId: number) => {
-    try {
-      const response = await fetch(`${FUNCTIONS_URL.comments}?news_id=${newsId}`);
-      const data = await response.json();
-      setComments(prev => ({ ...prev, [newsId]: data }));
-    } catch (error) {
-      console.error('Failed to load comments:', error);
-    }
-  };
-
-  const handleAddComment = async (newsId: number) => {
-    if (!commentName.trim() || !commentText.trim()) return;
-
-    try {
-      const response = await fetch(FUNCTIONS_URL.comments, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          news_id: newsId,
-          author_name: commentName,
-          text: commentText
-        })
-      });
-
-      if (response.ok) {
-        setCommentName('');
-        setCommentText('');
-        loadComments(newsId);
-      }
-    } catch (error) {
-      console.error('Failed to add comment:', error);
-    }
-  };
-
   const handleArticleClick = (newsId: number) => {
     navigate(`/news/${newsId}`);
   };
@@ -239,6 +193,16 @@ const Index = () => {
     }
   };
 
+  const handleCategoryChange = (direction: 'prev' | 'next') => {
+    setCurrentCategoryIndex(prev => {
+      if (direction === 'next') {
+        return (prev + 1) % availableCategories.length;
+      } else {
+        return prev === 0 ? availableCategories.length - 1 : prev - 1;
+      }
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <NewsTicker latestNews={latestNews} />
@@ -252,369 +216,86 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         {articles.length === 0 && !featuredNews ? (
-          <Card className="p-12 text-center">
-            <Icon name="FileText" size={48} className="mx-auto mb-4 text-muted-foreground" />
-            <h2 className="text-2xl font-serif font-bold mb-2">Новостей пока нет</h2>
-            <p className="text-muted-foreground mb-6">
-              Добавьте первую новость через админ-панель
-            </p>
-            <Button onClick={() => window.location.href = '/admin'}>
-              Перейти в админку
-            </Button>
-          </Card>
+          <div className="text-center py-20">
+            <p className="text-muted-foreground">Загрузка новостей...</p>
+          </div>
         ) : (
           <>
-            {featuredNews && activeSection === 'Главная' && (
-              <>
-                {/* Главная новость - большая плашка */}
-                <div className="mb-8" onClick={() => handleArticleClick(featuredNews.id)}>
-                  <FeaturedNews 
-                    news={featuredNews} 
-                    currentIndex={currentFeaturedIndex}
-                    totalCount={topThreeNews.length}
-                  />
-                </div>
-                
-                {/* Следующие 2 новости из топ-3 + еще одна */}
-                {topThreeNews.length > 1 && (
-                  <div className="mb-8">
-                    <div className="grid md:grid-cols-3 gap-4">
-                      {topThreeNews.filter(n => n.id !== featuredNews.id).slice(0, 2).concat(articles.slice(3, 4)).map((article) => (
-                        <MiniNewsCard
-                          key={article.id}
-                          news={article}
-                          onClick={() => handleArticleClick(article.id)}
-                          onLike={(e) => {
-                            e.stopPropagation();
-                            handleLike(article.id);
-                          }}
-                          hasLiked={likedArticles.has(article.id)}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
+            {featuredNews && (
+              <FeaturedNews
+                news={featuredNews}
+                currentIndex={currentFeaturedIndex}
+                totalCount={topThreeNews.length}
+                onNavigate={(direction) => {
+                  setCurrentFeaturedIndex(prev => {
+                    const newIndex = direction === 'next' 
+                      ? (prev + 1) % topThreeNews.length
+                      : prev === 0 ? topThreeNews.length - 1 : prev - 1;
+                    setFeaturedNews(topThreeNews[newIndex]);
+                    return newIndex;
+                  });
+                }}
+                onClick={() => handleArticleClick(featuredNews.id)}
+              />
+            )}
 
-                {/* 5 заголовков новостей */}
-                {articles.length > 4 && (
-                  <div className="mb-8">
-                    <h3 className="text-xl font-serif font-bold mb-4 border-b pb-2">Последние новости</h3>
-                    <div className="space-y-3">
-                      {articles.slice(4, 9).map((article) => (
-                        <div 
-                          key={article.id}
-                          onClick={() => handleArticleClick(article.id)}
-                          className="border-l-4 border-primary/30 pl-4 pr-3 py-3 hover:border-primary hover:bg-primary/5 rounded-r-lg cursor-pointer transition-all group"
-                        >
-                          <div className="flex items-start gap-3">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1.5">
-                                <Badge className="text-xs bg-orange-500 text-white">{article.category}</Badge>
-                                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                  <Icon name="Clock" size={12} />
-                                  {new Date(article.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
-                                </span>
-                              </div>
-                              <h4 className="font-semibold text-base leading-snug group-hover:text-primary transition-colors">
-                                {article.title}
-                              </h4>
-                            </div>
-                            <Icon name="ChevronRight" size={20} className="text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0 mt-1" />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Новости по категориям */}
-                {availableCategories.length > 0 && (() => {
-                  const currentCategory = availableCategories[currentCategoryIndex];
-                  const categoryNews = articles.filter(a => a.category === currentCategory).slice(0, 4);
-                  
-                  return (
-                    <div className="mb-8">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-2xl font-serif font-bold border-b-2 border-primary pb-2 flex-1">{currentCategory}</h3>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setCurrentCategoryIndex((prev) => (prev - 1 + availableCategories.length) % availableCategories.length)}
-                          >
-                            <Icon name="ChevronLeft" size={20} />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setCurrentCategoryIndex((prev) => (prev + 1) % availableCategories.length)}
-                          >
-                            <Icon name="ChevronRight" size={20} />
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
-                        {categoryNews.map((article) => (
-                          <Card
-                            key={article.id}
-                            className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                            onClick={() => handleArticleClick(article.id)}
-                          >
-                            {article.image_url && (
-                              <div className="relative overflow-hidden h-40">
-                                <img
-                                  src={article.image_url}
-                                  alt={article.title}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            )}
-                            <CardContent className="p-3">
-                              <div className="flex items-center gap-2 mb-2 text-xs text-muted-foreground">
-                                <Icon name="Clock" size={12} />
-                                {new Date(article.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
-                              </div>
-                              <h4 className="font-bold text-base mb-1 line-clamp-2 leading-snug">
-                                {article.title}
-                              </h4>
-                              <p className="text-xs text-muted-foreground line-clamp-2">
-                                {article.excerpt}
-                              </p>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Блок "Город оценил" */}
-                <div className="mb-12">
-                  <h2 className="text-3xl font-serif font-bold border-b-2 border-primary pb-2 mb-6">Город оценил</h2>
-                  
-                  {/* Карта */}
-                  <div className="mb-6">
-                    <CityMap 
-                      places={cityPlaces}
-                      onPlaceClick={(id) => {
-                        const place = cityPlaces.find(p => p.id === id);
-                        if (place) {
-                          setSelectedCategory(place.category);
-                          setShowAllPlaces(false);
-                        }
-                      }}
+            <div className="grid lg:grid-cols-3 gap-8 mb-12">
+              <div className="lg:col-span-2">
+                <h2 className="text-2xl font-bold mb-6">Последние новости</h2>
+                <div className="grid gap-6">
+                  {articles.slice(0, 6).map((article) => (
+                    <MiniNewsCard
+                      key={article.id}
+                      news={article}
+                      onClick={() => handleArticleClick(article.id)}
+                      onLike={() => handleLike(article.id)}
+                      isLiked={likedArticles.has(article.id)}
                     />
-                  </div>
-
-                  {/* Дайджест по категориям */}
-                  {!showAllPlaces && selectedCategory && (
-                    <div className="mb-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-2xl font-serif font-bold" style={{ 
-                          color: categoryColors[selectedCategory as keyof typeof categoryColors] 
-                        }}>
-                          {selectedCategory}
-                        </h3>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => setSelectedCategory(null)}
-                        >
-                          Все рубрики
-                        </Button>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {cityPlaces
-                          .filter(p => p.category === selectedCategory)
-                          .slice(0, 4)
-                          .map((place) => (
-                            <Card 
-                              key={place.id}
-                              className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                            >
-                              {place.image_url && (
-                                <div className="relative overflow-hidden h-48">
-                                  <img
-                                    src={place.image_url}
-                                    alt={place.title}
-                                    className="w-full h-full object-cover"
-                                  />
-                                  <div 
-                                    className="absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center"
-                                    style={{ 
-                                      backgroundColor: categoryColors[place.category as keyof typeof categoryColors] 
-                                    }}
-                                  >
-                                    <Icon name="Heart" size={20} className="text-white fill-white" />
-                                  </div>
-                                </div>
-                              )}
-                              <CardContent className="p-4">
-                                <h4 className="font-bold text-lg mb-2">{place.title}</h4>
-                                <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
-                                  {place.excerpt}
-                                </p>
-                                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                                  <Icon name="MapPin" size={12} />
-                                  {place.address}
-                                </p>
-                              </CardContent>
-                            </Card>
-                          ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Показать все места */}
-                  {!selectedCategory && (
-                    <>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                        {Object.keys(categoryColors).map((cat) => {
-                          const count = cityPlaces.filter(p => p.category === cat).length;
-                          if (count === 0) return null;
-                          
-                          return (
-                            <Button
-                              key={cat}
-                              variant="outline"
-                              className="h-auto py-3 flex flex-col items-center gap-2 hover:shadow-md transition-shadow"
-                              onClick={() => setSelectedCategory(cat)}
-                              style={{ 
-                                borderColor: categoryColors[cat as keyof typeof categoryColors],
-                                borderWidth: '2px'
-                              }}
-                            >
-                              <Icon 
-                                name="Heart" 
-                                size={24} 
-                                style={{ color: categoryColors[cat as keyof typeof categoryColors] }}
-                                className="fill-current"
-                              />
-                              <span className="text-sm font-semibold">{cat}</span>
-                              <span className="text-xs text-muted-foreground">{count} мест</span>
-                            </Button>
-                          );
-                        })}
-                      </div>
-                      
-                      {!showAllPlaces && (
-                        <div className="text-center">
-                          <Button
-                            variant="outline"
-                            onClick={() => setShowAllPlaces(true)}
-                          >
-                            Показать все места
-                          </Button>
-                        </div>
-                      )}
-                    </>
-                  )}
-
-                  {/* Все места списком */}
-                  {showAllPlaces && (
-                    <div>
-                      <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-xl font-bold">Все любимые места</h3>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => setShowAllPlaces(false)}
-                        >
-                          Скрыть
-                        </Button>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {cityPlaces.map((place) => (
-                          <Card key={place.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                            {place.image_url && (
-                              <div className="relative overflow-hidden h-40">
-                                <img
-                                  src={place.image_url}
-                                  alt={place.title}
-                                  className="w-full h-full object-cover"
-                                />
-                                <div 
-                                  className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center"
-                                  style={{ 
-                                    backgroundColor: categoryColors[place.category as keyof typeof categoryColors] 
-                                  }}
-                                >
-                                  <Icon name="Heart" size={16} className="text-white fill-white" />
-                                </div>
-                              </div>
-                            )}
-                            <CardContent className="p-3">
-                              <Badge 
-                                className="mb-2 text-white"
-                                style={{ 
-                                  backgroundColor: categoryColors[place.category as keyof typeof categoryColors] 
-                                }}
-                              >
-                                {place.category}
-                              </Badge>
-                              <h4 className="font-bold text-sm mb-1 line-clamp-2">{place.title}</h4>
-                              <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
-                                {place.excerpt}
-                              </p>
-                              <p className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Icon name="MapPin" size={10} />
-                                {place.address}
-                              </p>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                  ))}
                 </div>
-              </>
-            )}
-
-            {activeSection !== 'Главная' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {articles.map((article) => (
-                  <Card 
-                    key={article.id} 
-                    className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                    onClick={() => handleArticleClick(article.id)}
-                  >
-                    {article.image_url && (
-                      <div className="relative overflow-hidden">
-                        <img
-                          src={article.image_url}
-                          alt={article.title}
-                          className="w-full h-auto object-contain"
-                        />
-                      </div>
-                    )}
-                    <CardContent className="p-6">
-                      <div className="flex items-center gap-2 mb-3">
-                        <Badge className="bg-orange-500 text-white">{article.category}</Badge>
-                        <span className="text-sm text-muted-foreground flex items-center gap-1">
-                          <Icon name="Clock" size={14} />
-                          {new Date(article.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                      </div>
-                      <h3 className="text-xl font-bold mb-3 line-clamp-2">{article.title}</h3>
-                      <p className="text-muted-foreground line-clamp-3 mb-4">
-                        {article.excerpt}
-                      </p>
-                      <Button variant="link" className="p-0 text-primary">
-                        Читать далее →
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
               </div>
-            )}
 
-            <EventsSection events={events} />
+              <div>
+                <EventsSection events={events} />
+              </div>
+            </div>
+
+            <Separator className="my-12" />
+
+            <CategoryPreview
+              cityPlaces={cityPlaces}
+              categoryColors={categoryColors}
+              onPlaceClick={(id) => console.log('Place clicked:', id)}
+            />
+
+            <Separator className="my-12" />
+
+            <PlacesSection
+              cityPlaces={cityPlaces}
+              selectedCategory={selectedCategory}
+              showAllPlaces={showAllPlaces}
+              categoryColors={categoryColors}
+              onCategorySelect={setSelectedCategory}
+              onShowAllToggle={() => setShowAllPlaces(!showAllPlaces)}
+            />
+
+            <Separator className="my-12" />
+
+            <NewsSection
+              articles={articles}
+              newsCategories={newsCategories}
+              currentCategoryIndex={currentCategoryIndex}
+              availableCategories={availableCategories}
+              onCategoryChange={handleCategoryChange}
+              onArticleClick={handleArticleClick}
+              onLike={handleLike}
+              likedArticles={likedArticles}
+            />
           </>
         )}
       </main>
 
-      <Footer sections={sections} onSectionChange={setActiveSection} />
+      <Footer />
     </div>
   );
 };
