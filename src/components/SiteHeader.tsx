@@ -71,6 +71,13 @@ export const SiteHeader = ({ weather, sections, activeSection, onSectionChange }
               {section}
             </button>
           ))}
+          <button
+            onClick={() => navigate('/city-talks')}
+            className="text-sm font-medium whitespace-nowrap transition-all text-muted-foreground hover:text-foreground dark:hover:text-foreground flex items-center gap-1"
+          >
+            <Icon name="MessageCircle" size={16} />
+            Город говорит
+          </button>
         </nav>
       </div>
     </header>

@@ -16,6 +16,7 @@ import Places from "./pages/Places";
 import PlacesMap from "./pages/PlacesMap";
 import About from "./pages/About";
 import Contacts from "./pages/Contacts";
+import CityTalks from "./pages/CityTalks";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -53,6 +54,7 @@ const App = () => {
               <Route path="/places/map" element={<PlacesMap />} />
               <Route path="/about" element={<About />} />
               <Route path="/contacts" element={<Contacts />} />
+              <Route path="/city-talks" element={<CityTalks />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
