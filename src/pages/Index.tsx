@@ -91,16 +91,15 @@ const Index = () => {
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
       
-      // Берем топ-3 новости для ротации
+      // Берем топ-3 новости для ротации в главной
       const top3 = sortedData.slice(0, 3);
       setTopThreeNews(top3);
       
       // Главная новость: первая из топ-3
       setFeaturedNews(top3[0]);
       
-      // Остальные новости (начиная с 4-й)
-      const otherNews = sortedData.slice(3);
-      setArticles(otherNews);
+      // Все новости (включая топ-3)
+      setArticles(sortedData);
     } catch (error) {
       console.error('Failed to load news:', error);
     }
@@ -233,11 +232,11 @@ const Index = () => {
                   />
                 </div>
                 
-                {/* Следующие 3 новости - средние карточки */}
-                {articles.length > 0 && (
+                {/* Следующие 2 новости из топ-3 + еще одна */}
+                {topThreeNews.length > 1 && (
                   <div className="mb-8">
                     <div className="grid md:grid-cols-3 gap-4">
-                      {articles.slice(0, 3).map((article) => (
+                      {topThreeNews.slice(1, 3).concat(articles.slice(3, 4)).map((article) => (
                         <MiniNewsCard
                           key={article.id}
                           news={article}
@@ -254,11 +253,11 @@ const Index = () => {
                 )}
 
                 {/* Остальные новости - только заголовки */}
-                {articles.length > 3 && (
+                {articles.length > 4 && (
                   <div className="mb-8">
                     <h3 className="text-xl font-serif font-bold mb-4 border-b pb-2">Все новости</h3>
                     <div className="space-y-3">
-                      {articles.slice(3).map((article) => (
+                      {articles.slice(4).map((article) => (
                         <div 
                           key={article.id}
                           onClick={() => handleArticleClick(article.id)}

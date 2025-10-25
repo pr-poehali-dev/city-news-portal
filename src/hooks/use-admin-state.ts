@@ -189,8 +189,8 @@ export const useAdminState = () => {
           read_time: '5 мин',
           status: 'published'
         });
-        loadNews();
-        loadDrafts();
+        await loadNews();
+        await loadDrafts();
       } else {
         toast({
           title: 'Ошибка',
@@ -274,8 +274,8 @@ export const useAdminState = () => {
           title: 'Успешно!',
           description: 'Новость удалена'
         });
-        loadNews();
-        loadDrafts();
+        await loadNews();
+        await loadDrafts();
       }
     } catch (error) {
       toast({
@@ -303,8 +303,8 @@ export const useAdminState = () => {
           title: 'Успешно!',
           description: 'Черновик опубликован'
         });
-        loadNews();
-        loadDrafts();
+        await loadNews();
+        await loadDrafts();
       }
     } catch (error) {
       toast({
@@ -332,7 +332,7 @@ export const useAdminState = () => {
           title: 'Успешно!',
           description: 'Новость закреплена в главной'
         });
-        loadNews();
+        await loadNews();
       }
     } catch (error) {
       toast({
