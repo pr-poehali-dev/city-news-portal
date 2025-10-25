@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import CityMap from '@/components/CityMap';
 
@@ -20,17 +22,43 @@ export function PlacesSection({
   onCategorySelect,
   onShowAllToggle,
 }: PlacesSectionProps) {
+  const [searchQuery, setSearchQuery] = useState('');
   const categories = Array.from(new Set(cityPlaces.map(p => p.category)));
-  const filteredPlaces = selectedCategory
+  
+  const filteredByCategory = selectedCategory
     ? cityPlaces.filter(p => p.category === selectedCategory)
     : cityPlaces;
+  
+  const filteredPlaces = searchQuery
+    ? filteredByCategory.filter(p => 
+        p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : filteredByCategory;
 
   const displayedPlaces = showAllPlaces ? filteredPlaces : filteredPlaces.slice(0, 6);
 
   return (
     <div className="mb-12">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold">Город говорит</h2>
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-3xl font-bold">Город говорит</h2>
+        </div>
+        
+        <div className="flex flex-col md:flex-row gap-4 mb-4">
+          <div className="relative flex-1">
+            <Icon name="Search" size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Поиск по названию, адресу или описанию..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+
         <div className="flex gap-2 flex-wrap">
           <Button
             variant={selectedCategory === null ? 'default' : 'outline'}
@@ -56,6 +84,12 @@ export function PlacesSection({
           ))}
         </div>
       </div>
+
+      {searchQuery && (
+        <div className="mb-4 text-sm text-muted-foreground">
+          Найдено мест: {filteredPlaces.length}
+        </div>
+      )}
 
       <div className="mb-8">
         <CityMap places={filteredPlaces} onPlaceClick={(id) => console.log('Place clicked:', id)} />
@@ -90,6 +124,14 @@ export function PlacesSection({
           </Card>
         ))}
       </div>
+
+      {filteredPlaces.length === 0 && (
+        <div className="text-center py-12">
+          <Icon name="Search" size={48} className="mx-auto mb-4 text-muted-foreground" />
+          <p className="text-muted-foreground">Ничего не найдено</p>
+          <p className="text-sm text-muted-foreground mt-2">Попробуйте изменить запрос или выбрать другую категорию</p>
+        </div>
+      )}
 
       {filteredPlaces.length > 6 && (
         <div className="text-center mt-6">
