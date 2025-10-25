@@ -14,7 +14,6 @@ import { PlacesSection } from '@/components/PlacesSection';
 import { MemorySection } from '@/components/MemorySection';
 import { CategoryPreview } from '@/components/CategoryPreview';
 import { PartnersSection } from '@/components/PartnersSection';
-import { CityVoiceSection } from '@/components/CityVoiceSection';
 import { CityChatWidget } from '@/components/CityChatWidget';
 
 const FUNCTIONS_URL = {
@@ -334,8 +333,6 @@ const Index = () => {
                 ))}
               </div>
             </div>
-
-            <CityVoiceSection />
 
             <PlacesSection
               cityPlaces={cityPlaces}
