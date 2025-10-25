@@ -1,20 +1,26 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import { useNavigate } from 'react-router-dom';
 
 interface SiteHeaderProps {
-  weather: any;
+  weather?: any;
   sections: string[];
-  activeSection: string;
+  activeSection?: string;
   onSectionChange: (section: string) => void;
 }
 
 export const SiteHeader = ({ weather, sections, activeSection, onSectionChange }: SiteHeaderProps) => {
+  const navigate = useNavigate();
+
   return (
     <header className="sticky top-0 z-50 bg-white/95 dark:bg-background/95 backdrop-blur-sm border-b border-primary/10 dark:border-border/50 shadow-sm dark:shadow-lg">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between mb-4">
-          <div>
+          <div 
+            className="cursor-pointer" 
+            onClick={() => navigate('/')}
+          >
             <h1 className="text-4xl font-bold text-primary font-serif">
               Город говорит
             </h1>
