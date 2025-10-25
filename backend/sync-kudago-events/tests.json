@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "Sync KudaGo events",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
