@@ -296,6 +296,25 @@ export const useAdminState = () => {
           });
         }
         
+        if (!isDraft) {
+          try {
+            await fetch('https://functions.poehali.dev/b67aed3b-df61-46cb-9e8e-05d4950ef6d1', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'queue',
+                content_type: 'news',
+                content_id: data.id,
+                title: newsForm.title,
+                body: newsForm.excerpt,
+                url: `/news/${data.id}`
+              })
+            });
+          } catch (notifError) {
+            console.error('Failed to queue notification:', notifError);
+          }
+        }
+        
         await loadNews();
         await loadDrafts();
         
@@ -635,10 +654,31 @@ export const useAdminState = () => {
       });
 
       if (response.ok) {
+        const data = await response.json();
         toast({
           title: 'Успешно!',
           description: 'Место добавлено'
         });
+        
+        if (placeForm.is_published) {
+          try {
+            await fetch('https://functions.poehali.dev/b67aed3b-df61-46cb-9e8e-05d4950ef6d1', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'queue',
+                content_type: 'place',
+                content_id: data.id,
+                title: placeForm.title,
+                body: placeForm.excerpt || placeForm.content.substring(0, 100),
+                url: `/places`
+              })
+            });
+          } catch (notifError) {
+            console.error('Failed to queue notification:', notifError);
+          }
+        }
+        
         setPlaceForm({
           title: '',
           excerpt: '',
@@ -823,10 +863,31 @@ export const useAdminState = () => {
       });
 
       if (response.ok) {
+        const data = await response.json();
         toast({
           title: 'Успешно!',
           description: 'Статья добавлена'
         });
+        
+        if (memoryForm.is_published) {
+          try {
+            await fetch('https://functions.poehali.dev/b67aed3b-df61-46cb-9e8e-05d4950ef6d1', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'queue',
+                content_type: 'memory',
+                content_id: data.id,
+                title: memoryForm.title,
+                body: memoryForm.excerpt || `${memoryForm.year} год: ${memoryForm.title}`,
+                url: `/`
+              })
+            });
+          } catch (notifError) {
+            console.error('Failed to queue notification:', notifError);
+          }
+        }
+        
         setMemoryForm({
           title: '',
           excerpt: '',

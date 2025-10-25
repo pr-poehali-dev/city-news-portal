@@ -7,6 +7,7 @@ import { PlacesManagement } from '@/components/admin/PlacesManagement';
 import { MemoryManagement } from '@/components/admin/MemoryManagement';
 import { AuthorsManagement } from '@/components/admin/AuthorsManagement';
 import { SettingsManagement } from '@/components/admin/SettingsManagement';
+import { AnalyticsManagement } from '@/components/admin/AnalyticsManagement';
 import { NewsEditDialog } from '@/components/admin/NewsEditDialog';
 import { useAdminState } from '@/hooks/use-admin-state';
 import { CATEGORIES } from '@/lib/admin-constants';
@@ -85,12 +86,13 @@ const Admin = () => {
       <main className="container mx-auto px-3 py-4 md:px-4 md:py-8">
         <Tabs defaultValue="news" className="space-y-4 md:space-y-6">
           <div className="sticky top-[73px] md:top-[81px] z-40 bg-background pb-2 pt-1">
-            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 gap-1 md:gap-2 h-auto">
+            <TabsList className="grid w-full grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-1 md:gap-2 h-auto">
               <TabsTrigger value="news" className="text-xs md:text-sm py-2">Новости</TabsTrigger>
               <TabsTrigger value="events" className="text-xs md:text-sm py-2">События</TabsTrigger>
               <TabsTrigger value="places" className="text-xs md:text-sm py-2">Оценил</TabsTrigger>
               <TabsTrigger value="memory" className="text-xs md:text-sm py-2">Помнит</TabsTrigger>
               <TabsTrigger value="authors" className="text-xs md:text-sm py-2">Авторы</TabsTrigger>
+              <TabsTrigger value="analytics" className="text-xs md:text-sm py-2">Аналитика</TabsTrigger>
               <TabsTrigger value="settings" className="text-xs md:text-sm py-2">Настройки</TabsTrigger>
             </TabsList>
           </div>
@@ -162,6 +164,10 @@ const Admin = () => {
               onAuthorSubmit={handleAuthorSubmit}
               onDeleteAuthor={handleDeleteAuthor}
             />
+          </TabsContent>
+
+          <TabsContent value="analytics">
+            <AnalyticsManagement loading={loading} />
           </TabsContent>
 
           <TabsContent value="settings">

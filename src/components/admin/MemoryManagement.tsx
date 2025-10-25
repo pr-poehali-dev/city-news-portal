@@ -204,23 +204,23 @@ export function MemoryManagement({
 
       <Card>
         <CardHeader>
-          <CardTitle>Список статей ({memoryList.length})</CardTitle>
+          <CardTitle className="text-base md:text-lg">Список статей ({memoryList.length})</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <div className="space-y-3 md:space-y-4 max-h-[400px] md:max-h-[600px] overflow-y-auto">
             {memoryList.map((memory) => (
-              <div key={memory.id} className="flex items-start gap-4 p-4 border rounded-lg">
+              <div key={memory.id} className="flex flex-col sm:flex-row items-start gap-3 md:gap-4 p-3 md:p-4 border rounded-lg">
                 {memory.image_url && (
                   <img
                     src={memory.image_url}
                     alt={memory.title}
-                    className="w-20 h-20 object-cover rounded sepia"
+                    className="w-full sm:w-20 h-32 sm:h-20 object-cover rounded sepia flex-shrink-0"
                   />
                 )}
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-bold">{memory.title}</h3>
-                    <span className="text-xs px-2 py-1 bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 rounded">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <h3 className="font-bold text-sm md:text-base">{memory.title}</h3>
+                    <span className="text-xs px-2 py-1 bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 rounded whitespace-nowrap">
                       {memory.year} • {memory.decade}
                     </span>
                     {!memory.is_published && (
@@ -229,35 +229,35 @@ export function MemoryManagement({
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground">{memory.excerpt}</p>
+                  <p className="text-xs md:text-sm text-muted-foreground line-clamp-2">{memory.excerpt}</p>
                 </div>
-                <div className="flex gap-2 flex-col">
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onEditMemory(memory)}
-                    >
-                      <Icon name="Edit" size={16} className="mr-1" />
-                      Редактировать
-                    </Button>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onTogglePublish(memory.id, !memory.is_published)}
-                    >
-                      {memory.is_published ? 'Скрыть' : 'Опубликовать'}
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => onDeleteMemory(memory.id)}
-                    >
-                      <Icon name="Trash2" size={16} />
-                    </Button>
-                  </div>
+                <div className="flex gap-1.5 md:gap-2 flex-wrap sm:flex-col w-full sm:w-auto">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEditMemory(memory)}
+                    className="text-xs h-8 flex-1 sm:flex-none"
+                  >
+                    <Icon name="Edit" size={14} className="mr-1" />
+                    <span className="hidden sm:inline">Редактировать</span>
+                    <span className="sm:hidden">Ред.</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onTogglePublish(memory.id, !memory.is_published)}
+                    className="text-xs h-8 flex-1 sm:flex-none"
+                  >
+                    {memory.is_published ? 'Скрыть' : 'Опубл.'}
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => onDeleteMemory(memory.id)}
+                    className="text-xs h-8 w-8 sm:w-auto p-0 sm:px-3"
+                  >
+                    <Icon name="Trash2" size={14} />
+                  </Button>
                 </div>
               </div>
             ))}
