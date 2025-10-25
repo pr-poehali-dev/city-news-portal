@@ -87,6 +87,12 @@ const Index = () => {
     if (savedLikes) {
       setLikedArticles(new Set(JSON.parse(savedLikes)));
     }
+    
+    const interval = setInterval(() => {
+      loadLatestForTicker();
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -249,14 +255,14 @@ const Index = () => {
         <link rel="canonical" href="https://ggkrasnodar.ru/" />
       </Helmet>
 
-      <NewsTicker latestNews={latestNews} />
-      
       <SiteHeader 
         weather={weather}
         sections={sections}
         activeSection={activeSection}
         onSectionChange={handleSectionChange}
       />
+
+      <NewsTicker latestNews={latestNews} />
 
       <main className="container mx-auto px-4 py-8">
         {articles.length === 0 && !featuredNews ? (

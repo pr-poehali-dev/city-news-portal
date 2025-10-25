@@ -123,17 +123,17 @@ export const PartnersSection = () => {
                 </div>
               </div>
 
-              <div className="p-6 md:p-8">
+              <div className="p-4 md:p-8">
                 <div className="mb-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <h3 className="text-2xl font-bold text-foreground">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-3">
+                    <h3 className="text-xl md:text-2xl font-bold text-foreground">
                       {partner.name}
                     </h3>
-                    <Badge className="bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold">
+                    <Badge className="bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold w-fit">
                       {partner.category}
                     </Badge>
                   </div>
-                  <p className="text-muted-foreground leading-relaxed mb-4">
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed mb-4">
                     {partner.description}
                   </p>
                   {partner.discount && (
@@ -154,13 +154,13 @@ export const PartnersSection = () => {
                       {partner.promoCode && (
                         <div className="mt-3 pt-3 border-t border-orange-300/30">
                           <p className="text-xs text-muted-foreground mb-2">Промокод для скидки:</p>
-                          <div className="flex items-center gap-2">
-                            <div className="flex-1 bg-white border-2 border-dashed border-pink-400 rounded-lg px-4 py-2 font-mono font-bold text-lg text-center text-pink-600">
+                          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                            <div className="flex-1 bg-white border-2 border-dashed border-pink-400 rounded-lg px-3 py-2 font-mono font-bold text-base sm:text-lg text-center text-pink-600">
                               {partner.promoCode}
                             </div>
                             <button
                               onClick={() => copyPromoCode(partner.promoCode!)}
-                              className="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2"
+                              className="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
                             >
                               {copiedPromo === partner.promoCode ? (
                                 <>
