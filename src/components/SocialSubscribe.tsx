@@ -15,7 +15,7 @@ export const SocialSubscribe = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             <a
               href="https://vk.com/club233389110"
               target="_blank"
@@ -75,6 +75,41 @@ export const SocialSubscribe = () => {
                 </h3>
                 <p className="text-white/90 text-sm mb-6">
                   Аналитика, глубокие материалы и истории о Краснодаре и крае
+                </p>
+
+                <div className="flex items-center">
+                  <span className="text-white font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
+                    Подписаться
+                    <Icon name="ArrowRight" size={20} className="group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </div>
+              </div>
+            </a>
+
+            <a
+              href="https://t.me/govoritkrasnodarn"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative overflow-hidden rounded-2xl p-8 bg-gradient-to-br from-[#0088cc] to-[#006699] hover:shadow-2xl hover:shadow-cyan-500/30 transition-all duration-500 hover:scale-105"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 group-hover:scale-150 transition-transform duration-700" />
+              
+              <div className="relative z-10">
+                <div className="mb-6">
+                  <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:bg-white/30 transition-colors duration-300">
+                    <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <h3 className="text-2xl font-bold text-white mb-2 group-hover:translate-x-1 transition-transform duration-300">
+                  Telegram
+                </h3>
+                <p className="text-white/90 text-sm mb-6">
+                  Самые свежие новости и обсуждения в режиме реального времени
                 </p>
 
                 <div className="flex items-center">
