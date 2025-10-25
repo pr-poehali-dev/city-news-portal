@@ -259,20 +259,19 @@ export function PlacesManagement({
 
           <div className="space-y-2">
             <Label>Местоположение на карте (кликните на карту)</Label>
-            <div style={{ height: '400px', width: '100%', borderRadius: '8px' }} className="border">
-              <MapContainer
-                key={mapKey}
-                center={mapPosition}
-                zoom={12}
-                style={{ height: '100%', width: '100%', borderRadius: '8px' }}
-              >
-                <TileLayer
-                  attribution='&copy; OpenStreetMap'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <LocationMarker position={mapPosition} onPositionChange={handleMapClick} />
-              </MapContainer>
-            </div>
+            <MapContainer
+              key={mapKey}
+              center={mapPosition}
+              zoom={12}
+              style={{ height: '400px', width: '100%', borderRadius: '8px' }}
+              className="border"
+            >
+              <TileLayer
+                attribution='&copy; OpenStreetMap'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <LocationMarker position={mapPosition} onPositionChange={handleMapClick} />
+            </MapContainer>
             {placeForm.latitude && placeForm.longitude && (
               <p className="text-xs text-muted-foreground">
                 Координаты: {placeForm.latitude.toFixed(6)}, {placeForm.longitude.toFixed(6)}
