@@ -1,5 +1,4 @@
-import { useEffect, useMemo } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -44,21 +43,59 @@ const createCustomIcon = (category: string) => {
 };
 
 export default function CityMap({ places, onPlaceClick }: CityMapProps) {
-  useEffect(() => {
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    });
-  }, []);
+  const mapRef = useRef<L.Map | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const center: [number, number] = useMemo(() => 
-    places.length > 0 
-      ? [places[0].latitude, places[0].longitude]
-      : [55.7558, 37.6173],
-    [places]
-  );
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    if (places.length === 0) return;
+
+    const center: [number, number] = [places[0].latitude, places[0].longitude];
+
+    if (!mapRef.current) {
+      mapRef.current = L.map(containerRef.current).setView(center, 12);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(mapRef.current);
+    }
+
+    mapRef.current.eachLayer((layer) => {
+      if (layer instanceof L.Marker) {
+        mapRef.current?.removeLayer(layer);
+      }
+    });
+
+    places.forEach((place) => {
+      const marker = L.marker([place.latitude, place.longitude], {
+        icon: createCustomIcon(place.category),
+      });
+
+      marker.on('click', () => {
+        onPlaceClick(place.id);
+      });
+
+      marker.bindPopup(`
+        <div style="padding: 8px;">
+          <h3 style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">${place.title}</h3>
+          <p style="font-size: 12px; color: #666; margin-bottom: 4px;">${place.excerpt}</p>
+          <p style="font-size: 12px; color: #999;">${place.address}</p>
+        </div>
+      `);
+
+      if (mapRef.current) {
+        marker.addTo(mapRef.current);
+      }
+    });
+
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, [places, onPlaceClick]);
 
   if (places.length === 0) {
     return (
@@ -69,35 +106,10 @@ export default function CityMap({ places, onPlaceClick }: CityMapProps) {
   }
 
   return (
-    <MapContainer
-      center={center}
-      zoom={12}
+    <div 
+      ref={containerRef} 
       style={{ height: '500px', width: '100%', borderRadius: '8px' }}
       className="z-0"
-      key={`map-${places.length}`}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      {places.map((place) => (
-        <Marker
-          key={place.id}
-          position={[place.latitude, place.longitude]}
-          icon={createCustomIcon(place.category)}
-          eventHandlers={{
-            click: () => onPlaceClick(place.id),
-          }}
-        >
-          <Popup>
-            <div className="p-2">
-              <h3 className="font-bold text-sm mb-1">{place.title}</h3>
-              <p className="text-xs text-gray-600 mb-1">{place.excerpt}</p>
-              <p className="text-xs text-gray-500">{place.address}</p>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+    />
   );
 }
