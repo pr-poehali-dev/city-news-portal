@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 
 interface AnalyticsManagementProps {
@@ -15,23 +16,21 @@ export function AnalyticsManagement({ loading }: AnalyticsManagementProps) {
     commentsCount: 0
   });
   const [comments, setComments] = useState<any[]>([]);
+  const [sendingTelegram, setSendingTelegram] = useState(false);
 
   useEffect(() => {
     loadAnalytics();
     loadComments();
+    sendTelegramAnalytics();
     
     const analyticsInterval = setInterval(() => {
       loadAnalytics();
       loadComments();
-    }, 10000);
-    
-    const telegramInterval = setInterval(() => {
       sendTelegramAnalytics();
-    }, 10000);
+    }, 600000);
     
     return () => {
       clearInterval(analyticsInterval);
-      clearInterval(telegramInterval);
     };
   }, []);
 
@@ -86,15 +85,32 @@ export function AnalyticsManagement({ loading }: AnalyticsManagementProps) {
   };
 
   const sendTelegramAnalytics = async () => {
+    setSendingTelegram(true);
     try {
-      await fetch('https://functions.poehali.dev/a27a92d6-132c-48dd-b6c4-96bf62aa923c');
+      const response = await fetch('https://functions.poehali.dev/a27a92d6-132c-48dd-b6c4-96bf62aa923c');
+      if (response.ok) {
+        console.log('Telegram analytics sent successfully');
+      }
     } catch (error) {
       console.error('Failed to send Telegram analytics:', error);
+    } finally {
+      setSendingTelegram(false);
     }
   };
 
   return (
     <div className="space-y-4 md:space-y-6">
+      <div className="flex justify-end mb-4">
+        <Button 
+          onClick={sendTelegramAnalytics} 
+          disabled={sendingTelegram}
+          className="gap-2"
+        >
+          <Icon name="Send" size={16} />
+          {sendingTelegram ? 'Отправка...' : 'Отправить статистику в Telegram'}
+        </Button>
+      </div>
+      
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         <Card>
           <CardHeader className="pb-2">
