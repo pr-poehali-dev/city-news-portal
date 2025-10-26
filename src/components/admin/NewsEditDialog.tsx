@@ -148,7 +148,11 @@ export const NewsEditDialog = ({
                 <Button
                   type="button"
                   size="sm"
-                  onClick={() => insertImageIntoContent(imageUrlForInsert)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    insertImageIntoContent(imageUrlForInsert);
+                  }}
                   disabled={!imageUrlForInsert}
                 >
                   <Icon name="Image" size={14} />
@@ -157,7 +161,9 @@ export const NewsEditDialog = ({
                   type="button"
                   size="sm"
                   variant="outline"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     const input = document.createElement('input');
                     input.type = 'file';
                     input.accept = 'image/*';
@@ -210,10 +216,24 @@ export const NewsEditDialog = ({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button 
+            variant="outline" 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onOpenChange(false);
+            }}
+          >
             Отмена
           </Button>
-          <Button onClick={onSave} disabled={loading}>
+          <Button 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (!loading) onSave();
+            }}
+            disabled={loading}
+          >
             {loading ? 'Сохранение...' : 'Сохранить'}
           </Button>
         </DialogFooter>

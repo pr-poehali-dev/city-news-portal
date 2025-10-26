@@ -26,6 +26,14 @@ export const NewsCard = ({
   onPublishToTelegram,
   onSaveVkDraft
 }: NewsCardProps) => {
+  const handleClick = (e: React.MouseEvent, action: () => void) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!loading) {
+      action();
+    }
+  };
+
   return (
     <div className="border rounded-lg p-3 md:p-4 space-y-2 md:space-y-3">
       <div className="flex items-start justify-between gap-2 md:gap-3">
@@ -63,7 +71,7 @@ export const NewsCard = ({
         {isDraft && onPublish && (
           <Button 
             size="sm" 
-            onClick={() => onPublish(news)}
+            onClick={(e) => handleClick(e, () => onPublish(news))}
             disabled={loading}
             className="text-xs md:text-sm h-8"
           >
@@ -76,7 +84,7 @@ export const NewsCard = ({
           <Button 
             size="sm" 
             variant={news.is_featured ? "default" : "secondary"}
-            onClick={() => onSetFeatured(news.id)}
+            onClick={(e) => handleClick(e, () => onSetFeatured(news.id))}
             disabled={loading || news.is_featured}
             className="text-xs md:text-sm h-8"
           >
@@ -89,7 +97,7 @@ export const NewsCard = ({
           <Button 
             size="sm" 
             variant="outline"
-            onClick={() => onPublishToTelegram(news)}
+            onClick={(e) => handleClick(e, () => onPublishToTelegram(news))}
             disabled={loading}
             className="gap-1 text-xs md:text-sm h-8"
           >
@@ -102,7 +110,7 @@ export const NewsCard = ({
           <Button 
             size="sm" 
             variant="outline"
-            onClick={onSaveVkDraft}
+            onClick={(e) => handleClick(e, onSaveVkDraft)}
             disabled={loading}
             className="gap-1 text-xs md:text-sm h-8"
           >
@@ -113,7 +121,8 @@ export const NewsCard = ({
         <Button 
           size="sm" 
           variant="outline"
-          onClick={() => onEdit(news)}
+          onClick={(e) => handleClick(e, () => onEdit(news))}
+          disabled={loading}
           className="text-xs md:text-sm h-8"
         >
           <Icon name="Edit" size={14} className="mr-1" />
@@ -142,7 +151,7 @@ export const NewsCard = ({
             </AlertDialogHeader>
             <AlertDialogFooter className="flex-col sm:flex-row gap-2">
               <AlertDialogCancel className="m-0">Отмена</AlertDialogCancel>
-              <AlertDialogAction onClick={() => onDelete(news.id)}>
+              <AlertDialogAction onClick={(e) => handleClick(e, () => onDelete(news.id))}>
                 Удалить
               </AlertDialogAction>
             </AlertDialogFooter>

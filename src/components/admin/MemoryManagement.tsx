@@ -174,7 +174,17 @@ export function MemoryManagement({
           </div>
 
           <Button 
-            onClick={memoryForm.id ? onUpdateMemory : onMemorySubmit} 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (!loading) {
+                if (memoryForm.id) {
+                  onUpdateMemory();
+                } else {
+                  onMemorySubmit();
+                }
+              }
+            }}
             disabled={loading} 
             className="w-full"
           >
@@ -183,16 +193,20 @@ export function MemoryManagement({
           
           {memoryForm.id && (
             <Button 
-              onClick={() => setMemoryForm({
-                title: '',
-                excerpt: '',
-                content: '',
-                year: '',
-                decade: '',
-                event_date: '',
-                image_url: '',
-                is_published: false
-              })} 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setMemoryForm({
+                  title: '',
+                  excerpt: '',
+                  content: '',
+                  year: '',
+                  decade: '',
+                  event_date: '',
+                  image_url: '',
+                  is_published: false
+                });
+              }}
               variant="outline" 
               className="w-full"
             >
@@ -235,7 +249,12 @@ export function MemoryManagement({
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => onEditMemory(memory)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (!loading) onEditMemory(memory);
+                    }}
+                    disabled={loading}
                     className="text-xs h-8 flex-1 sm:flex-none"
                   >
                     <Icon name="Edit" size={14} className="mr-1" />
@@ -245,7 +264,12 @@ export function MemoryManagement({
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => onTogglePublish(memory.id, !memory.is_published)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (!loading) onTogglePublish(memory.id, !memory.is_published);
+                    }}
+                    disabled={loading}
                     className="text-xs h-8 flex-1 sm:flex-none"
                   >
                     {memory.is_published ? 'Скрыть' : 'Опубл.'}
@@ -253,7 +277,12 @@ export function MemoryManagement({
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => onDeleteMemory(memory.id)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (!loading) onDeleteMemory(memory.id);
+                    }}
+                    disabled={loading}
                     className="text-xs h-8 w-8 sm:w-auto p-0 sm:px-3"
                   >
                     <Icon name="Trash2" size={14} />

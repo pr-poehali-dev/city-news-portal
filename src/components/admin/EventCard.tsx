@@ -10,6 +10,14 @@ interface EventCardProps {
 }
 
 export const EventCard = ({ event, loading, onDelete }: EventCardProps) => {
+  const handleClick = (e: React.MouseEvent, action: () => void) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!loading) {
+      action();
+    }
+  };
+
   return (
     <div className="border rounded-lg p-4 space-y-3">
       <div>
@@ -49,7 +57,7 @@ export const EventCard = ({ event, loading, onDelete }: EventCardProps) => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Отмена</AlertDialogCancel>
-            <AlertDialogAction onClick={() => onDelete(event.id)}>
+            <AlertDialogAction onClick={(e) => handleClick(e, () => onDelete(event.id))}>
               Удалить
             </AlertDialogAction>
           </AlertDialogFooter>

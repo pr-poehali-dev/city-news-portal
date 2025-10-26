@@ -181,7 +181,11 @@ export const NewsForm = ({ newsForm, categories, loading, onFormChange, onSubmit
                 <Button
                   type="button"
                   size="sm"
-                  onClick={() => insertImageIntoContent(imageUrlForInsert)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    insertImageIntoContent(imageUrlForInsert);
+                  }}
                   disabled={!imageUrlForInsert}
                 >
                   <Icon name="Image" size={16} className="mr-1" />
@@ -193,7 +197,9 @@ export const NewsForm = ({ newsForm, categories, loading, onFormChange, onSubmit
                   type="button"
                   size="sm"
                   variant="outline"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     const input = document.createElement('input');
                     input.type = 'file';
                     input.accept = 'image/*';
@@ -272,7 +278,11 @@ export const NewsForm = ({ newsForm, categories, loading, onFormChange, onSubmit
             <Button 
               type="button" 
               variant="outline"
-              onClick={(e) => onSubmit(e as any, true)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!loading) onSubmit(e as any, true);
+              }}
               disabled={loading}
               className="min-w-[150px]"
             >
@@ -282,7 +292,11 @@ export const NewsForm = ({ newsForm, categories, loading, onFormChange, onSubmit
               <Button 
                 type="button" 
                 variant="secondary"
-                onClick={onSaveVkDraft}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (!loading) onSaveVkDraft();
+                }}
                 disabled={loading}
                 className="gap-1 min-w-[150px]"
               >

@@ -79,7 +79,11 @@ export const ImageUpload = ({ value, onChange }: ImageUploadProps) => {
         <Button
           type="button"
           variant="outline"
-          onClick={() => fileInputRef.current?.click()}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!uploading) fileInputRef.current?.click();
+          }}
           disabled={uploading}
           className="gap-2"
         >
@@ -90,7 +94,11 @@ export const ImageUpload = ({ value, onChange }: ImageUploadProps) => {
           type="button"
           variant="ghost"
           size="sm"
-          onClick={() => setShowUrlInput(!showUrlInput)}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowUrlInput(!showUrlInput);
+          }}
           className="gap-1"
         >
           <Icon name="Link" size={16} />
@@ -101,7 +109,9 @@ export const ImageUpload = ({ value, onChange }: ImageUploadProps) => {
             type="button"
             variant="ghost"
             size="icon"
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
               setPreview('');
               setUrlInput('');
               onChange('');
@@ -123,7 +133,9 @@ export const ImageUpload = ({ value, onChange }: ImageUploadProps) => {
           />
           <Button
             type="button"
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
               onChange(urlInput);
               setPreview(urlInput);
             }}

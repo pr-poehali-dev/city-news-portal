@@ -260,7 +260,9 @@ export function PlacesManagement({
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   const input = document.createElement('input');
                   input.type = 'file';
                   input.accept = 'image/*';
@@ -334,7 +336,17 @@ export function PlacesManagement({
           </div>
 
           <Button 
-            onClick={placeForm.id ? onUpdatePlace : onPlaceSubmit} 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (!loading) {
+                if (placeForm.id) {
+                  onUpdatePlace();
+                } else {
+                  onPlaceSubmit();
+                }
+              }
+            }}
             disabled={loading} 
             className="w-full"
           >
@@ -342,18 +354,22 @@ export function PlacesManagement({
           </Button>
           {placeForm.id && (
             <Button 
-              onClick={() => setPlaceForm({
-                title: '',
-                excerpt: '',
-                content: '',
-                category: 'Город завтракает',
-                latitude: 45.0355,
-                longitude: 38.9753,
-                address: '',
-                image_url: '',
-                is_published: false,
-                is_featured: false
-              })} 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setPlaceForm({
+                  title: '',
+                  excerpt: '',
+                  content: '',
+                  category: 'Город завтракает',
+                  latitude: 45.0355,
+                  longitude: 38.9753,
+                  address: '',
+                  image_url: '',
+                  is_published: false,
+                  is_featured: false
+                });
+              }}
               variant="outline" 
               className="w-full"
             >
@@ -371,7 +387,11 @@ export function PlacesManagement({
               <Button
                 variant={filterFeatured === 'all' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setFilterFeatured('all')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setFilterFeatured('all');
+                }}
                 className="text-xs sm:text-sm"
               >
                 Все
@@ -379,7 +399,11 @@ export function PlacesManagement({
               <Button
                 variant={filterFeatured === 'featured' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setFilterFeatured('featured')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setFilterFeatured('featured');
+                }}
                 className={`text-xs sm:text-sm ${filterFeatured === 'featured' ? 'bg-yellow-500 hover:bg-yellow-600' : ''}`}
               >
                 ⭐ Оценил
@@ -387,7 +411,11 @@ export function PlacesManagement({
               <Button
                 variant={filterFeatured === 'regular' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setFilterFeatured('regular')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setFilterFeatured('regular');
+                }}
                 className="text-xs sm:text-sm"
               >
                 Обычные
@@ -437,7 +465,12 @@ export function PlacesManagement({
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => onEditPlace(place)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (!loading) onEditPlace(place);
+                    }}
+                    disabled={loading}
                     className="flex-1 sm:flex-none text-xs"
                   >
                     <Icon name="Edit" size={14} className="sm:mr-1" />
@@ -446,7 +479,12 @@ export function PlacesManagement({
                   <Button
                     variant={place.is_featured ? "default" : "outline"}
                     size="sm"
-                    onClick={() => onToggleFeatured(place.id, !place.is_featured)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (!loading) onToggleFeatured(place.id, !place.is_featured);
+                    }}
+                    disabled={loading}
                     className={`flex-1 sm:flex-none text-xs ${place.is_featured ? "bg-yellow-500 hover:bg-yellow-600" : ""}`}
                   >
                     <span>⭐</span>
@@ -455,7 +493,12 @@ export function PlacesManagement({
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => onTogglePublish(place.id, !place.is_published)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (!loading) onTogglePublish(place.id, !place.is_published);
+                    }}
+                    disabled={loading}
                     className="flex-1 sm:flex-none text-xs"
                   >
                     {place.is_published ? 'Скрыть' : 'Опубликовать'}
@@ -463,7 +506,12 @@ export function PlacesManagement({
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => onDeletePlace(place.id)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (!loading) onDeletePlace(place.id);
+                    }}
+                    disabled={loading}
                     className="flex-1 sm:flex-none"
                   >
                     <Icon name="Trash2" size={14} />

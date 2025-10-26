@@ -10,6 +10,14 @@ interface AuthorCardProps {
 }
 
 export const AuthorCard = ({ author, loading, onDelete }: AuthorCardProps) => {
+  const handleClick = (e: React.MouseEvent, action: () => void) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!loading) {
+      action();
+    }
+  };
+
   return (
     <div className="border rounded-lg p-4 space-y-3">
       <div className="flex items-start gap-3">
@@ -52,7 +60,7 @@ export const AuthorCard = ({ author, loading, onDelete }: AuthorCardProps) => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Отмена</AlertDialogCancel>
-            <AlertDialogAction onClick={onDelete}>
+            <AlertDialogAction onClick={(e) => handleClick(e, onDelete)}>
               Удалить
             </AlertDialogAction>
           </AlertDialogFooter>
