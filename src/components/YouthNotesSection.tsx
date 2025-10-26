@@ -1,5 +1,6 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -19,9 +20,19 @@ interface YouthNotesSectionProps {
 }
 
 export function YouthNotesSection({ notes }: YouthNotesSectionProps) {
-  const publishedNotes = notes.filter(n => n.is_published);
+  const navigate = useNavigate();
+  const publishedNotes = notes.filter(n => n.is_published).slice(0, 3);
+  const [visibleNotes, setVisibleNotes] = useState<number[]>([]);
   
   if (publishedNotes.length === 0) return null;
+
+  useEffect(() => {
+    publishedNotes.forEach((_, index) => {
+      setTimeout(() => {
+        setVisibleNotes(prev => [...prev, index]);
+      }, index * 300);
+    });
+  }, [notes]);
 
   const getTimeAgo = (date: string) => {
     try {
@@ -33,78 +44,75 @@ export function YouthNotesSection({ notes }: YouthNotesSectionProps) {
 
   return (
     <div className="mb-12">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="text-4xl">📱</div>
-        <div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Пульс города
-          </h2>
-          <p className="text-muted-foreground">Короткие заметки от редакции для молодёжи</p>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="text-4xl">📱</div>
+          <div>
+            <h2 className="text-3xl font-bold">Пульс города</h2>
+            <p className="text-muted-foreground">Короткие заметки от редакции</p>
+          </div>
         </div>
+        {notes.filter(n => n.is_published).length > 3 && (
+          <Button variant="outline" className="gap-2" onClick={() => navigate('/youth-notes')}>
+            Все заметки
+            <Icon name="ArrowRight" size={16} />
+          </Button>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {publishedNotes.map((note) => (
-          <Card
+      <div className="space-y-4 max-w-3xl">
+        {publishedNotes.map((note, index) => (
+          <div
             key={note.id}
-            className={`group hover:shadow-xl transition-all duration-300 border-2 cursor-pointer transform hover:-translate-y-1`}
-            style={{ 
-              borderColor: note.color,
-              background: `linear-gradient(135deg, ${note.color}08 0%, transparent 100%)`
-            }}
+            className={`transform transition-all duration-500 ${
+              visibleNotes.includes(index)
+                ? 'translate-y-0 opacity-100'
+                : 'translate-y-4 opacity-0'
+            }`}
+            style={{ transitionDelay: `${index * 100}ms` }}
           >
-            <CardContent className="p-6">
-              <div className="flex items-start gap-3 mb-3">
-                <div className="text-3xl">{note.emoji}</div>
-                <div className="flex-1">
-                  <h3 className="font-bold text-lg mb-2 group-hover:text-purple-600 transition-colors">
-                    {note.title}
-                  </h3>
-                  <Badge 
-                    variant="secondary" 
-                    className="text-xs"
-                    style={{ 
-                      backgroundColor: `${note.color}20`,
-                      color: note.color,
-                      borderColor: note.color
-                    }}
-                  >
-                    <Icon name="Clock" size={12} className="mr-1" />
-                    {getTimeAgo(note.created_at)}
-                  </Badge>
-                </div>
+            <div className="flex gap-3 items-start">
+              <div 
+                className="w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-md flex-shrink-0"
+                style={{ backgroundColor: `${note.color}20` }}
+              >
+                {note.emoji}
               </div>
               
-              <p className="text-muted-foreground leading-relaxed">
-                {note.content}
-              </p>
-
-              <div className="mt-4 pt-4 border-t border-dashed flex items-center justify-between text-xs text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <Icon name="Sparkles" size={14} />
-                  От редакции
-                </span>
-                <Icon 
-                  name="ArrowRight" 
-                  size={16} 
-                  className="group-hover:translate-x-1 transition-transform"
-                  style={{ color: note.color }}
-                />
+              <div className="flex-1">
+                <div 
+                  className="bg-card border rounded-2xl rounded-tl-none p-4 shadow-sm hover:shadow-md transition-shadow"
+                  style={{ borderLeftColor: note.color, borderLeftWidth: '3px' }}
+                >
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <h3 className="font-bold text-base">{note.title}</h3>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">
+                      {getTimeAgo(note.created_at)}
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {note.content}
+                  </p>
+                  <div className="flex items-center gap-1 mt-2 text-xs" style={{ color: note.color }}>
+                    <Icon name="Radio" size={12} />
+                    <span className="font-medium">Редакция</span>
+                  </div>
+                </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
 
-      {publishedNotes.length > 6 && (
-        <div className="text-center mt-6">
-          <Badge 
-            variant="outline" 
-            className="text-sm px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 border-purple-300"
-          >
-            <Icon name="Zap" size={14} className="mr-2" />
-            Показано последние {Math.min(publishedNotes.length, 6)} заметок
-          </Badge>
+      {visibleNotes.length === publishedNotes.length && publishedNotes.length > 0 && (
+        <div 
+          className="text-center mt-6 animate-in fade-in slide-in-from-bottom-2 duration-500"
+          style={{ animationDelay: '900ms', animationFillMode: 'backwards' }}
+        >
+          <div className="inline-flex items-center gap-2 text-xs text-muted-foreground px-4 py-2 bg-muted/50 rounded-full">
+            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            Онлайн
+          </div>
         </div>
       )}
     </div>
