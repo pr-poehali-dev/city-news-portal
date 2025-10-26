@@ -12,15 +12,15 @@
   "scope": "/",
   "icons": [
     {
-      "src": "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/d3c8aa3c-b9de-4bbc-9dd3-a5fbd1d4e30a.jpg",
+      "src": "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/64754477-d033-49cf-803f-a808a1ea9e1b.jpg",
       "sizes": "192x192",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/d3c8aa3c-b9de-4bbc-9dd3-a5fbd1d4e30a.jpg",
+      "src": "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/64754477-d033-49cf-803f-a808a1ea9e1b.jpg",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ],
