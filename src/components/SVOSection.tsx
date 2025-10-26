@@ -148,20 +148,20 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
               </Card>
             ))}
           </div>
-          </div>
+        </div>
 
-          {news.length > 4 && (
-            <div className="mt-6 text-center">
-              <button
-                onClick={() => window.location.href = '/#СВО'}
-                className="px-8 py-3 bg-red-700 hover:bg-red-600 text-white font-bold uppercase tracking-wider transition-colors border-2 border-red-500"
-              >
-                Все материалы СВО
-                <Icon name="ArrowRight" size={16} className="inline ml-2" />
-              </button>
-            </div>
-          )}
+        {news.length > 4 && (
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => window.location.href = '/#СВО'}
+              className="px-8 py-3 bg-red-700 hover:bg-red-600 text-white font-bold uppercase tracking-wider transition-colors border-2 border-red-500"
+            >
+              Все материалы СВО
+              <Icon name="ArrowRight" size={16} className="inline ml-2" />
+            </button>
+          </div>
         )}
+      )}
       </div>
     </section>
   );
