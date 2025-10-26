@@ -186,11 +186,9 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
     setFormData({ content: '', emoji: '✨', color: '#8B5CF6', is_published: true, image_url: '' });
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    console.log('File selected:', file.name, file.type, file.size);
 
     if (!file.type.startsWith('image/')) {
       toast({
@@ -203,75 +201,58 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
 
     setUploading(true);
 
-    try {
-      const reader = new FileReader();
-      
-      reader.onload = async () => {
-        try {
-          const base64String = reader.result as string;
-          console.log('Base64 length:', base64String.length);
-          
-          const response = await fetch('https://functions.poehali.dev/e006b73d-c2a8-4b5e-bfb3-9ee0e3fca4cc', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              image: base64String,
-              filename: file.name
-            })
-          });
+    const reader = new FileReader();
+    
+    reader.onload = async () => {
+      try {
+        const base64String = reader.result as string;
+        
+        const response = await fetch('https://functions.poehali.dev/e006b73d-c2a8-4b5e-bfb3-9ee0e3fca4cc', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            image: base64String,
+            filename: file.name
+          })
+        });
 
-          console.log('Response status:', response.status);
-
-          if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Upload error:', errorText);
-            throw new Error(errorText || 'Upload failed');
-          }
-
-          const data = await response.json();
-          console.log('Upload success:', data);
-          
-          setFormData(prev => ({ ...prev, image_url: data.url }));
-
-          toast({
-            title: 'Успешно',
-            description: 'Фото загружено'
-          });
-          
-          setUploading(false);
-        } catch (error) {
-          console.error('Upload error in onload:', error);
-          toast({
-            title: 'Ошибка',
-            description: error instanceof Error ? error.message : 'Не удалось загрузить фото',
-            variant: 'destructive'
-          });
-          setUploading(false);
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ error: 'Upload failed' }));
+          throw new Error(errorData.error || 'Upload failed');
         }
-      };
-      
-      reader.onerror = () => {
-        console.error('FileReader error');
+
+        const data = await response.json();
+        
+        setFormData(prev => ({ ...prev, image_url: data.url }));
+
+        toast({
+          title: 'Успешно',
+          description: 'Фото загружено'
+        });
+        
+        setUploading(false);
+      } catch (error) {
         toast({
           title: 'Ошибка',
-          description: 'Не удалось прочитать файл',
+          description: error instanceof Error ? error.message : 'Не удалось загрузить фото',
           variant: 'destructive'
         });
         setUploading(false);
-      };
-      
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error('Upload error:', error);
+      }
+    };
+    
+    reader.onerror = () => {
       toast({
         title: 'Ошибка',
-        description: error instanceof Error ? error.message : 'Не удалось загрузить фото',
+        description: 'Не удалось прочитать файл',
         variant: 'destructive'
       });
       setUploading(false);
-    }
+    };
+    
+    reader.readAsDataURL(file);
   };
 
   return (
