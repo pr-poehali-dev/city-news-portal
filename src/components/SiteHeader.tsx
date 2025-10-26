@@ -7,13 +7,13 @@ import { useNavigate } from 'react-router-dom';
 
 interface SiteHeaderProps {
   weather?: any;
-  sections: string[];
+  sections?: string[];
   activeSection?: string;
-  onSectionChange: (section: string) => void;
+  onSectionChange?: (section: string) => void;
   onSearch?: (query: string) => void;
 }
 
-export const SiteHeader = ({ weather, sections, activeSection, onSectionChange, onSearch }: SiteHeaderProps) => {
+export const SiteHeader = ({ weather, sections = [], activeSection, onSectionChange, onSearch }: SiteHeaderProps) => {
   const navigate = useNavigate();
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -101,21 +101,23 @@ export const SiteHeader = ({ weather, sections, activeSection, onSectionChange, 
           </div>
         )}
         
-        <nav className="flex gap-6 overflow-x-auto pb-2 scrollbar-hide">
-          {sections.map((section) => (
-            <button
-              key={section}
-              onClick={() => onSectionChange(section)}
-              className={`text-sm font-medium whitespace-nowrap transition-all ${
-                activeSection === section
-                  ? 'text-primary dark:text-primary border-b-2 border-primary pb-2'
-                  : 'text-muted-foreground hover:text-foreground dark:hover:text-foreground'
-              }`}
-            >
-              {section}
-            </button>
-          ))}
-        </nav>
+        {sections.length > 0 && (
+          <nav className="flex gap-6 overflow-x-auto pb-2 scrollbar-hide">
+            {sections.map((section) => (
+              <button
+                key={section}
+                onClick={() => onSectionChange?.(section)}
+                className={`text-sm font-medium whitespace-nowrap transition-all ${
+                  activeSection === section
+                    ? 'text-primary dark:text-primary border-b-2 border-primary pb-2'
+                    : 'text-muted-foreground hover:text-foreground dark:hover:text-foreground'
+                }`}
+              >
+                {section}
+              </button>
+            ))}
+          </nav>
+        )}
       </div>
     </header>
   );

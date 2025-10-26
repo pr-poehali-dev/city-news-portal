@@ -2,11 +2,11 @@ import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
 
 interface FooterProps {
-  sections: string[];
-  onSectionChange: (section: string) => void;
+  sections?: string[];
+  onSectionChange?: (section: string) => void;
 }
 
-export const Footer = ({ sections, onSectionChange }: FooterProps) => {
+export const Footer = ({ sections = [], onSectionChange }: FooterProps) => {
   return (
     <footer className="bg-white dark:bg-card border-t dark:border-border/50 mt-12">
       <div className="container mx-auto px-4 py-8">
@@ -28,21 +28,23 @@ export const Footer = ({ sections, onSectionChange }: FooterProps) => {
             </div>
           </div>
 
-          <div>
-            <h4 className="font-semibold mb-4">Разделы</h4>
-            <ul className="space-y-2 text-sm">
-              {sections.slice(0, 6).map((section) => (
-                <li key={section}>
-                  <button
-                    onClick={() => onSectionChange(section)}
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {section}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {sections.length > 0 && (
+            <div>
+              <h4 className="font-semibold mb-4">Разделы</h4>
+              <ul className="space-y-2 text-sm">
+                {sections.slice(0, 6).map((section) => (
+                  <li key={section}>
+                    <button
+                      onClick={() => onSectionChange?.(section)}
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {section}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div>
             <h4 className="font-semibold mb-4">Социальные сети</h4>
