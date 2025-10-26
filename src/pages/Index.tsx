@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import { NewsTicker } from '@/components/NewsTicker';
 import { SEO } from '@/components/SEO';
 import { SiteHeader } from '@/components/SiteHeader';
