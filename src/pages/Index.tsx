@@ -12,6 +12,7 @@ import { Footer } from '@/components/Footer';
 import { PlacesSection } from '@/components/PlacesSection';
 import { MemorySection } from '@/components/MemorySection';
 import { PartnersSection } from '@/components/PartnersSection';
+import { SVOSection } from '@/components/SVOSection';
 
 const FUNCTIONS_URL = {
   news: 'https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe',
@@ -48,11 +49,13 @@ const Index = () => {
   const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
+  const [svoNews, setSvoNews] = useState<any[]>([]);
   
   const newsCategories = ['Политика', 'Экономика', 'Культура', 'Спорт', 'События'];
 
   const sections = [
     'Главная',
+    'СВО',
     'Политика',
     'Экономика',
     'Культура',
@@ -74,6 +77,7 @@ const Index = () => {
 
   useEffect(() => {
     loadNews();
+    loadSVONews();
     syncKudagoEvents();
     loadEvents();
     loadWeather();
@@ -94,7 +98,9 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    if (activeSection !== 'Главная') {
+    if (activeSection === 'СВО') {
+      loadSVONews();
+    } else if (activeSection !== 'Главная') {
       loadNews(activeSection);
     } else {
       loadNews();
@@ -148,7 +154,11 @@ const Index = () => {
         return;
       }
       
-      const sortedData = data.sort((a: any, b: any) => 
+      const filteredData = data.filter((article: any) => 
+        !article.tags || !article.tags.includes('СВО')
+      );
+      
+      const sortedData = filteredData.sort((a: any, b: any) => 
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
       
@@ -160,6 +170,23 @@ const Index = () => {
       console.error('Failed to load news:', error);
       setArticles([]);
       setTopThreeNews([]);
+    }
+  };
+
+  const loadSVONews = async () => {
+    try {
+      const response = await fetch(`${FUNCTIONS_URL.news}?tag=СВО`);
+      if (!response.ok) return;
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        const sortedData = data.sort((a: any, b: any) => 
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        setSvoNews(sortedData);
+      }
+    } catch (error) {
+      console.error('Failed to load SVO news:', error);
+      setSvoNews([]);
     }
   };
 
@@ -316,7 +343,24 @@ const Index = () => {
                   onNewsClick={handleArticleClick}
                   limit={12}
                 />
+
+                <SVOSection
+                  news={svoNews}
+                  onNewsClick={handleArticleClick}
+                />
               </>
+            ) : activeSection === 'СВО' ? (
+              <div className="mb-8">
+                <SVOSection
+                  news={svoNews}
+                  onNewsClick={handleArticleClick}
+                />
+                <LatestNewsGrid
+                  news={svoNews}
+                  onNewsClick={handleArticleClick}
+                  limit={24}
+                />
+              </div>
             ) : (
               <div className="mb-8">
                 <h2 className="text-3xl font-bold font-serif mb-8 text-foreground">{activeSection}</h2>

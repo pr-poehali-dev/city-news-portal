@@ -24,7 +24,8 @@ export const useAdminState = () => {
     video_url: '',
     read_time: '5 мин',
     status: 'published',
-    publish_telegram: true
+    publish_telegram: true,
+    tags: [] as string[]
   });
 
   const [eventForm, setEventForm] = useState({

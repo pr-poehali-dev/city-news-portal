@@ -19,3 +19,7 @@ export const CATEGORIES = [
   'О портале',
   'Контакты'
 ];
+
+export const TAGS = [
+  'СВО'
+];

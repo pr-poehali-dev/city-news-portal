@@ -58,6 +58,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             params = event.get('queryStringParameters') or {}
             news_id = params.get('id')
             category = params.get('category')
+            tag = params.get('tag')
             status = params.get('status', 'published')
             increment_views = params.get('increment_views', 'false').lower() == 'true'
             increment_likes = params.get('increment_likes', 'false').lower() == 'true'
@@ -109,6 +110,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'isBase64Encoded': False
                     }
                 
+                elif tag:
+                    cur.execute('''
+                        SELECT n.*, a.name as author_name 
+                        FROM news n 
+                        LEFT JOIN authors a ON n.author_id = a.id 
+                        WHERE %s = ANY(n.tags) AND n.status = %s
+                        ORDER BY n.published_at DESC
+                    ''', (tag, status))
                 elif category:
                     cur.execute('''
                         SELECT n.*, a.name as author_name 
@@ -151,6 +160,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             read_time = body.get('read_time', '5 мин')
             status = body.get('status', 'published')
             is_featured = body.get('is_featured', False)
+            tags = body.get('tags', [])
             
             if not title or not category or not excerpt:
                 return {
@@ -170,10 +180,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 random_likes = random.randint(0, 100)
                 
                 cur.execute('''
-                    INSERT INTO news (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured, likes)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO news (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured, likes, tags)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING *
-                ''', (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured, random_likes))
+                ''', (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured, random_likes, tags))
                 
                 new_news = cur.fetchone()
                 conn.commit()
@@ -237,6 +247,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if 'is_featured' in body:
                 fields.append('is_featured = %s')
                 values.append(body['is_featured'])
+            if 'tags' in body:
+                fields.append('tags = %s')
+                values.append(body['tags'])
             
             fields.append('updated_at = CURRENT_TIMESTAMP')
             values.append(news_id)

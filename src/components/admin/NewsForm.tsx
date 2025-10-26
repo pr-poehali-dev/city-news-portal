@@ -4,8 +4,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { ImageUpload } from './ImageUpload';
+import { TAGS } from '@/lib/admin-constants';
 
 interface NewsFormProps {
   newsForm: {
@@ -17,10 +19,11 @@ interface NewsFormProps {
     video_url: string;
     read_time: string;
     publish_telegram?: boolean;
+    tags?: string[];
   };
   categories: string[];
   loading: boolean;
-  onFormChange: (field: string, value: string | boolean) => void;
+  onFormChange: (field: string, value: string | boolean | string[]) => void;
   onSubmit: (e: React.FormEvent, isDraft: boolean) => void;
   onSaveVkDraft?: () => void;
 }
@@ -94,7 +97,7 @@ export const NewsForm = ({ newsForm, categories, loading, onFormChange, onSubmit
           </div>
 
           <div>
-            <label className="text-sm font-medium mb-2 block">Категория (тег)</label>
+            <label className="text-sm font-medium mb-2 block">Категория</label>
             <Select
               value={newsForm.category || ''}
               onValueChange={(value) => onFormChange('category', value)}
@@ -108,6 +111,41 @@ export const NewsForm = ({ newsForm, categories, loading, onFormChange, onSubmit
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">Теги</label>
+            <div className="flex flex-wrap gap-2 p-3 border rounded-md min-h-[42px]">
+              {TAGS.map(tag => {
+                const isSelected = newsForm.tags?.includes(tag);
+                return (
+                  <Badge
+                    key={tag}
+                    variant={isSelected ? "default" : "outline"}
+                    className="cursor-pointer hover:bg-primary/80"
+                    onClick={() => {
+                      const currentTags = newsForm.tags || [];
+                      const newTags = isSelected
+                        ? currentTags.filter(t => t !== tag)
+                        : [...currentTags, tag];
+                      onFormChange('tags', newTags);
+                    }}
+                  >
+                    {tag}
+                    {isSelected && (
+                      <Icon name="X" size={12} className="ml-1" />
+                    )}
+                  </Badge>
+                );
+              })}
+              {(!newsForm.tags || newsForm.tags.length === 0) && (
+                <span className="text-sm text-muted-foreground">Не выбрано</span>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              <Icon name="Info" size={12} className="inline mr-1" />
+              Новости с тегом "СВО" публикуются только в разделе СВО
+            </p>
           </div>
 
           <div>
