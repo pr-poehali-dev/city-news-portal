@@ -19,20 +19,41 @@ interface Movie {
 export function CityWatchesSection() {
   const navigate = useNavigate();
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [allMovies, setAllMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentOffset, setCurrentOffset] = useState(0);
 
   useEffect(() => {
-    fetchTopMovies();
+    fetchAllMovies();
   }, []);
 
-  const fetchTopMovies = async () => {
+  useEffect(() => {
+    if (allMovies.length > 0) {
+      const interval = setInterval(() => {
+        setCurrentOffset((prev) => {
+          const next = prev + 2;
+          return next >= allMovies.length ? 0 : next;
+        });
+      }, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [allMovies.length]);
+
+  useEffect(() => {
+    if (allMovies.length > 0) {
+      setMovies(allMovies.slice(currentOffset, currentOffset + 2));
+    }
+  }, [currentOffset, allMovies]);
+
+  const fetchAllMovies = async () => {
     try {
       setLoading(true);
       const response = await fetch(
-        'https://functions.poehali.dev/8276deb7-23a1-45e7-b53f-390b386d0d71?limit=2&offset=0'
+        'https://functions.poehali.dev/8276deb7-23a1-45e7-b53f-390b386d0d71?limit=20&offset=0'
       );
       const data = await response.json();
-      setMovies(data.movies);
+      setAllMovies(data.movies || []);
+      setMovies((data.movies || []).slice(0, 2));
     } catch (error) {
       console.error('Failed to fetch movies:', error);
     } finally {
