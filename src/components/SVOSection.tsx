@@ -1,5 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 
 interface SVOSectionProps {
@@ -7,11 +8,24 @@ interface SVOSectionProps {
   onNewsClick: (newsId: number) => void;
 }
 
-export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
-  if (!news || news.length === 0) return null;
+const handleShare = (newsId: number, title: string, e: React.MouseEvent) => {
+  e.stopPropagation();
+  const url = `${window.location.origin}/news/${newsId}`;
+  
+  if (navigator.share) {
+    navigator.share({
+      title: title,
+      url: url
+    }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(url);
+    alert('Ссылка скопирована в буфер обмена');
+  }
+};
 
-  const mainNews = news[0];
-  const sideNews = news.slice(1, 4);
+export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
+  const mainNews = news && news.length > 0 ? news[0] : null;
+  const sideNews = news && news.length > 1 ? news.slice(1, 4) : [];
 
   return (
     <section className="mb-16 bg-gradient-to-b from-slate-900 to-slate-800 -mx-6 px-6 py-12 border-t-4 border-red-700">
@@ -33,12 +47,20 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
           <div className="h-1 flex-1 bg-red-700"></div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <Card 
-              className="group relative overflow-hidden cursor-pointer border-2 border-red-900/30 bg-slate-950 hover:border-red-700 transition-all duration-300"
-              onClick={() => onNewsClick(mainNews.id)}
-            >
+        {!mainNews && (
+          <div className="text-center py-12">
+            <p className="text-gray-400 text-lg">В данном разделе пока нет публикаций</p>
+            <p className="text-gray-500 text-sm mt-2">Материалы с тегом "СВО" будут отображаться здесь</p>
+          </div>
+        )}
+
+        {mainNews && (
+          <div className="grid lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <Card 
+                className="group relative overflow-hidden cursor-pointer border-2 border-red-900/30 bg-slate-950 hover:border-red-700 transition-all duration-300"
+                onClick={() => onNewsClick(mainNews.id)}
+              >
               <div className="relative h-[450px] overflow-hidden">
                 {mainNews.image_url ? (
                   <img
@@ -67,15 +89,29 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
                   <p className="text-gray-300 text-base mb-4 line-clamp-2">
                     {mainNews.content || mainNews.excerpt}
                   </p>
-                  <div className="flex items-center gap-6 text-gray-400 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Icon name="Calendar" size={16} />
-                      <span>{new Date(mainNews.created_at).toLocaleDateString('ru-RU')}</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-6 text-gray-400 text-sm">
+                      <div className="flex items-center gap-2">
+                        <Icon name="Calendar" size={16} />
+                        <span>{new Date(mainNews.created_at).toLocaleDateString('ru-RU')}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Icon name="User" size={16} />
+                        <span>{mainNews.author_name}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Icon name="Eye" size={16} />
+                        <span>{mainNews.views || 0}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="User" size={16} />
-                      <span>{mainNews.author_name}</span>
-                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => handleShare(mainNews.id, mainNews.title, e)}
+                      className="text-gray-400 hover:text-white hover:bg-red-700/20"
+                    >
+                      <Icon name="Share2" size={16} />
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -112,18 +148,19 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
               </Card>
             ))}
           </div>
-        </div>
-
-        {news.length > 4 && (
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => window.location.href = '/#СВО'}
-              className="px-8 py-3 bg-red-700 hover:bg-red-600 text-white font-bold uppercase tracking-wider transition-colors border-2 border-red-500"
-            >
-              Все материалы СВО
-              <Icon name="ArrowRight" size={16} className="inline ml-2" />
-            </button>
           </div>
+
+          {news.length > 4 && (
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => window.location.href = '/#СВО'}
+                className="px-8 py-3 bg-red-700 hover:bg-red-600 text-white font-bold uppercase tracking-wider transition-colors border-2 border-red-500"
+              >
+                Все материалы СВО
+                <Icon name="ArrowRight" size={16} className="inline ml-2" />
+              </button>
+            </div>
+          )}
         )}
       </div>
     </section>

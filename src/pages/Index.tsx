@@ -175,8 +175,12 @@ const Index = () => {
 
   const loadSVONews = async () => {
     try {
-      const response = await fetch(`${FUNCTIONS_URL.news}?tag=СВО`);
-      if (!response.ok) return;
+      const response = await fetch(`${FUNCTIONS_URL.news}?tag=${encodeURIComponent('СВО')}`);
+      if (!response.ok) {
+        console.error('Failed to fetch SVO news:', response.status);
+        setSvoNews([]);
+        return;
+      }
       const data = await response.json();
       if (Array.isArray(data)) {
         const sortedData = data.sort((a: any, b: any) => 

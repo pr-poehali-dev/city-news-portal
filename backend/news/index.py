@@ -18,8 +18,8 @@ def trigger_sitemap_regeneration():
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Manage news articles - get all, get by id, create, update, delete
-    Args: event with httpMethod, body, queryStringParameters
+    Business: Manage news articles - get all, get by id, create, update, delete, filter by tag
+    Args: event with httpMethod, body, queryStringParameters (supports tag filtering)
           context with request_id
     Returns: HTTP response with news data
     '''
