@@ -21,18 +21,20 @@ interface YouthNotesSectionProps {
 
 export function YouthNotesSection({ notes }: YouthNotesSectionProps) {
   const navigate = useNavigate();
-  const publishedNotes = notes.filter(n => n.is_published).slice(0, 3);
   const [visibleNotes, setVisibleNotes] = useState<number[]>([]);
   
-  if (publishedNotes.length === 0) return null;
-
+  const publishedNotes = notes.filter(n => n.is_published).slice(0, 3);
+  
   useEffect(() => {
+    setVisibleNotes([]);
     publishedNotes.forEach((_, index) => {
       setTimeout(() => {
         setVisibleNotes(prev => [...prev, index]);
       }, index * 300);
     });
   }, [notes]);
+  
+  if (publishedNotes.length === 0) return null;
 
   const getTimeAgo = (date: string) => {
     try {
