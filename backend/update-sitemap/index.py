@@ -49,6 +49,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     cur.execute("SELECT id, updated_at FROM memory_articles WHERE is_published = true ORDER BY event_date DESC")
     memory_items = cur.fetchall()
     
+    cur.execute("SELECT id, updated_at FROM city_places WHERE is_published = true ORDER BY created_at DESC")
+    places_items = cur.fetchall()
+    
     cur.close()
     conn.close()
     
@@ -104,6 +107,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         lastmod = updated_at.strftime('%Y-%m-%d') if updated_at else today
         urls.append(f'''  <url>
     <loc>https://gorodgovorit.ru/memory/{memory_id}</loc>
+    <lastmod>{lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>''')
+    
+    for place_id, updated_at in places_items:
+        lastmod = updated_at.strftime('%Y-%m-%d') if updated_at else today
+        urls.append(f'''  <url>
+    <loc>https://gorodgovorit.ru/places#{place_id}</loc>
     <lastmod>{lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>

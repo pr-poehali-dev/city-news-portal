@@ -6,7 +6,8 @@ export const FUNCTIONS_URL = {
   cityPlaces: 'https://functions.poehali.dev/5db1b661-abf3-4bcb-8e1f-d01437219788',
   memory: 'https://functions.poehali.dev/524497f7-1b8d-4d18-9293-548392f10987',
   socialPublisher: 'https://functions.poehali.dev/a82256af-0286-4392-a152-571238c8af04',
-  updateSitemap: 'https://functions.poehali.dev/a3682adf-931b-4c62-8bd9-3f1fc603b95c'
+  updateSitemap: 'https://functions.poehali.dev/a3682adf-931b-4c62-8bd9-3f1fc603b95c',
+  syncSitemap: 'https://functions.poehali.dev/18228f45-4f0b-4776-8e8e-ba4f616be795'
 };
 
 export const CATEGORIES = [
