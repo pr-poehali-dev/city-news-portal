@@ -32,7 +32,11 @@ export const SiteHeader = ({ weather, sections, activeSection, onSectionChange, 
         <div className="flex items-center justify-between mb-4">
           <div 
             className="cursor-pointer" 
-            onClick={() => navigate('/')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              navigate('/');
+            }}
           >
             <h1 className="text-4xl font-bold text-primary font-serif">
               Город говорит
