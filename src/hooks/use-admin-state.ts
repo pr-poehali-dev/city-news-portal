@@ -706,6 +706,10 @@ export const useAdminState = () => {
           is_featured: false
         });
         await loadPlaces();
+        
+        if (placeForm.is_published) {
+          await updateSitemap();
+        }
       }
     } catch (error) {
       toast({
@@ -732,6 +736,7 @@ export const useAdminState = () => {
           description: 'Место удалено'
         });
         await loadPlaces();
+        await updateSitemap();
       }
     } catch (error) {
       toast({
@@ -760,6 +765,7 @@ export const useAdminState = () => {
           description: isPublished ? 'Место опубликовано' : 'Место скрыто'
         });
         await loadPlaces();
+        await updateSitemap();
       }
     } catch (error) {
       toast({
@@ -845,6 +851,7 @@ export const useAdminState = () => {
           is_featured: false
         });
         await loadPlaces();
+        await updateSitemap();
       }
     } catch (error) {
       toast({
