@@ -1,0 +1,23 @@
+{
+  "tests": [
+    {
+      "name": "Get all youth notes",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Create new youth note",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "title": "Тестовая заметка",
+        "content": "Это тестовая заметка для молодёжи",
+        "emoji": "🎉",
+        "color": "#3b82f6",
+        "is_published": true
+      },
+      "expectedStatus": 201
+    }
+  ]
+}

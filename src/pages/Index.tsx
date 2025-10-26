@@ -14,6 +14,7 @@ import { PlacesSection } from '@/components/PlacesSection';
 import { MemorySection } from '@/components/MemorySection';
 import { PartnersSection } from '@/components/PartnersSection';
 import { SVOSection } from '@/components/SVOSection';
+import { YouthNotesSection } from '@/components/YouthNotesSection';
 
 
 const FUNCTIONS_URL = {
@@ -24,7 +25,8 @@ const FUNCTIONS_URL = {
   cityPlaces: 'https://functions.poehali.dev/5db1b661-abf3-4bcb-8e1f-d01437219788',
   memory: 'https://functions.poehali.dev/524497f7-1b8d-4d18-9293-548392f10987',
   kudagoEvents: 'https://functions.poehali.dev/ab80cd05-8ada-45de-8a5f-dd7debe04ea3',
-  syncKudago: 'https://functions.poehali.dev/9b3befac-d5bd-4a98-8d2b-f45edc14eb56'
+  syncKudago: 'https://functions.poehali.dev/9b3befac-d5bd-4a98-8d2b-f45edc14eb56',
+  youthNotes: 'https://functions.poehali.dev/97a5ec9d-d662-4652-be23-350205ec6759'
 };
 
 const categoryColors = {
@@ -42,6 +44,7 @@ const Index = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [cityPlaces, setCityPlaces] = useState<any[]>([]);
   const [memoryArticles, setMemoryArticles] = useState<any[]>([]);
+  const [youthNotes, setYouthNotes] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showAllPlaces, setShowAllPlaces] = useState(false);
   const [weather, setWeather] = useState<any>(null);
@@ -88,6 +91,7 @@ const Index = () => {
     loadLatestForTicker();
     loadCityPlaces();
     loadMemoryArticles();
+    loadYouthNotes();
     
     const savedLikes = localStorage.getItem('likedArticles');
     if (savedLikes) {
@@ -241,6 +245,20 @@ const Index = () => {
     } catch (error) {
       console.error('Failed to load memory articles:', error);
       setMemoryArticles([]);
+    }
+  };
+
+  const loadYouthNotes = async () => {
+    try {
+      const response = await fetch(FUNCTIONS_URL.youthNotes);
+      if (!response.ok) return;
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setYouthNotes(data);
+      }
+    } catch (error) {
+      console.error('Failed to load youth notes:', error);
+      setYouthNotes([]);
     }
   };
 
@@ -472,6 +490,8 @@ const Index = () => {
                   onCategorySelect={setSelectedCategory}
                   onShowAllToggle={() => setShowAllPlaces(!showAllPlaces)}
                 />
+
+                <YouthNotesSection notes={youthNotes} />
 
                 <MemorySection
                   articles={memoryArticles}
