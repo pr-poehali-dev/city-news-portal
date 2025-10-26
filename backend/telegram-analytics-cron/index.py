@@ -48,7 +48,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         FROM t_p68330612_city_news_portal.news n
         LEFT JOIN t_p68330612_city_news_portal.article_views_tracking t 
             ON n.id = t.news_id
-        WHERE n.views > 0
+        WHERE n.status = 'published'
     ''')
     all_articles = cursor.fetchall()
     
