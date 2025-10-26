@@ -14,6 +14,7 @@ import { PlacesSection } from '@/components/PlacesSection';
 import { MemorySection } from '@/components/MemorySection';
 import { PartnersSection } from '@/components/PartnersSection';
 import { SVOSection } from '@/components/SVOSection';
+import { CityWatchesSection } from '@/components/CityWatchesSection';
 
 const FUNCTIONS_URL = {
   news: 'https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe',
@@ -476,6 +477,8 @@ const Index = () => {
                   articles={memoryArticles}
                   onArticleClick={(id) => navigate(`/memory/${id}`)}
                 />
+
+                <CityWatchesSection />
 
                 <EventsSection events={events} />
 

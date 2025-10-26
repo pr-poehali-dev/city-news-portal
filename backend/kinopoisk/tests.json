@@ -1,0 +1,17 @@
+{
+  "tests": [
+    {
+      "name": "Get first 2 movies",
+      "method": "GET",
+      "path": "/?limit=2&offset=0",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Handle CORS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": ""
+    }
+  ]
+}
