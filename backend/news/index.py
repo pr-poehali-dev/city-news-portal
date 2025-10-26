@@ -66,26 +66,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 if news_id:
                     if increment_views:
-                        # Get user IP from request context
-                        ip_address = event.get('requestContext', {}).get('identity', {}).get('sourceIp', 'unknown')
-                        
-                        # Try to insert unique view, ignore if already exists
-                        cur.execute('''
-                            INSERT INTO news_unique_views (news_id, ip_address)
-                            VALUES (%s, %s)
-                            ON CONFLICT (news_id, ip_address) DO NOTHING
-                        ''', (news_id, ip_address))
-                        
-                        # Update views count based on unique views
                         cur.execute('''
                             UPDATE news 
-                            SET views = (
-                                SELECT COUNT(DISTINCT ip_address) 
-                                FROM news_unique_views 
-                                WHERE news_id = %s
-                            )
+                            SET views = COALESCE(views, 0) + 1 
                             WHERE id = %s
-                        ''', (news_id, news_id))
+                        ''', (news_id,))
                         conn.commit()
                     
                     if increment_likes:
