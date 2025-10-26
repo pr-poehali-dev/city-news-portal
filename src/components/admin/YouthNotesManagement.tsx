@@ -213,7 +213,7 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
         console.log('Base64 string length:', base64String.length);
         
         console.log('Sending request to backend...');
-        const response = await fetch('https://functions.poehali.dev/e006b73d-c2a8-4b5e-bfb3-9ee0e3fca4cc', {
+        const response = await fetch('https://functions.poehali.dev/bc882f30-e97a-4dcc-aca0-a79cffa9bd71', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
