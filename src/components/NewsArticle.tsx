@@ -5,6 +5,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
+import { SEO } from '@/components/SEO';
+import { SEO } from '@/components/SEO';
+import { useEffect } from 'react';
 
 interface NewsArticleProps {
   article: any;
@@ -91,8 +94,34 @@ export const NewsArticle = ({
     return parts;
   };
 
+  const getArticleDescription = () => {
+    if (article.excerpt) return article.excerpt;
+    if (article.content) {
+      const plainText = article.content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '').trim();
+      return plainText.substring(0, 160) + (plainText.length > 160 ? '...' : '');
+    }
+    return 'Читайте новости Краснодара на портале Город говорит';
+  };
+
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+    <>
+      {isExpanded && (
+        <SEO
+          title={article.title}
+          description={getArticleDescription()}
+          image={article.image_url}
+          type="article"
+          url={`https://ggkrasnodar.ru/#news-${article.id}`}
+          article={{
+            publishedTime: article.created_at,
+            modifiedTime: article.updated_at,
+            author: 'Город говорит',
+            section: article.category,
+            tags: [article.category, 'Краснодар', 'новости']
+          }}
+        />
+      )}
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       {article.image_url && (
         <div className="relative overflow-hidden group">
           <img
@@ -271,5 +300,6 @@ export const NewsArticle = ({
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

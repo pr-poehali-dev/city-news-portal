@@ -1,26 +1,32 @@
 {
-  "name": "Город говорит — Админка",
-  "short_name": "ГГ Админка",
-  "description": "Административная панель новостного портала Город говорит",
-  "start_url": "/admin",
+  "name": "Город говорит — новости Краснодара",
+  "short_name": "Город говорит",
+  "description": "Новостной портал Краснодара: актуальные новости, СВО, политика, экономика, культура, спорт, события города",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#2563eb",
+  "theme_color": "#FBB040",
   "orientation": "portrait-primary",
+  "lang": "ru",
+  "dir": "ltr",
+  "scope": "/",
   "icons": [
     {
-      "src": "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/73d9a617-f287-4960-91f4-49ead8981af4.jpg",
+      "src": "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/d3c8aa3c-b9de-4bbc-9dd3-a5fbd1d4e30a.jpg",
       "sizes": "192x192",
       "type": "image/jpeg",
       "purpose": "any maskable"
     },
     {
-      "src": "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/eb987673-3184-4113-ba7d-4352a83d6cf7.jpg",
+      "src": "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/d3c8aa3c-b9de-4bbc-9dd3-a5fbd1d4e30a.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any maskable"
     }
   ],
-  "categories": ["news", "business", "productivity"],
+  "categories": ["news", "magazines"],
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
+  "related_applications": [],
+  "prefer_related_applications": false,
   "screenshots": []
 }

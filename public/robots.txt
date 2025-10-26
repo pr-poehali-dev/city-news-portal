@@ -1,5 +1,6 @@
 User-agent: Yandex
 Allow: /
+Crawl-delay: 0.5
 
 User-agent: Googlebot
 Allow: /
@@ -7,14 +8,12 @@ Allow: /
 User-agent: Bingbot
 Allow: /
 
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
 User-agent: *
 Allow: /
 
-Sitemap: https://functions.poehali.dev/0d0f69b6-8c6c-441f-ba89-36f59adf440b
+# Sitemaps
+Sitemap: https://ggkrasnodar.ru/sitemap.xml
+Sitemap: https://functions.poehali.dev/ca2cee13-dce4-42ea-8fb9-2b5c115b07dc
+
+# Host
 Host: https://ggkrasnodar.ru

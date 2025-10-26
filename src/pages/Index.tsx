@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import { NewsTicker } from '@/components/NewsTicker';
+import { SEO } from '@/components/SEO';
 import { SiteHeader } from '@/components/SiteHeader';
 import { HeroSection } from '@/components/HeroSection';
 import { CategoryGrid } from '@/components/CategoryGrid';
@@ -321,12 +321,66 @@ const Index = () => {
     setActiveSection('Поиск');
   };
 
+  const getSectionSEO = () => {
+    const baseUrl = 'https://ggkrasnodar.ru/';
+    
+    switch (activeSection) {
+      case 'СВО':
+        return {
+          title: 'СВО: последние новости специальной военной операции в Краснодаре',
+          description: 'Актуальные новости СВО, помощь участникам специальной военной операции, благотворительный фонд поддержки. Мы поддерживаем наших.',
+          url: `${baseUrl}#svo`
+        };
+      case 'Политика':
+        return {
+          title: 'Политика Краснодара — последние новости',
+          description: 'Все о политической жизни Краснодара: решения властей, городские инициативы, общественная деятельность.',
+          url: `${baseUrl}#politika`
+        };
+      case 'Экономика':
+        return {
+          title: 'Экономика Краснодара — бизнес и финансы',
+          description: 'Экономические новости Краснодара: бизнес, инвестиции, развитие города, финансовые показатели.',
+          url: `${baseUrl}#ekonomika`
+        };
+      case 'Культура':
+        return {
+          title: 'Культура Краснодара — события и новости',
+          description: 'Культурная жизнь Краснодара: выставки, концерты, театральные премьеры, фестивали и городские события.',
+          url: `${baseUrl}#kultura`
+        };
+      case 'Спорт':
+        return {
+          title: 'Спорт в Краснодаре — новости и события',
+          description: 'Спортивные новости Краснодара: ФК Краснодар, городские соревнования, достижения спортсменов.',
+          url: `${baseUrl}#sport`
+        };
+      case 'События':
+        return {
+          title: 'События в Краснодаре — куда сходить сегодня',
+          description: 'Афиша Краснодара: концерты, выставки, фестивали, спектакли. Все городские события и мероприятия.',
+          url: `${baseUrl}#sobytiya`
+        };
+      default:
+        return {
+          title: 'Город говорит — новостной портал Краснодара',
+          description: 'Актуальные новости Краснодара: политика, экономика, культура, спорт, СВО. Читайте последние события города каждый день.',
+          url: baseUrl
+        };
+    }
+  };
+
+  const seoData = getSectionSEO();
+
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title={seoData.title}
+        description={seoData.description}
+        url={seoData.url}
+      />
       <Helmet>
-        <title>Город говорит — новостной портал Краснодара</title>
-        <meta name="description" content="Актуальные новости Краснодара: политика, экономика, культура, спорт. Читайте последние события города каждый день." />
-        <link rel="canonical" href="https://ggkrasnodar.ru/" />
+        <link rel="canonical" href={seoData.url} />
       </Helmet>
 
       <SiteHeader 
