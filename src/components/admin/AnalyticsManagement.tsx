@@ -20,12 +20,19 @@ export function AnalyticsManagement({ loading }: AnalyticsManagementProps) {
     loadAnalytics();
     loadComments();
     
-    const interval = setInterval(() => {
+    const analyticsInterval = setInterval(() => {
       loadAnalytics();
       loadComments();
-    }, 30000);
+    }, 10000);
     
-    return () => clearInterval(interval);
+    const telegramInterval = setInterval(() => {
+      sendTelegramAnalytics();
+    }, 10000);
+    
+    return () => {
+      clearInterval(analyticsInterval);
+      clearInterval(telegramInterval);
+    };
   }, []);
 
   const loadAnalytics = async () => {
@@ -75,6 +82,14 @@ export function AnalyticsManagement({ loading }: AnalyticsManagementProps) {
     } catch (error) {
       console.error('Failed to load comments:', error);
       setComments([]);
+    }
+  };
+
+  const sendTelegramAnalytics = async () => {
+    try {
+      await fetch('https://functions.poehali.dev/a27a92d6-132c-48dd-b6c4-96bf62aa923c');
+    } catch (error) {
+      console.error('Failed to send Telegram analytics:', error);
     }
   };
 
