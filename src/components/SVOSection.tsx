@@ -55,6 +55,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
         )}
 
         {mainNews && (
+          <>
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
               <Card 
@@ -161,8 +162,8 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
             </button>
           </div>
         )}
-      </>
-      )}
+        </>
+        )}
       </div>
     </section>
   );
