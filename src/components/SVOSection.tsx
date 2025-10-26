@@ -25,11 +25,38 @@ const handleShare = (newsId: number, title: string, e: React.MouseEvent) => {
 
 export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
   const mainNews = news && news.length > 0 ? news[0] : null;
-  const sideNews = news && news.length > 1 ? news.slice(1, 4) : [];
+  const sideNews = news && news.length > 1 ? news.slice(1) : [];
 
   return (
     <section className="mb-16 bg-gradient-to-b from-slate-900 to-slate-800 -mx-6 px-6 py-12 border-t-4 border-red-700">
       <div className="max-w-7xl mx-auto">
+        <div className="bg-gradient-to-r from-blue-900/40 to-blue-800/40 border-2 border-blue-600/50 rounded-2xl p-8 mb-8 shadow-2xl">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-6">
+              <img 
+                src="https://cdn.poehali.dev/files/d026eb1a-861f-4069-8904-d64ffe4aa1e7.jpg" 
+                alt="Фонд поддержки участников СВО"
+                className="w-20 h-20 rounded-xl border-2 border-white/30 shadow-lg"
+              />
+              <div>
+                <h3 className="text-white font-bold text-2xl mb-2">Помочь нашим</h3>
+                <p className="text-gray-300 text-sm leading-relaxed max-w-xl">
+                  Благотворительный фонд поддержки участников СВО. Помогаем бойцам на передовой необходимым снаряжением, техникой и гуманитарной помощью.
+                </p>
+              </div>
+            </div>
+            <a 
+              href="https://fond-npusvo.ru/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-lg rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 whitespace-nowrap flex items-center gap-2"
+            >
+              <Icon name="Heart" size={20} />
+              Помочь
+            </a>
+          </div>
+        </div>
+
         <div className="bg-gradient-to-r from-red-900/20 via-red-800/20 to-red-900/20 border border-red-700/30 rounded-lg p-4 mb-8">
           <div className="flex items-center justify-center gap-3 text-white">
             <Icon name="Heart" size={20} className="text-red-500" />
@@ -56,8 +83,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
 
         {mainNews && (
           <>
-          <div className="grid lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
+          <div className="mb-8">
               <Card 
                 className="group relative overflow-hidden cursor-pointer border-2 border-red-900/30 bg-slate-950 hover:border-red-700 transition-all duration-300"
                 onClick={() => onNewsClick(mainNews.id)}
@@ -115,43 +141,37 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
             </Card>
           </div>
 
-          <div className="space-y-4">
-            {sideNews.map((item) => (
-              <Card
-                key={item.id}
-                className="group cursor-pointer border-2 border-slate-700 bg-slate-900 hover:border-red-700 hover:bg-slate-800 transition-all duration-300"
-                onClick={() => onNewsClick(item.id)}
-              >
-                <div className="p-5">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-2 h-2 bg-red-700 rounded-full mt-2"></div>
-                    <div className="flex-1">
-                      <h4 className="text-white font-bold text-base mb-2 leading-tight group-hover:text-red-400 transition-colors">
-                        {item.title}
-                      </h4>
-                      <div className="flex items-center gap-1 text-gray-500 text-xs">
-                        <Icon name="Calendar" size={12} />
-                        <span>{new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
-                      </div>
+          {sideNews.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+              {sideNews.map((item) => (
+                <Card
+                  key={item.id}
+                  className="group cursor-pointer border-2 border-slate-700 bg-slate-900 hover:border-red-700 hover:bg-slate-800 transition-all duration-300 overflow-hidden"
+                  onClick={() => onNewsClick(item.id)}
+                >
+                  {item.image_url && (
+                    <div className="relative h-32 overflow-hidden">
+                      <img
+                        src={item.image_url}
+                        alt={item.title}
+                        className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent" />
+                    </div>
+                  )}
+                  <div className="p-4">
+                    <h4 className="text-white font-bold text-sm mb-2 leading-tight group-hover:text-red-400 transition-colors line-clamp-2">
+                      {item.title}
+                    </h4>
+                    <div className="flex items-center gap-1 text-gray-500 text-xs">
+                      <Icon name="Calendar" size={12} />
+                      <span>{new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
                     </div>
                   </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-
-        {news.length > 4 && (
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => window.location.href = '/#СВО'}
-              className="px-8 py-3 bg-red-700 hover:bg-red-600 text-white font-bold uppercase tracking-wider transition-colors border-2 border-red-500"
-            >
-              Все материалы СВО
-              <Icon name="ArrowRight" size={16} className="inline ml-2" />
-            </button>
-          </div>
-        )}
+                </Card>
+              ))}
+            </div>
+          )}
         </>
         )}
       </div>
