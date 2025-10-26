@@ -3,16 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { NewsTicker } from '@/components/NewsTicker';
 import { SiteHeader } from '@/components/SiteHeader';
-import { FeaturedNews } from '@/components/FeaturedNews';
+import { HeroSection } from '@/components/HeroSection';
+import { CategoryGrid } from '@/components/CategoryGrid';
+import { LatestNewsGrid } from '@/components/LatestNewsGrid';
 import { EventsSection } from '@/components/EventsSection';
 import { SocialSubscribe } from '@/components/SocialSubscribe';
-import { MiniNewsCard } from '@/components/MiniNewsCard';
-import { Separator } from '@/components/ui/separator';
 import { Footer } from '@/components/Footer';
-import { NewsSection } from '@/components/NewsSection';
 import { PlacesSection } from '@/components/PlacesSection';
 import { MemorySection } from '@/components/MemorySection';
-import { CategoryPreview } from '@/components/CategoryPreview';
 import { PartnersSection } from '@/components/PartnersSection';
 
 const FUNCTIONS_URL = {
@@ -292,88 +290,70 @@ const Index = () => {
       <NewsTicker latestNews={latestNews} />
 
       <main className="container mx-auto px-4 py-8">
-        {articles.length === 0 && !featuredNews ? (
+        {articles.length === 0 && !topThreeNews[0] ? (
           <div className="text-center py-20">
             <p className="text-muted-foreground">Загрузка новостей...</p>
           </div>
         ) : (
           <>
-            {featuredNews && (
-              <FeaturedNews
-                news={featuredNews}
-                allTopNews={topThreeNews}
-                currentIndex={currentFeaturedIndex}
-                totalCount={topThreeNews.length}
-                onNavigate={(direction) => {
-                  setCurrentFeaturedIndex(prev => {
-                    const newIndex = direction === 'next' 
-                      ? (prev + 1) % topThreeNews.length
-                      : prev === 0 ? topThreeNews.length - 1 : prev - 1;
-                    setFeaturedNews(topThreeNews[newIndex]);
-                    return newIndex;
-                  });
-                }}
-                onClick={() => handleArticleClick(featuredNews.id)}
-                onNewsClick={(newsId) => handleArticleClick(newsId)}
-              />
+            {activeSection === 'Главная' ? (
+              <>
+                <HeroSection
+                  mainNews={topThreeNews[0]}
+                  sideNews={topThreeNews.slice(1)}
+                  onNewsClick={handleArticleClick}
+                />
+
+                <CategoryGrid
+                  categories={newsCategories}
+                  articles={articles}
+                  onNewsClick={handleArticleClick}
+                  onCategoryClick={(cat) => setActiveSection(cat)}
+                />
+
+                <LatestNewsGrid
+                  news={articles.slice(3, 15)}
+                  onNewsClick={handleArticleClick}
+                  limit={12}
+                />
+              </>
+            ) : (
+              <div className="mb-8">
+                <h2 className="text-3xl font-bold font-serif mb-8 text-foreground">{activeSection}</h2>
+                <LatestNewsGrid
+                  news={articles}
+                  onNewsClick={handleArticleClick}
+                  limit={24}
+                />
+              </div>
             )}
 
-            <div className="mb-12">
-              <h2 className="text-2xl font-bold mb-6">Последние новости</h2>
-              <div className="grid gap-6">
-                {articles.slice(3, 9).map((article) => (
-                  <MiniNewsCard
-                    key={article.id}
-                    news={article}
-                    onClick={() => handleArticleClick(article.id)}
-                    onLike={() => handleLike(article.id)}
-                    isLiked={likedArticles.has(article.id)}
-                  />
-                ))}
-              </div>
-            </div>
+            {activeSection === 'Главная' && (
+              <>
+                <PlacesSection
+                  cityPlaces={cityPlaces}
+                  selectedCategory={selectedCategory}
+                  showAllPlaces={showAllPlaces}
+                  categoryColors={categoryColors}
+                  onCategorySelect={setSelectedCategory}
+                  onShowAllToggle={() => setShowAllPlaces(!showAllPlaces)}
+                />
 
-            <PlacesSection
-              cityPlaces={cityPlaces}
-              selectedCategory={selectedCategory}
-              showAllPlaces={showAllPlaces}
-              categoryColors={categoryColors}
-              onCategorySelect={setSelectedCategory}
-              onShowAllToggle={() => setShowAllPlaces(!showAllPlaces)}
-            />
+                <MemorySection
+                  articles={memoryArticles}
+                  onArticleClick={(id) => navigate(`/memory/${id}`)}
+                />
 
-            <Separator className="my-12" />
+                <EventsSection events={events} />
 
-            <MemorySection
-              articles={memoryArticles}
-              onArticleClick={(id) => navigate(`/memory/${id}`)}
-            />
-
-            <Separator className="my-12" />
-
-            <EventsSection events={events} />
-
-            <Separator className="my-12" />
-
-            <NewsSection
-              articles={articles}
-              newsCategories={newsCategories}
-              currentCategoryIndex={currentCategoryIndex}
-              availableCategories={availableCategories}
-              onCategoryChange={handleCategoryChange}
-              onArticleClick={handleArticleClick}
-              onLike={handleLike}
-              likedArticles={likedArticles}
-            />
-
-            <Separator className="my-8" />
-
-            <PartnersSection />
+                <PartnersSection />
+              </>
+            )}
           </>
         )}
       </main>
 
-      <SocialSubscribe />
+      {activeSection === 'Главная' && <SocialSubscribe />}
 
       <Footer 
         sections={sections} 
