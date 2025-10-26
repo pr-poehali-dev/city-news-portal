@@ -16,6 +16,14 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
   return (
     <section className="mb-16 bg-gradient-to-b from-slate-900 to-slate-800 -mx-6 px-6 py-12 border-t-4 border-red-700">
       <div className="max-w-7xl mx-auto">
+        <div className="bg-gradient-to-r from-red-900/20 via-red-800/20 to-red-900/20 border border-red-700/30 rounded-lg p-4 mb-8">
+          <div className="flex items-center justify-center gap-3 text-white">
+            <Icon name="Heart" size={20} className="text-red-500" />
+            <span className="font-bold text-lg uppercase tracking-wide">Мы поддерживаем наших</span>
+            <Icon name="Heart" size={20} className="text-red-500" />
+          </div>
+        </div>
+
         <div className="flex items-center gap-4 mb-8">
           <div className="h-1 w-12 bg-red-700"></div>
           <h2 className="text-3xl font-bold text-white uppercase tracking-wider font-serif flex items-center gap-3">

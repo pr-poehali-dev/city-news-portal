@@ -343,11 +343,6 @@ const Index = () => {
                   onNewsClick={handleArticleClick}
                   limit={12}
                 />
-
-                <SVOSection
-                  news={svoNews}
-                  onNewsClick={handleArticleClick}
-                />
               </>
             ) : activeSection === 'СВО' ? (
               <div className="mb-8">
@@ -374,6 +369,11 @@ const Index = () => {
 
             {activeSection === 'Главная' && (
               <>
+                <SVOSection
+                  news={svoNews}
+                  onNewsClick={handleArticleClick}
+                />
+
                 <PlacesSection
                   cityPlaces={cityPlaces}
                   selectedCategory={selectedCategory}

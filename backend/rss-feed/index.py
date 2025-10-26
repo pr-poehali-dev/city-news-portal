@@ -40,7 +40,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute('''
             SELECT id, title, excerpt, content, category, image_url, 
-                   published_at, updated_at
+                   published_at, updated_at, tags
             FROM news 
             WHERE status = 'published' 
             ORDER BY published_at DESC 
@@ -58,13 +58,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if isinstance(pub_date, str):
             pub_date = datetime.fromisoformat(pub_date.replace('Z', '+00:00'))
         
+        tags = item.get('tags') or []
+        category = item.get('category', 'Новости')
+        if tags and 'СВО' in tags:
+            category = 'СВО'
+        
         rss_item = f'''
         <item>
             <title>{escape(item['title'])}</title>
             <link>{base_url}/news/{item['id']}</link>
             <guid>{base_url}/news/{item['id']}</guid>
             <pubDate>{pub_date.strftime('%a, %d %b %Y %H:%M:%S +0000')}</pubDate>
-            <category>{escape(item.get('category', 'Новости'))}</category>
+            <category>{escape(category)}</category>
             <description>{escape(item.get('excerpt', ''))}</description>
             {'<enclosure url="' + escape(item['image_url']) + '" type="image/jpeg"/>' if item.get('image_url') else ''}
         </item>'''
