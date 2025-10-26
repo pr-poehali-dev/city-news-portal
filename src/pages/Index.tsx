@@ -14,7 +14,6 @@ import { PlacesSection } from '@/components/PlacesSection';
 import { MemorySection } from '@/components/MemorySection';
 import { CategoryPreview } from '@/components/CategoryPreview';
 import { PartnersSection } from '@/components/PartnersSection';
-import { CityChatWidget } from '@/components/CityChatWidget';
 
 const FUNCTIONS_URL = {
   news: 'https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe',
@@ -380,8 +379,6 @@ const Index = () => {
         sections={sections} 
         onSectionChange={handleSectionChange} 
       />
-      
-      <CityChatWidget />
     </div>
   );
 };
