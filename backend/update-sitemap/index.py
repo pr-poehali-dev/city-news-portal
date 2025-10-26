@@ -54,78 +54,64 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     today = datetime.now().strftime('%Y-%m-%d')
     
-    sitemap_xml = '''<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml"
-        xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+    urls = []
     
-    <!-- Главная страница -->
-    <url>
-        <loc>https://gorodgovorit.ru/</loc>
-        <lastmod>{today}</lastmod>
-        <changefreq>hourly</changefreq>
-        <priority>1.0</priority>
-    </url>
+    urls.append(f'''  <url>
+    <loc>https://gorodgovorit.ru/</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>1.0</priority>
+  </url>''')
     
-    <!-- Статические страницы -->
-    <url>
-        <loc>https://gorodgovorit.ru/places</loc>
-        <lastmod>{today}</lastmod>
-        <changefreq>daily</changefreq>
-        <priority>0.9</priority>
-    </url>
+    urls.append(f'''  <url>
+    <loc>https://gorodgovorit.ru/places</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>''')
     
-    <url>
-        <loc>https://gorodgovorit.ru/places/map</loc>
-        <lastmod>{today}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>
+    urls.append(f'''  <url>
+    <loc>https://gorodgovorit.ru/places/map</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>''')
     
-    <url>
-        <loc>https://gorodgovorit.ru/about</loc>
-        <lastmod>{today}</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.6</priority>
-    </url>
+    urls.append(f'''  <url>
+    <loc>https://gorodgovorit.ru/about</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>''')
     
-    <url>
-        <loc>https://gorodgovorit.ru/contacts</loc>
-        <lastmod>{today}</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.6</priority>
-    </url>
-    
-    <!-- Новости -->'''.format(today=today)
+    urls.append(f'''  <url>
+    <loc>https://gorodgovorit.ru/contacts</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>''')
     
     for news_id, updated_at in news_items:
         lastmod = updated_at.strftime('%Y-%m-%d') if updated_at else today
-        sitemap_xml += f'''
-    <url>
-        <loc>https://gorodgovorit.ru/news/{news_id}</loc>
-        <lastmod>{lastmod}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>'''
-    
-    sitemap_xml += '''
-    
-    <!-- Память города -->'''
+        urls.append(f'''  <url>
+    <loc>https://gorodgovorit.ru/news/{news_id}</loc>
+    <lastmod>{lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>''')
     
     for memory_id, updated_at in memory_items:
         lastmod = updated_at.strftime('%Y-%m-%d') if updated_at else today
-        sitemap_xml += f'''
-    <url>
-        <loc>https://gorodgovorit.ru/memory/{memory_id}</loc>
-        <lastmod>{lastmod}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.7</priority>
-    </url>'''
+        urls.append(f'''  <url>
+    <loc>https://gorodgovorit.ru/memory/{memory_id}</loc>
+    <lastmod>{lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>''')
     
-    sitemap_xml += '''
-    
+    sitemap_xml = f'''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{chr(10).join(urls)}
 </urlset>'''
     
     return {
