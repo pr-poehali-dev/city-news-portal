@@ -161,6 +161,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
             </button>
           </div>
         )}
+      </>
       )}
       </div>
     </section>
