@@ -39,9 +39,11 @@ export default function MovieCard({
               size === 'large' ? 'h-[450px]' : 'h-[400px]'
             }`}
             loading="lazy"
+            referrerPolicy="no-referrer"
             onError={(e) => {
               const img = e.target as HTMLImageElement;
-              img.src = 'https://via.placeholder.com/300x450/1a1a1a/ffffff?text=' + encodeURIComponent(title);
+              console.error('Failed to load poster:', poster);
+              img.src = 'https://placehold.co/300x450/1a1a1a/ffffff/png?text=' + encodeURIComponent(title.substring(0, 20));
             }}
           />
           <div className="absolute top-4 right-4 z-20 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-3 py-2 rounded-full font-black flex items-center gap-1.5 shadow-[0_0_20px_rgba(255,215,0,0.5)] border-2 border-yellow-300">

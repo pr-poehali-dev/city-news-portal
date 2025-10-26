@@ -52,6 +52,8 @@ export function CityWatchesSection() {
         'https://functions.poehali.dev/8276deb7-23a1-45e7-b53f-390b386d0d71?limit=20&offset=0'
       );
       const data = await response.json();
+      console.log('Movies API response:', data);
+      console.log('First movie poster:', data.movies?.[0]?.poster);
       setAllMovies(data.movies || []);
       setMovies((data.movies || []).slice(0, 2));
     } catch (error) {
