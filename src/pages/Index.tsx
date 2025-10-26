@@ -177,13 +177,18 @@ const Index = () => {
 
   const loadSVONews = async () => {
     try {
-      const response = await fetch(`${FUNCTIONS_URL.news}?tag=${encodeURIComponent('СВО')}`);
+      const url = `${FUNCTIONS_URL.news}?tag=${encodeURIComponent('СВО')}`;
+      console.log('Loading SVO news from:', url);
+      const response = await fetch(url);
+      console.log('SVO response status:', response.status);
       if (!response.ok) {
-        console.error('Failed to fetch SVO news:', response.status);
+        const errorText = await response.text();
+        console.error('Failed to fetch SVO news:', response.status, errorText);
         setSvoNews([]);
         return;
       }
       const data = await response.json();
+      console.log('SVO data loaded:', data.length, 'items');
       if (Array.isArray(data)) {
         const sortedData = data.sort((a: any, b: any) => 
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
