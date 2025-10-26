@@ -12,6 +12,7 @@ import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import NewsPage from "./pages/NewsPage";
 import MemoryPage from "./pages/MemoryPage";
+import AllMemories from "./pages/AllMemories";
 import Places from "./pages/Places";
 import PlacesMap from "./pages/PlacesMap";
 import About from "./pages/About";
@@ -49,6 +50,7 @@ const App = () => {
               <Route path="/admin" element={<Admin />} />
               <Route path="/news/:id" element={<NewsPage />} />
               <Route path="/memory/:id" element={<MemoryPage />} />
+              <Route path="/memory" element={<AllMemories />} />
               <Route path="/places" element={<Places />} />
               <Route path="/places/map" element={<PlacesMap />} />
               <Route path="/about" element={<About />} />
