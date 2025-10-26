@@ -1,0 +1,4 @@
+INSERT INTO news (title, category, excerpt, content, image_url, author_id, read_time, status, tags, likes, published_at) 
+VALUES 
+('Тестовая новость СВО №2', 'Политика', 'Вторая тестовая новость для проверки раздела СВО', 'Полный текст второй тестовой новости для раздела СВО. Здесь размещается информация о специальной военной операции для проверки работы фильтрации.', 'https://storage.yandexcloud.net/krasnodar-news-images/news/20251026/f98e54d4e5d7-scale_2400%20(3).jpeg', 1, '3 мин', 'published', ARRAY['СВО'], 15, NOW()),
+('Важное обновление по СВО', 'Политика', 'Третья тестовая новость с тегом СВО', 'Детальная информация о важном обновлении. Эта новость также должна отображаться в разделе СВО и нигде больше.', 'https://storage.yandexcloud.net/krasnodar-news-images/news/20251026/f98e54d4e5d7-scale_2400%20(3).jpeg', 1, '4 мин', 'published', ARRAY['СВО'], 25, NOW());

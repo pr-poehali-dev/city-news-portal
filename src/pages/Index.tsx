@@ -177,23 +177,22 @@ const Index = () => {
 
   const loadSVONews = async () => {
     try {
-      const url = `${FUNCTIONS_URL.news}?tag=${encodeURIComponent('СВО')}`;
-      console.log('Loading SVO news from:', url);
-      const response = await fetch(url);
-      console.log('SVO response status:', response.status);
+      const response = await fetch(FUNCTIONS_URL.news);
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Failed to fetch SVO news:', response.status, errorText);
+        console.error('Failed to fetch news for SVO:', response.status);
         setSvoNews([]);
         return;
       }
       const data = await response.json();
-      console.log('SVO data loaded:', data.length, 'items');
       if (Array.isArray(data)) {
-        const sortedData = data.sort((a: any, b: any) => 
+        const svoFiltered = data.filter((article: any) => 
+          article.tags && Array.isArray(article.tags) && article.tags.includes('СВО')
+        );
+        const sortedData = svoFiltered.sort((a: any, b: any) => 
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
         setSvoNews(sortedData);
+        console.log('SVO news loaded:', sortedData.length, 'items');
       }
     } catch (error) {
       console.error('Failed to load SVO news:', error);
