@@ -202,31 +202,55 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
     setUploading(true);
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch('https://functions.poehali.dev/e006b73d-c2a8-4b5e-bfb3-9ee0e3fca4cc', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!response.ok) throw new Error('Upload failed');
-
-      const data = await response.json();
+      const reader = new FileReader();
       
-      setFormData(prev => ({ ...prev, image_url: data.url }));
+      reader.onload = async () => {
+        const base64String = reader.result as string;
+        
+        const response = await fetch('https://functions.poehali.dev/e006b73d-c2a8-4b5e-bfb3-9ee0e3fca4cc', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            image: base64String,
+            filename: file.name
+          })
+        });
 
-      toast({
-        title: 'Успешно',
-        description: 'Фото загружено'
-      });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Upload failed');
+        }
+
+        const data = await response.json();
+        
+        setFormData(prev => ({ ...prev, image_url: data.url }));
+
+        toast({
+          title: 'Успешно',
+          description: 'Фото загружено'
+        });
+        
+        setUploading(false);
+      };
+      
+      reader.onerror = () => {
+        toast({
+          title: 'Ошибка',
+          description: 'Не удалось прочитать файл',
+          variant: 'destructive'
+        });
+        setUploading(false);
+      };
+      
+      reader.readAsDataURL(file);
     } catch (error) {
       toast({
         title: 'Ошибка',
-        description: 'Не удалось загрузить фото',
+        description: error instanceof Error ? error.message : 'Не удалось загрузить фото',
         variant: 'destructive'
       });
-    } finally {
       setUploading(false);
     }
   };
