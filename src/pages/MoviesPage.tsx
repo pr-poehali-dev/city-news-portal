@@ -118,7 +118,7 @@ export default function MoviesPage() {
         </div>
 
       <div className="container mx-auto px-4 pb-20 relative z-10">
-        {loading && offset === 0 ? (
+        {loading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="space-y-4">
