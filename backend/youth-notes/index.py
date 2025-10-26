@@ -84,6 +84,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         emoji = body_data.get('emoji', '✨')
         color = body_data.get('color', '#8B5CF6')
         is_published = body_data.get('is_published', True)
+        image_url = body_data.get('image_url')
         
         if not title or not content:
             conn.close()
@@ -96,10 +97,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute(
-                '''INSERT INTO youth_notes (title, content, emoji, color, is_published)
-                   VALUES (%s, %s, %s, %s, %s)
+                '''INSERT INTO youth_notes (title, content, emoji, color, is_published, image_url)
+                   VALUES (%s, %s, %s, %s, %s, %s)
                    RETURNING *''',
-                (title, content, emoji, color, is_published)
+                (title, content, emoji, color, is_published, image_url)
             )
             result = cur.fetchone()
             conn.commit()
@@ -130,7 +131,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         update_fields = []
         update_values = []
         
-        for field in ['title', 'content', 'emoji', 'color', 'is_published']:
+        for field in ['title', 'content', 'emoji', 'color', 'is_published', 'image_url']:
             if field in body_data:
                 update_fields.append(f'{field} = %s')
                 update_values.append(body_data[field])

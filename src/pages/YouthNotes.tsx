@@ -15,6 +15,7 @@ interface YouthNote {
   color: string;
   created_at: string;
   is_published: boolean;
+  image_url?: string;
 }
 
 const FUNCTIONS_URL = 'https://functions.poehali.dev/97a5ec9d-d662-4652-be23-350205ec6759';
@@ -102,70 +103,49 @@ export default function YouthNotes() {
                   className="animate-in fade-in slide-in-from-left-4 duration-500 group"
                   style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'backwards' }}
                 >
-                  <div className="flex gap-4 items-start">
-                    <div className="relative">
+                  <div className="flex gap-3 items-start">
+                    <div className="relative flex-shrink-0">
                       <div 
-                        className="absolute inset-0 rounded-full blur-lg opacity-40 group-hover:opacity-60 transition-opacity"
-                        style={{ background: note.color }}
-                      />
-                      <div 
-                        className="relative w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-xl border-2 border-white/50 backdrop-blur-sm transform group-hover:scale-110 transition-transform duration-300"
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-md"
                         style={{ 
                           background: `linear-gradient(135deg, ${note.color}40, ${note.color}20)`,
-                          borderColor: note.color
                         }}
                       >
                         {note.emoji}
                       </div>
                     </div>
                     
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div 
-                        className="relative bg-gradient-to-br from-card to-card/50 backdrop-blur-xl border-2 rounded-3xl rounded-tl-md p-5 shadow-xl group-hover:shadow-2xl transition-all duration-300 overflow-hidden"
+                        className="relative bg-white dark:bg-gray-800 rounded-2xl rounded-tl-sm p-3 shadow-md hover:shadow-lg transition-all duration-300"
                         style={{ 
-                          borderColor: `${note.color}40`,
-                          background: `linear-gradient(135deg, ${note.color}08, transparent)`
+                          borderLeft: `3px solid ${note.color}`
                         }}
                       >
-                        <div 
-                          className="absolute top-0 left-0 w-1 h-full"
-                          style={{ 
-                            background: `linear-gradient(to bottom, ${note.color}, transparent)` 
-                          }}
-                        />
-                        
                         <div className="relative">
-                          <div className="flex items-center justify-between mb-3">
-                            <span 
-                              className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full"
-                              style={{ 
-                                background: `${note.color}20`,
-                                color: note.color
-                              }}
-                            >
-                              {note.title}
-                            </span>
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Icon name="Clock" size={12} />
-                              {getTimeAgo(note.created_at)}
-                            </span>
-                          </div>
+                          {note.image_url && (
+                            <div className="mb-2 -mx-3 -mt-3">
+                              <img 
+                                src={note.image_url} 
+                                alt=""
+                                className="w-full h-48 object-cover rounded-t-xl"
+                              />
+                            </div>
+                          )}
                           
-                          <p className="text-base leading-relaxed">
+                          <p className="text-sm leading-relaxed mb-2 whitespace-pre-wrap">
                             {note.content}
                           </p>
                           
-                          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-dashed border-muted-foreground/20">
-                            <div 
-                              className="flex items-center gap-1.5 text-xs font-semibold px-2 py-1 rounded-full"
-                              style={{ 
-                                background: `${note.color}15`,
-                                color: note.color
-                              }}
-                            >
-                              <Icon name="Radio" size={12} />
-                              Редакция
+                          <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+                            <div className="flex items-center gap-1">
+                              <Icon name="Radio" size={10} />
+                              <span>Редакция</span>
                             </div>
+                            <span className="flex items-center gap-1">
+                              <Icon name="Clock" size={10} />
+                              {getTimeAgo(note.created_at)}
+                            </span>
                           </div>
                         </div>
                       </div>

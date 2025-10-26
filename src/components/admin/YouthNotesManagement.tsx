@@ -17,6 +17,7 @@ interface YouthNote {
   is_published: boolean;
   created_at: string;
   updated_at: string;
+  image_url?: string;
 }
 
 interface YouthNotesManagementProps {
@@ -46,8 +47,10 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
     content: '',
     emoji: '✨',
     color: '#8B5CF6',
-    is_published: true
+    is_published: true,
+    image_url: ''
   });
+  const [uploading, setUploading] = useState(false);
 
   const loadNotes = async () => {
     try {
@@ -97,7 +100,7 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
         description: editingNote ? 'Заметка обновлена' : 'Заметка создана'
       });
 
-      setFormData({ title: '', content: '', emoji: '✨', color: '#8B5CF6', is_published: true });
+      setFormData({ title: '', content: '', emoji: '✨', color: '#8B5CF6', is_published: true, image_url: '' });
       setEditingNote(null);
       loadNotes();
     } catch (error) {
@@ -116,7 +119,8 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
       content: note.content,
       emoji: note.emoji,
       color: note.color,
-      is_published: note.is_published
+      is_published: note.is_published,
+      image_url: note.image_url || ''
     });
   };
 
@@ -172,7 +176,52 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
 
   const cancelEdit = () => {
     setEditingNote(null);
-    setFormData({ title: '', content: '', emoji: '✨', color: '#8B5CF6', is_published: true });
+    setFormData({ title: '', content: '', emoji: '✨', color: '#8B5CF6', is_published: true, image_url: '' });
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: 'Ошибка',
+        description: 'Выберите изображение',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('https://functions.poehali.dev/e006b73d-c2a8-4b5e-bfb3-9ee0e3fca4cc', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) throw new Error('Upload failed');
+
+      const data = await response.json();
+      
+      setFormData(prev => ({ ...prev, image_url: data.url }));
+
+      toast({
+        title: 'Успешно',
+        description: 'Фото загружено'
+      });
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось загрузить фото',
+        variant: 'destructive'
+      });
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -210,6 +259,38 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
               <p className="text-xs text-muted-foreground mt-1">
                 {formData.content.length}/500 символов
               </p>
+            </div>
+
+            <div>
+              <Label htmlFor="image">Фото (опционально)</Label>
+              <div className="space-y-2">
+                {formData.image_url && (
+                  <div className="relative inline-block">
+                    <img 
+                      src={formData.image_url} 
+                      alt="Preview" 
+                      className="h-32 w-auto rounded-lg object-cover"
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      className="absolute -top-2 -right-2"
+                      onClick={() => setFormData({ ...formData, image_url: '' })}
+                    >
+                      <Icon name="X" size={14} />
+                    </Button>
+                  </div>
+                )}
+                <Input
+                  id="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  disabled={uploading}
+                />
+                {uploading && <p className="text-xs text-muted-foreground">Загрузка...</p>}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
