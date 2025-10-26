@@ -157,7 +157,7 @@ const Index = () => {
       }
       
       const filteredData = data.filter((article: any) => 
-        !article.tags || !article.tags.includes('СВО')
+        !article.tags || !Array.isArray(article.tags) || !article.tags.includes('СВО')
       );
       
       const sortedData = filteredData.sort((a: any, b: any) => 
