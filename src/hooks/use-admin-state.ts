@@ -8,7 +8,10 @@ export const useAdminState = () => {
   const [loading, setLoading] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
   const [loginForm, setLoginForm] = useState({ login: '', password: '' });
-  const [sessionId] = useState(() => `session_${Date.now()}_${Math.random()}`);
+  const [sessionId] = useState(() => {
+    const stored = localStorage.getItem('admin_session_id');
+    return stored || `session_${Date.now()}_${Math.random()}`;
+  });
   const [editingNews, setEditingNews] = useState<any>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
@@ -77,36 +80,10 @@ export const useAdminState = () => {
 
   useEffect(() => {
     const storedSessionId = localStorage.getItem('admin_session_id');
-    
-    if (storedSessionId && storedSessionId !== sessionId) {
-      localStorage.removeItem('admin_session_id');
-      setAuthenticated(false);
-      toast({
-        title: 'Сессия завершена',
-        description: 'Вход выполнен на другом устройстве',
-        variant: 'destructive'
-      });
+    if (storedSessionId) {
+      setAuthenticated(true);
     }
   }, []);
-
-  useEffect(() => {
-    if (!authenticated) return;
-
-    const checkSession = () => {
-      const storedSessionId = localStorage.getItem('admin_session_id');
-      if (storedSessionId !== sessionId) {
-        setAuthenticated(false);
-        toast({
-          title: 'Сессия завершена',
-          description: 'Вход выполнен на другом устройстве',
-          variant: 'destructive'
-        });
-      }
-    };
-
-    const interval = setInterval(checkSession, 2000);
-    return () => clearInterval(interval);
-  }, [authenticated, sessionId]);
 
   useEffect(() => {
     if (authenticated) {
