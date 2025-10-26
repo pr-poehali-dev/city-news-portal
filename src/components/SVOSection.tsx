@@ -30,6 +30,14 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
   return (
     <section className="mb-16 bg-gradient-to-b from-slate-900 to-slate-800 -mx-6 px-6 py-12 border-t-4 border-red-700">
       <div className="max-w-7xl mx-auto">
+        <div className="bg-gradient-to-r from-red-900/20 via-red-800/20 to-red-900/20 border border-red-700/30 rounded-lg p-4 mb-8">
+          <div className="flex items-center justify-center gap-3 text-white">
+            <Icon name="Heart" size={20} className="text-red-500" />
+            <span className="font-bold text-lg uppercase tracking-wide">Мы поддерживаем наших</span>
+            <Icon name="Heart" size={20} className="text-red-500" />
+          </div>
+        </div>
+
         <div className="bg-gradient-to-r from-blue-900/40 to-blue-800/40 border-2 border-blue-600/50 rounded-2xl p-8 mb-8 shadow-2xl">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-6">
@@ -54,14 +62,6 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
               <Icon name="Heart" size={20} />
               Помочь
             </a>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-red-900/20 via-red-800/20 to-red-900/20 border border-red-700/30 rounded-lg p-4 mb-8">
-          <div className="flex items-center justify-center gap-3 text-white">
-            <Icon name="Heart" size={20} className="text-red-500" />
-            <span className="font-bold text-lg uppercase tracking-wide">Мы поддерживаем наших</span>
-            <Icon name="Heart" size={20} className="text-red-500" />
           </div>
         </div>
 

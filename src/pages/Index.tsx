@@ -386,17 +386,10 @@ const Index = () => {
                 />
               </>
             ) : activeSection === 'СВО' ? (
-              <div className="mb-8">
-                <SVOSection
-                  news={svoNews}
-                  onNewsClick={handleArticleClick}
-                />
-                <LatestNewsGrid
-                  news={svoNews}
-                  onNewsClick={handleArticleClick}
-                  limit={24}
-                />
-              </div>
+              <SVOSection
+                news={svoNews}
+                onNewsClick={handleArticleClick}
+              />
             ) : (
               <div className="mb-8">
                 <h2 className="text-3xl font-bold font-serif mb-8 text-foreground">{activeSection}</h2>
