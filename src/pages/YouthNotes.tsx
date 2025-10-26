@@ -96,54 +96,42 @@ export default function YouthNotes() {
               <p>Пока нет заметок</p>
             </div>
           ) : (
-            <div className="space-y-5">
+            <div className="space-y-3 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-gray-800 rounded-3xl p-6 border border-purple-100 dark:border-purple-900/30">
               {notes.map((note, index) => (
                 <div
                   key={note.id}
-                  className="animate-in fade-in slide-in-from-left-4 duration-500 group"
+                  className="animate-in fade-in slide-in-from-left-4 duration-500"
                   style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'backwards' }}
                 >
-                  <div className="flex gap-3 items-start">
-                    <div className="relative flex-shrink-0">
+                  <div className="flex gap-2.5 items-end">
+                    <div className="flex-shrink-0 mb-1">
                       <div 
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-md"
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-lg"
                         style={{ 
-                          background: `linear-gradient(135deg, ${note.color}40, ${note.color}20)`,
+                          backgroundColor: note.color,
                         }}
                       >
                         {note.emoji}
                       </div>
                     </div>
                     
-                    <div className="flex-1 min-w-0">
-                      <div 
-                        className="relative bg-white dark:bg-gray-800 rounded-2xl rounded-tl-sm p-3 shadow-md hover:shadow-lg transition-all duration-300"
-                        style={{ 
-                          borderLeft: `3px solid ${note.color}`
-                        }}
-                      >
-                        <div className="relative">
-                          {note.image_url && (
-                            <div className="mb-2 -mx-3 -mt-3">
-                              <img 
-                                src={note.image_url} 
-                                alt=""
-                                className="w-full h-48 object-cover rounded-t-xl"
-                              />
-                            </div>
-                          )}
-                          
-                          <p className="text-sm leading-relaxed mb-2 whitespace-pre-wrap">
+                    <div className="flex-1 min-w-0 max-w-[85%]">
+                      <div className="bg-white dark:bg-gray-800 rounded-2xl rounded-bl-sm shadow-sm">
+                        {note.image_url && (
+                          <img 
+                            src={note.image_url} 
+                            alt=""
+                            className="w-full h-auto max-h-64 object-cover rounded-t-2xl"
+                          />
+                        )}
+                        
+                        <div className="p-3">
+                          <p className="text-sm text-gray-900 dark:text-gray-100 leading-relaxed whitespace-pre-wrap break-words">
                             {note.content}
                           </p>
                           
-                          <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
-                            <div className="flex items-center gap-1">
-                              <Icon name="Radio" size={10} />
-                              <span>Редакция</span>
-                            </div>
-                            <span className="flex items-center gap-1">
-                              <Icon name="Clock" size={10} />
+                          <div className="flex items-center gap-1 mt-1.5">
+                            <span className="text-[10px] text-gray-400">
                               {getTimeAgo(note.created_at)}
                             </span>
                           </div>

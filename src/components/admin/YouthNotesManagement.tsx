@@ -43,7 +43,6 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
   const [notes, setNotes] = useState<YouthNote[]>([]);
   const [editingNote, setEditingNote] = useState<YouthNote | null>(null);
   const [formData, setFormData] = useState({
-    title: '',
     content: '',
     emoji: '✨',
     color: '#8B5CF6',
@@ -71,10 +70,10 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.title.trim() || !formData.content.trim()) {
+    if (!formData.content.trim()) {
       toast({
         title: 'Ошибка',
-        description: 'Заполните все обязательные поля',
+        description: 'Введите текст сообщения',
         variant: 'destructive'
       });
       return;
@@ -87,10 +86,19 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
       
       const method = editingNote ? 'PUT' : 'POST';
 
+      const submitData = {
+        title: formData.content.slice(0, 50),
+        content: formData.content,
+        emoji: formData.emoji,
+        color: formData.color,
+        is_published: formData.is_published,
+        image_url: formData.image_url
+      };
+
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(submitData)
       });
 
       if (!response.ok) throw new Error('Failed to save note');
@@ -100,7 +108,7 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
         description: editingNote ? 'Заметка обновлена' : 'Заметка создана'
       });
 
-      setFormData({ title: '', content: '', emoji: '✨', color: '#8B5CF6', is_published: true, image_url: '' });
+      setFormData({ content: '', emoji: '✨', color: '#8B5CF6', is_published: true, image_url: '' });
       setEditingNote(null);
       loadNotes();
     } catch (error) {
@@ -115,7 +123,6 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
   const handleEdit = (note: YouthNote) => {
     setEditingNote(note);
     setFormData({
-      title: note.title,
       content: note.content,
       emoji: note.emoji,
       color: note.color,
@@ -176,7 +183,7 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
 
   const cancelEdit = () => {
     setEditingNote(null);
-    setFormData({ title: '', content: '', emoji: '✨', color: '#8B5CF6', is_published: true, image_url: '' });
+    setFormData({ content: '', emoji: '✨', color: '#8B5CF6', is_published: true, image_url: '' });
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -236,18 +243,7 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="title">Заголовок *</Label>
-              <Input
-                id="title"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="Короткий и цепляющий заголовок"
-                maxLength={200}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="content">Текст заметки *</Label>
+              <Label htmlFor="content">Текст сообщения *</Label>
               <Textarea
                 id="content"
                 value={formData.content}
