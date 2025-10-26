@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { FUNCTIONS_URL } from '@/lib/admin-constants';
+import { updateSitemap } from '@/utils/sitemap-updater';
 
 export const useAdminState = () => {
   const { toast } = useToast();
@@ -347,6 +348,10 @@ export const useAdminState = () => {
         await loadNews();
         await loadDrafts();
         
+        if (!isDraft) {
+          await updateSitemap();
+        }
+        
         setNewsForm({
           title: '',
           category: 'Политика',
@@ -406,6 +411,7 @@ export const useAdminState = () => {
         });
         await loadNews();
         await loadDrafts();
+        await updateSitemap();
         setEditDialogOpen(false);
         setTimeout(() => setEditingNews(null), 300);
       } else {
@@ -443,6 +449,7 @@ export const useAdminState = () => {
         });
         await loadNews();
         await loadDrafts();
+        await updateSitemap();
       }
     } catch (error) {
       toast({
@@ -472,6 +479,7 @@ export const useAdminState = () => {
         });
         await loadNews();
         await loadDrafts();
+        await updateSitemap();
       }
     } catch (error) {
       toast({
@@ -928,6 +936,10 @@ export const useAdminState = () => {
           is_published: false
         });
         await loadMemory();
+        
+        if (memoryForm.is_published) {
+          await updateSitemap();
+        }
       }
     } catch (error) {
       toast({
@@ -954,6 +966,7 @@ export const useAdminState = () => {
           description: 'Статья удалена'
         });
         await loadMemory();
+        await updateSitemap();
       }
     } catch (error) {
       toast({
@@ -982,6 +995,7 @@ export const useAdminState = () => {
           description: isPublished ? 'Статья опубликована' : 'Статья скрыта'
         });
         await loadMemory();
+        await updateSitemap();
       }
     } catch (error) {
       toast({
@@ -1038,6 +1052,7 @@ export const useAdminState = () => {
           is_published: false
         });
         await loadMemory();
+        await updateSitemap();
       }
     } catch (error) {
       toast({
