@@ -190,6 +190,8 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    console.log('File selected:', file.name, file.type, file.size);
+
     if (!file.type.startsWith('image/')) {
       toast({
         title: 'Ошибка',
@@ -205,37 +207,53 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
       const reader = new FileReader();
       
       reader.onload = async () => {
-        const base64String = reader.result as string;
-        
-        const response = await fetch('https://functions.poehali.dev/e006b73d-c2a8-4b5e-bfb3-9ee0e3fca4cc', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            image: base64String,
-            filename: file.name
-          })
-        });
+        try {
+          const base64String = reader.result as string;
+          console.log('Base64 length:', base64String.length);
+          
+          const response = await fetch('https://functions.poehali.dev/e006b73d-c2a8-4b5e-bfb3-9ee0e3fca4cc', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              image: base64String,
+              filename: file.name
+            })
+          });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Upload failed');
+          console.log('Response status:', response.status);
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Upload error:', errorText);
+            throw new Error(errorText || 'Upload failed');
+          }
+
+          const data = await response.json();
+          console.log('Upload success:', data);
+          
+          setFormData(prev => ({ ...prev, image_url: data.url }));
+
+          toast({
+            title: 'Успешно',
+            description: 'Фото загружено'
+          });
+          
+          setUploading(false);
+        } catch (error) {
+          console.error('Upload error in onload:', error);
+          toast({
+            title: 'Ошибка',
+            description: error instanceof Error ? error.message : 'Не удалось загрузить фото',
+            variant: 'destructive'
+          });
+          setUploading(false);
         }
-
-        const data = await response.json();
-        
-        setFormData(prev => ({ ...prev, image_url: data.url }));
-
-        toast({
-          title: 'Успешно',
-          description: 'Фото загружено'
-        });
-        
-        setUploading(false);
       };
       
       reader.onerror = () => {
+        console.error('FileReader error');
         toast({
           title: 'Ошибка',
           description: 'Не удалось прочитать файл',
@@ -246,6 +264,7 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
       
       reader.readAsDataURL(file);
     } catch (error) {
+      console.error('Upload error:', error);
       toast({
         title: 'Ошибка',
         description: error instanceof Error ? error.message : 'Не удалось загрузить фото',
