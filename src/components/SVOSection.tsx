@@ -100,10 +100,6 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
                         <Icon name="User" size={16} />
                         <span>{mainNews.author_name}</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Icon name="Eye" size={16} />
-                        <span>{mainNews.views || 0}</span>
-                      </div>
                     </div>
                     <Button
                       variant="ghost"
@@ -133,15 +129,9 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
                       <h4 className="text-white font-bold text-base mb-2 leading-tight group-hover:text-red-400 transition-colors">
                         {item.title}
                       </h4>
-                      <div className="flex items-center gap-4 text-gray-500 text-xs">
-                        <div className="flex items-center gap-1">
-                          <Icon name="Calendar" size={12} />
-                          <span>{new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Icon name="Eye" size={12} />
-                          <span>{item.views}</span>
-                        </div>
+                      <div className="flex items-center gap-1 text-gray-500 text-xs">
+                        <Icon name="Calendar" size={12} />
+                        <span>{new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
                       </div>
                     </div>
                   </div>

@@ -50,6 +50,8 @@ const Index = () => {
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [svoNews, setSvoNews] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   
   const newsCategories = ['Политика', 'Экономика', 'Культура', 'Спорт', 'События'];
 
@@ -303,6 +305,18 @@ const Index = () => {
     });
   };
 
+  const handleSearch = (query: string) => {
+    setIsSearching(true);
+    const lowerQuery = query.toLowerCase();
+    const results = articles.filter(article => 
+      article.title.toLowerCase().includes(lowerQuery) ||
+      article.content?.toLowerCase().includes(lowerQuery) ||
+      article.excerpt?.toLowerCase().includes(lowerQuery)
+    );
+    setSearchResults(results);
+    setActiveSection('Поиск');
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
@@ -314,8 +328,9 @@ const Index = () => {
       <SiteHeader 
         weather={weather}
         sections={sections}
-        activeSection={activeSection}
+        activeSection={activeSection === 'Поиск' ? 'Главная' : activeSection}
         onSectionChange={handleSectionChange}
+        onSearch={handleSearch}
       />
 
       <NewsTicker latestNews={latestNews} />
@@ -327,7 +342,25 @@ const Index = () => {
           </div>
         ) : (
           <>
-            {activeSection === 'Главная' ? (
+            {activeSection === 'Поиск' ? (
+              <div className="mb-8">
+                <h2 className="text-3xl font-bold font-serif mb-8 text-foreground">
+                  Результаты поиска ({searchResults.length})
+                </h2>
+                {searchResults.length > 0 ? (
+                  <LatestNewsGrid
+                    news={searchResults}
+                    onNewsClick={handleArticleClick}
+                    limit={24}
+                  />
+                ) : (
+                  <div className="text-center py-12">
+                    <p className="text-muted-foreground text-lg">Ничего не найдено</p>
+                    <p className="text-muted-foreground text-sm mt-2">Попробуйте изменить запрос</p>
+                  </div>
+                )}
+              </div>
+            ) : activeSection === 'Главная' ? (
               <>
                 <HeroSection
                   mainNews={topThreeNews[0]}

@@ -1,18 +1,30 @@
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { useNavigate } from 'react-router-dom';
-
 
 interface SiteHeaderProps {
   weather?: any;
   sections: string[];
   activeSection?: string;
   onSectionChange: (section: string) => void;
+  onSearch?: (query: string) => void;
 }
 
-export const SiteHeader = ({ weather, sections, activeSection, onSectionChange }: SiteHeaderProps) => {
+export const SiteHeader = ({ weather, sections, activeSection, onSectionChange, onSearch }: SiteHeaderProps) => {
   const navigate = useNavigate();
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = () => {
+    if (searchQuery.trim() && onSearch) {
+      onSearch(searchQuery.trim());
+      setShowSearch(false);
+      setSearchQuery('');
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 dark:bg-background/95 backdrop-blur-sm border-b border-primary/10 dark:border-border/50 shadow-sm dark:shadow-lg">
@@ -43,7 +55,11 @@ export const SiteHeader = ({ weather, sections, activeSection, onSectionChange }
                 </CardContent>
               </Card>
             )}
-            <Button variant="ghost" size="sm">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => setShowSearch(!showSearch)}
+            >
               <Icon name="Search" size={20} />
             </Button>
             <Button 
@@ -56,6 +72,30 @@ export const SiteHeader = ({ weather, sections, activeSection, onSectionChange }
             </Button>
           </div>
         </div>
+
+        {showSearch && (
+          <div className="mb-4 flex gap-2">
+            <Input
+              type="text"
+              placeholder="Поиск по новостям..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              className="flex-1"
+              autoFocus
+            />
+            <Button onClick={handleSearch} disabled={!searchQuery.trim()}>
+              <Icon name="Search" size={16} className="mr-2" />
+              Найти
+            </Button>
+            <Button variant="outline" onClick={() => {
+              setShowSearch(false);
+              setSearchQuery('');
+            }}>
+              <Icon name="X" size={16} />
+            </Button>
+          </div>
+        )}
         
         <nav className="flex gap-6 overflow-x-auto pb-2 scrollbar-hide">
           {sections.map((section) => (

@@ -53,15 +53,9 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 6 }: LatestNewsGridP
                   <Icon name="Calendar" size={14} />
                   <span>{new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1">
-                    <Icon name="Eye" size={14} />
-                    <span>{item.views || 0}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Icon name="Heart" size={14} />
-                    <span>{item.likes || 0}</span>
-                  </div>
+                <div className="flex items-center gap-1">
+                  <Icon name="Heart" size={14} />
+                  <span>{item.likes || 0}</span>
                 </div>
               </div>
             </div>
