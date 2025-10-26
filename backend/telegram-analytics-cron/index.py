@@ -79,7 +79,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             })
         }
     
-    for article in all_articles:
+    for article in articles_with_new_views:
         cursor.execute('''
             INSERT INTO t_p68330612_city_news_portal.article_views_tracking (news_id, last_views_count, last_check)
             VALUES (%s, %s, NOW())
@@ -93,34 +93,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     articles_with_new_views.sort(key=lambda x: x['new_views'], reverse=True)
     
-    cursor = psycopg2.connect(database_url).cursor(cursor_factory=RealDictCursor)
-    cursor.execute('''
-        SELECT id, title, views 
-        FROM t_p68330612_city_news_portal.news 
-        WHERE views > 0
-        ORDER BY views DESC 
-        LIMIT 3
-    ''')
-    top_3_articles = cursor.fetchall()
-    cursor.close()
-    
     message_lines = [
-        f"🔔 <b>Новые просмотры за последнюю минуту!</b>\n\n",
-        f"🆕 Всего новых просмотров: <b>+{total_new_views}</b>\n\n"
+        f"👁 <b>+{total_new_views}</b> новых просмотров\n\n"
     ]
     
-    message_lines.append(f"📰 <b>Статьи с новыми просмотрами:</b>\n")
     for article in articles_with_new_views:
-        title = article['title'][:45] + '...' if len(article['title']) > 45 else article['title']
-        message_lines.append(
-            f"• {title}\n"
-            f"  +{article['new_views']} просмотр(ов) | Всего: {article['views']}\n\n"
-        )
-    
-    message_lines.append(f"\n📈 <b>Топ-3 самых популярных:</b>\n")
-    for idx, article in enumerate(top_3_articles, 1):
-        title = article['title'][:45] + '...' if len(article['title']) > 45 else article['title']
-        message_lines.append(f"{idx}. {title}\n   👁 <b>{article['views']}</b> просмотров\n\n")
+        title = article['title'][:50] + '...' if len(article['title']) > 50 else article['title']
+        message_lines.append(f"• {title} (+{article['new_views']})\n")
     
     message = ''.join(message_lines)
     
