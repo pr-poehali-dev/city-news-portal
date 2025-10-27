@@ -313,8 +313,12 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
                       type="button"
                       variant="destructive"
                       size="sm"
-                      className="absolute -top-2 -right-2"
-                      onClick={() => setFormData({ ...formData, image_url: '' })}
+                      className="absolute -top-2 -right-2 z-10"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setFormData({ ...formData, image_url: '' });
+                      }}
                     >
                       <Icon name="X" size={14} />
                     </Button>
@@ -341,7 +345,11 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
                       type="button"
                       variant={formData.emoji === emoji ? 'default' : 'outline'}
                       size="sm"
-                      onClick={() => setFormData({ ...formData, emoji })}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setFormData({ ...formData, emoji });
+                      }}
                     >
                       {emoji}
                     </Button>
@@ -363,7 +371,11 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
                         borderColor: formData.color === color.value ? color.value : 'transparent',
                         backgroundColor: `${color.value}20`
                       }}
-                      onClick={() => setFormData({ ...formData, color: color.value })}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setFormData({ ...formData, color: color.value });
+                      }}
                     >
                       <div 
                         className="w-4 h-4 rounded-full" 
@@ -394,7 +406,15 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
                 {editingNote ? 'Сохранить' : 'Создать заметку'}
               </Button>
               {editingNote && (
-                <Button type="button" variant="outline" onClick={cancelEdit}>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    cancelEdit();
+                  }}
+                >
                   Отмена
                 </Button>
               )}
@@ -407,7 +427,15 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Опубликованные заметки ({notes.filter(n => n.is_published).length})</span>
-            <Button variant="ghost" size="sm" onClick={loadNotes}>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                loadNotes();
+              }}
+            >
               <Icon name="RefreshCw" size={16} />
             </Button>
           </CardTitle>
@@ -438,21 +466,33 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => handleEdit(note)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleEdit(note);
+                          }}
                         >
                           <Icon name="Edit" size={16} />
                         </Button>
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => handleTogglePublish(note)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleTogglePublish(note);
+                          }}
                         >
                           <Icon name="EyeOff" size={16} />
                         </Button>
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => handleDelete(note.id)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleDelete(note.id);
+                          }}
                         >
                           <Icon name="Trash2" size={16} />
                         </Button>
@@ -491,21 +531,33 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => handleEdit(note)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleEdit(note);
+                          }}
                         >
                           <Icon name="Edit" size={16} />
                         </Button>
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => handleTogglePublish(note)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleTogglePublish(note);
+                          }}
                         >
                           <Icon name="Eye" size={16} />
                         </Button>
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => handleDelete(note.id)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleDelete(note.id);
+                          }}
                         >
                           <Icon name="Trash2" size={16} />
                         </Button>
