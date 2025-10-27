@@ -283,7 +283,7 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" onClick={(e) => e.stopPropagation()}>
             <div>
               <Label htmlFor="content">Текст сообщения *</Label>
               <Textarea
@@ -309,19 +309,17 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
                       alt="Preview" 
                       className="h-32 w-auto rounded-lg object-cover"
                     />
-                    <Button
+                    <button
                       type="button"
-                      variant="destructive"
-                      size="sm"
-                      className="absolute -top-2 -right-2 z-10"
-                      onClick={(e) => {
+                      className="absolute -top-2 -right-2 z-10 bg-destructive text-destructive-foreground rounded-md p-1 hover:bg-destructive/90 transition-colors"
+                      onMouseDown={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         setFormData({ ...formData, image_url: '' });
                       }}
                     >
                       <Icon name="X" size={14} />
-                    </Button>
+                    </button>
                   </div>
                 )}
                 <Input
@@ -330,6 +328,7 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
                   accept="image/*"
                   onChange={handleImageUpload}
                   disabled={uploading}
+                  onClick={(e) => e.stopPropagation()}
                 />
                 {uploading && <p className="text-xs text-muted-foreground">Загрузка...</p>}
               </div>
@@ -340,19 +339,22 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
                 <Label>Эмодзи</Label>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {EMOJI_OPTIONS.map(emoji => (
-                    <Button
+                    <button
                       key={emoji}
                       type="button"
-                      variant={formData.emoji === emoji ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={(e) => {
+                      className={`px-3 py-2 text-sm rounded-md border transition-colors ${
+                        formData.emoji === emoji 
+                          ? 'bg-primary text-primary-foreground border-primary' 
+                          : 'bg-background hover:bg-accent border-input'
+                      }`}
+                      onMouseDown={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         setFormData({ ...formData, emoji });
                       }}
                     >
                       {emoji}
-                    </Button>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -361,17 +363,15 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
                 <Label>Цвет акцента</Label>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {COLOR_OPTIONS.map(color => (
-                    <Button
+                    <button
                       key={color.value}
                       type="button"
-                      variant="outline"
-                      size="sm"
-                      className="border-2"
+                      className="p-2 rounded-md border-2 transition-all"
                       style={{
                         borderColor: formData.color === color.value ? color.value : 'transparent',
                         backgroundColor: `${color.value}20`
                       }}
-                      onClick={(e) => {
+                      onMouseDown={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         setFormData({ ...formData, color: color.value });
@@ -381,7 +381,7 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
                         className="w-4 h-4 rounded-full" 
                         style={{ backgroundColor: color.value }}
                       />
-                    </Button>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -406,17 +406,17 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
                 {editingNote ? 'Сохранить' : 'Создать заметку'}
               </Button>
               {editingNote && (
-                <Button 
+                <button 
                   type="button" 
-                  variant="outline" 
-                  onClick={(e) => {
+                  className="px-4 py-2 rounded-md border border-input bg-background hover:bg-accent transition-colors"
+                  onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     cancelEdit();
                   }}
                 >
                   Отмена
-                </Button>
+                </button>
               )}
             </div>
           </form>
@@ -427,17 +427,17 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Опубликованные заметки ({notes.filter(n => n.is_published).length})</span>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={(e) => {
+            <button 
+              type="button"
+              className="p-2 hover:bg-accent rounded-md transition-colors" 
+              onMouseDown={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 loadNotes();
               }}
             >
               <Icon name="RefreshCw" size={16} />
-            </Button>
+            </button>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -463,39 +463,39 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
                         </div>
                       </div>
                       <div className="flex flex-col gap-2">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={(e) => {
+                        <button
+                          type="button"
+                          className="p-2 hover:bg-accent rounded-md transition-colors"
+                          onMouseDown={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
                             handleEdit(note);
                           }}
                         >
                           <Icon name="Edit" size={16} />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={(e) => {
+                        </button>
+                        <button
+                          type="button"
+                          className="p-2 hover:bg-accent rounded-md transition-colors"
+                          onMouseDown={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
                             handleTogglePublish(note);
                           }}
                         >
                           <Icon name="EyeOff" size={16} />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={(e) => {
+                        </button>
+                        <button
+                          type="button"
+                          className="p-2 hover:bg-accent rounded-md transition-colors"
+                          onMouseDown={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
                             handleDelete(note.id);
                           }}
                         >
                           <Icon name="Trash2" size={16} />
-                        </Button>
+                        </button>
                       </div>
                     </div>
                   </CardContent>
@@ -528,39 +528,39 @@ export function YouthNotesManagement({ loading }: YouthNotesManagementProps) {
                         </div>
                       </div>
                       <div className="flex flex-col gap-2">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={(e) => {
+                        <button
+                          type="button"
+                          className="p-2 hover:bg-accent rounded-md transition-colors"
+                          onMouseDown={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
                             handleEdit(note);
                           }}
                         >
                           <Icon name="Edit" size={16} />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={(e) => {
+                        </button>
+                        <button
+                          type="button"
+                          className="p-2 hover:bg-accent rounded-md transition-colors"
+                          onMouseDown={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
                             handleTogglePublish(note);
                           }}
                         >
                           <Icon name="Eye" size={16} />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={(e) => {
+                        </button>
+                        <button
+                          type="button"
+                          className="p-2 hover:bg-accent rounded-md transition-colors"
+                          onMouseDown={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
                             handleDelete(note.id);
                           }}
                         >
                           <Icon name="Trash2" size={16} />
-                        </Button>
+                        </button>
                       </div>
                     </div>
                   </CardContent>
