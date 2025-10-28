@@ -42,16 +42,17 @@ const Showbiz = () => {
   const loadNews = async (pageNum: number) => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/news?is_showbiz=true&page=${pageNum}&limit=12`);
+      const response = await fetch(`https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe?is_showbiz=true&limit=12`);
       const data = await response.json();
+      const newsData = Array.isArray(data) ? data : [];
       
       if (pageNum === 1) {
-        setNews(data.news || []);
+        setNews(newsData);
       } else {
-        setNews(prev => [...prev, ...(data.news || [])]);
+        setNews(prev => [...prev, ...newsData]);
       }
       
-      setHasMore((data.news || []).length === 12);
+      setHasMore(newsData.length === 12);
     } catch (error) {
       console.error('Failed to fetch showbiz news:', error);
     } finally {

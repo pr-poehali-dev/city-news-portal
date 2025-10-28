@@ -22,9 +22,9 @@ export const ShowbizSection = () => {
   useEffect(() => {
     const fetchShowbizNews = async () => {
       try {
-        const response = await fetch('/api/news?is_showbiz=true&limit=3');
+        const response = await fetch('https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe?is_showbiz=true&limit=3');
         const data = await response.json();
-        setNews(data.news || []);
+        setNews(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Failed to fetch showbiz news:', error);
       } finally {
