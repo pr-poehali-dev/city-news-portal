@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
-import { Header } from '@/components/Header';
+import { SiteHeader } from '@/components/SiteHeader';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 
@@ -19,10 +19,25 @@ interface News {
 }
 
 const Showbiz = () => {
+  const navigate = useNavigate();
   const [news, setNews] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  
+  const sections = ['Главная', 'СВО', 'Политика', 'Экономика', 'Культура', 'Спорт', 'События', 'О портале', 'Контакты'];
+  
+  const handleSectionChange = (section: string) => {
+    if (section === 'Главная') {
+      navigate('/');
+    } else if (section === 'О портале') {
+      navigate('/about');
+    } else if (section === 'Контакты') {
+      navigate('/contacts');
+    } else {
+      navigate(`/?section=${section}`);
+    }
+  };
 
   const loadNews = async (pageNum: number) => {
     try {
@@ -56,7 +71,11 @@ const Showbiz = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <SiteHeader
+        sections={sections}
+        activeSection="Главная"
+        onSectionChange={handleSectionChange}
+      />
       
       <main className="flex-1 pt-24 pb-16">
         <div className="relative bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 text-white py-16 mb-12">
