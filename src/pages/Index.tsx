@@ -163,9 +163,11 @@ const Index = () => {
         return;
       }
       
-      const filteredData = data.filter((article: any) => 
-        !article.tags || !Array.isArray(article.tags) || !article.tags.includes('СВО')
-      );
+      const filteredData = data.filter((article: any) => {
+        const isSVO = article.tags && Array.isArray(article.tags) && article.tags.includes('СВО');
+        const isShowbiz = article.is_showbiz === true;
+        return !isSVO && !isShowbiz;
+      });
       
       const sortedData = filteredData.sort((a: any, b: any) => 
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
