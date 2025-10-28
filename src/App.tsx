@@ -18,6 +18,7 @@ import PlacesMap from "./pages/PlacesMap";
 import About from "./pages/About";
 import Contacts from "./pages/Contacts";
 import YouthNotes from "./pages/YouthNotes";
+import Showbiz from "./pages/Showbiz";
 
 import NotFound from "./pages/NotFound";
 
@@ -58,6 +59,7 @@ const App = () => {
               <Route path="/about" element={<About />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/youth-notes" element={<YouthNotes />} />
+              <Route path="/showbiz" element={<Showbiz />} />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

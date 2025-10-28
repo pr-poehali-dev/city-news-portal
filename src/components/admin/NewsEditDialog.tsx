@@ -206,12 +206,36 @@ export const NewsEditDialog = ({
             />
           </div>
 
-          <div className="flex items-center gap-2">
-            <Checkbox
-              checked={news.is_featured || false}
-              onCheckedChange={(checked) => updateField('is_featured', checked)}
-            />
-            <Label>Закрепить в главной</Label>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={news.is_featured || false}
+                onCheckedChange={(checked) => updateField('is_featured', checked)}
+              />
+              <Label>Закрепить в главной</Label>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={news.is_svo || false}
+                onCheckedChange={(checked) => updateField('is_svo', checked)}
+              />
+              <Label className="flex items-center gap-1.5">
+                <Icon name="Shield" size={16} className="text-red-600" />
+                СВО
+              </Label>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={news.is_showbiz || false}
+                onCheckedChange={(checked) => updateField('is_showbiz', checked)}
+              />
+              <Label className="flex items-center gap-1.5">
+                <Icon name="Star" size={16} className="text-purple-600" />
+                Шоубиз
+              </Label>
+            </div>
           </div>
         </div>
 

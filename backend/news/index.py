@@ -62,6 +62,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             status = params.get('status', 'published')
             increment_views = params.get('increment_views', 'false').lower() == 'true'
             increment_likes = params.get('increment_likes', 'false').lower() == 'true'
+            is_svo = params.get('is_svo', 'false').lower() == 'true'
+            is_showbiz = params.get('is_showbiz', 'false').lower() == 'true'
+            limit = params.get('limit', '100')
             
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 if news_id:
@@ -110,6 +113,24 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'isBase64Encoded': False
                     }
                 
+                elif is_svo:
+                    cur.execute('''
+                        SELECT n.*, a.name as author_name 
+                        FROM news n 
+                        LEFT JOIN authors a ON n.author_id = a.id 
+                        WHERE n.is_svo = TRUE AND n.status = %s
+                        ORDER BY n.published_at DESC
+                        LIMIT %s
+                    ''', (status, int(limit)))
+                elif is_showbiz:
+                    cur.execute('''
+                        SELECT n.*, a.name as author_name 
+                        FROM news n 
+                        LEFT JOIN authors a ON n.author_id = a.id 
+                        WHERE n.is_showbiz = TRUE AND n.status = %s
+                        ORDER BY n.published_at DESC
+                        LIMIT %s
+                    ''', (status, int(limit)))
                 elif tag:
                     cur.execute('''
                         SELECT n.*, a.name as author_name 
@@ -178,12 +199,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     cur.execute('UPDATE news SET is_featured = FALSE')
                 
                 random_likes = random.randint(0, 100)
+                is_svo = body.get('is_svo', False)
+                is_showbiz = body.get('is_showbiz', False)
                 
                 cur.execute('''
-                    INSERT INTO news (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured, likes, tags)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO news (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured, likes, tags, is_svo, is_showbiz)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING *
-                ''', (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured, random_likes, tags))
+                ''', (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured, random_likes, tags, is_svo, is_showbiz))
                 
                 new_news = cur.fetchone()
                 conn.commit()
@@ -250,6 +273,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if 'tags' in body:
                 fields.append('tags = %s')
                 values.append(body['tags'])
+            if 'is_svo' in body:
+                fields.append('is_svo = %s')
+                values.append(body['is_svo'])
+            if 'is_showbiz' in body:
+                fields.append('is_showbiz = %s')
+                values.append(body['is_showbiz'])
             
             fields.append('updated_at = CURRENT_TIMESTAMP')
             values.append(news_id)

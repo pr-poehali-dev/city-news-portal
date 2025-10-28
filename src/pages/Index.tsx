@@ -15,6 +15,7 @@ import { MemorySection } from '@/components/MemorySection';
 import { PartnersSection } from '@/components/PartnersSection';
 import { SVOSection } from '@/components/SVOSection';
 import { YouthNotesSection } from '@/components/YouthNotesSection';
+import { ShowbizSection } from '@/components/home/ShowbizSection';
 
 
 const FUNCTIONS_URL = {
@@ -481,6 +482,8 @@ const Index = () => {
                   news={svoNews}
                   onNewsClick={handleArticleClick}
                 />
+
+                <ShowbizSection />
 
                 <PlacesSection
                   cityPlaces={cityPlaces}
