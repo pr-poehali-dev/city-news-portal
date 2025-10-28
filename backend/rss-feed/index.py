@@ -40,7 +40,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute('''
             SELECT id, title, excerpt, content, category, image_url, 
-                   published_at, updated_at, tags
+                   published_at, updated_at, tags, is_svo, is_showbiz
             FROM news 
             WHERE status = 'published' 
             ORDER BY published_at DESC 
@@ -60,7 +60,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         tags = item.get('tags') or []
         category = item.get('category', 'Новости')
-        if tags and 'СВО' in tags:
+        
+        if item.get('is_svo'):
+            category = 'СВО'
+        elif item.get('is_showbiz'):
+            category = 'Шоубизнес'
+        elif tags and 'СВО' in tags:
             category = 'СВО'
         
         rss_item = f'''
