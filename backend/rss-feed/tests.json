@@ -1,13 +1,28 @@
 {
   "tests": [
     {
-      "name": "Get RSS feed",
+      "name": "Get Yandex.News RSS feed",
       "method": "GET",
-      "path": "/",
+      "path": "/?feed_type=news",
       "expectedStatus": 200,
       "expectedHeaders": {
         "Content-Type": "application/rss+xml; charset=utf-8"
       }
+    },
+    {
+      "name": "Get Yandex.Dzen RSS feed",
+      "method": "GET",
+      "path": "/?feed_type=dzen",
+      "expectedStatus": 200,
+      "expectedHeaders": {
+        "Content-Type": "application/rss+xml; charset=utf-8"
+      }
+    },
+    {
+      "name": "Test OPTIONS request",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
     }
   ]
 }

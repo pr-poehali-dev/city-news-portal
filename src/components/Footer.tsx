@@ -79,6 +79,18 @@ export const Footer = ({ sections = [], onSectionChange }: FooterProps) => {
                 <Icon name="MapPin" size={16} />
                 Краснодар, ул. Красная, 1
               </li>
+              <li className="flex items-center gap-2">
+                <Icon name="Rss" size={16} />
+                <a href="https://functions.poehali.dev/ca2cee13-dce4-42ea-8fb9-2b5c115b07dc?feed_type=news" className="hover:text-primary transition-colors" target="_blank" rel="noopener noreferrer">
+                  RSS Новости
+                </a>
+              </li>
+              <li className="flex items-center gap-2">
+                <Icon name="Rss" size={16} />
+                <a href="https://functions.poehali.dev/ca2cee13-dce4-42ea-8fb9-2b5c115b07dc?feed_type=dzen" className="hover:text-primary transition-colors" target="_blank" rel="noopener noreferrer">
+                  RSS Дзен
+                </a>
+              </li>
             </ul>
           </div>
         </div>
