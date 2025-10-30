@@ -24,7 +24,11 @@ export const FeaturedNews = ({
   const stripHtml = (html: string) => {
     const tmp = document.createElement('div');
     tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
+    let text = tmp.textContent || tmp.innerText || '';
+    text = text.replace(/\u00a0|\u202f|\u2009/g, ' ');
+    text = text.replace(/\u2011|\u2012|\u2013|\u2014|\u2015/g, '-');
+    text = text.replace(/\s+/g, ' ');
+    return text.trim();
   };
 
   const getYouTubeEmbedUrl = (url: string) => {
