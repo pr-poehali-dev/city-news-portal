@@ -283,6 +283,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if 'keywords' in body:
                 fields.append('keywords = %s')
                 values.append(body['keywords'])
+            if 'last_ping_at' in body:
+                fields.append('last_ping_at = %s')
+                values.append(body['last_ping_at'])
+            if 'ping_count' in body:
+                fields.append('ping_count = ping_count + %s')
+                values.append(body['ping_count'])
+            if 'indexed_yandex' in body:
+                fields.append('indexed_yandex = %s')
+                values.append(body['indexed_yandex'])
+            if 'indexed_google' in body:
+                fields.append('indexed_google = %s')
+                values.append(body['indexed_google'])
             
             fields.append('updated_at = CURRENT_TIMESTAMP')
             values.append(news_id)

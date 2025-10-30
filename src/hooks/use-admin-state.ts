@@ -328,6 +328,15 @@ export const useAdminState = () => {
             await fetch(FUNCTIONS_URL.updateSitemap, {
               method: 'GET'
             });
+
+            await fetch(FUNCTIONS_URL.news + `/${data.id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                last_ping_at: new Date().toISOString(),
+                ping_count: 1
+              })
+            });
           } catch (pingError) {
             console.error('Failed to ping search engines:', pingError);
           }
