@@ -323,6 +323,14 @@ export const useAdminState = () => {
           } catch (notifError) {
             console.error('Failed to queue notification:', notifError);
           }
+
+          try {
+            await fetch(FUNCTIONS_URL.updateSitemap, {
+              method: 'GET'
+            });
+          } catch (pingError) {
+            console.error('Failed to ping search engines:', pingError);
+          }
         }
         
         await loadNews();

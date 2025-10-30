@@ -1,15 +1,17 @@
 import json
 import psycopg2
+import urllib.request
+import urllib.parse
 from datetime import datetime
 from typing import Dict, Any
 import os
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Generate sitemap XML content from database for manual update
+    Business: Generate sitemap XML and ping search engines (Yandex, Google)
     Args: event - dict with httpMethod
           context - object with request_id
-    Returns: Sitemap XML as JSON for saving to public/sitemap.xml
+    Returns: Sitemap XML as JSON + search engine ping results
     '''
     method: str = event.get('httpMethod', 'GET')
     
@@ -126,6 +128,35 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 {chr(10).join(urls)}
 </urlset>'''
     
+    ping_results: Dict[str, Any] = {
+        'yandex': {'success': False, 'error': None},
+        'google': {'success': False, 'error': None}
+    }
+    
+    sitemap_url = 'https://functions.poehali.dev/d4012dd0-b39f-4610-88ce-4f935e27dfcf'
+    
+    yandex_ping_url = f'https://webmaster.yandex.ru/ping?sitemap={urllib.parse.quote(sitemap_url)}'
+    try:
+        req = urllib.request.Request(yandex_ping_url, method='GET')
+        with urllib.request.urlopen(req, timeout=10) as response:
+            if response.status == 200:
+                ping_results['yandex']['success'] = True
+            else:
+                ping_results['yandex']['error'] = f'HTTP {response.status}'
+    except Exception as e:
+        ping_results['yandex']['error'] = str(e)
+    
+    google_ping_url = f'https://www.google.com/ping?sitemap={urllib.parse.quote(sitemap_url)}'
+    try:
+        req = urllib.request.Request(google_ping_url, method='GET')
+        with urllib.request.urlopen(req, timeout=10) as response:
+            if response.status == 200:
+                ping_results['google']['success'] = True
+            else:
+                ping_results['google']['error'] = f'HTTP {response.status}'
+    except Exception as e:
+        ping_results['google']['error'] = str(e)
+    
     return {
         'statusCode': 200,
         'headers': {
@@ -133,5 +164,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'Access-Control-Allow-Origin': '*'
         },
         'isBase64Encoded': False,
-        'body': json.dumps({'sitemap': sitemap_xml})
+        'body': json.dumps({
+            'sitemap': sitemap_xml,
+            'ping_results': ping_results,
+            'pinged_count': sum(1 for r in ping_results.values() if r['success'])
+        })
     }
