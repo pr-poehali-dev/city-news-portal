@@ -104,7 +104,12 @@ export const FeaturedNews = ({
             </h2>
             <div className="text-muted-foreground text-sm leading-relaxed mb-4">
               <p className="line-clamp-3">
-                {stripHtml(news.excerpt || news.content)}
+                {(() => {
+                  const raw = news.excerpt || news.content || '';
+                  const cleaned = stripHtml(raw);
+                  console.log('Featured news preview:', { id: news.id, raw: raw.substring(0, 50), cleaned: cleaned.substring(0, 50) });
+                  return cleaned;
+                })()}
               </p>
               <span className="text-primary font-medium text-sm mt-2 inline-block cursor-pointer hover:underline">
                 Читать далее →
