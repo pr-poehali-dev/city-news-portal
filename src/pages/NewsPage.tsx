@@ -177,12 +177,14 @@ export const NewsPage = () => {
   const pageDescription = article?.excerpt || article?.content?.substring(0, 155) || 'Актуальные новости Краснодара';
   const pageImage = article?.image_url || 'https://cdn.poehali.dev/intertnal/img/og.png';
   const pageUrl = `https://ggkrasnodar.ru/news/${id}`;
+  const pageKeywords = article?.keywords || `новости Краснодара, ${article?.section || 'события'}, ${article?.title?.substring(0, 50) || ''}`;
 
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
+        <meta name="keywords" content={pageKeywords} />
         
         <meta property="og:type" content="article" />
         <meta property="og:url" content={pageUrl} />
@@ -193,6 +195,9 @@ export const NewsPage = () => {
         <meta property="article:published_time" content={article.date} />
         <meta property="article:author" content={article.author} />
         <meta property="article:section" content={article.section} />
+        {article.keywords && article.keywords.split(',').map((kw: string, idx: number) => (
+          <meta key={idx} property="article:tag" content={kw.trim()} />
+        ))}
         
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:url" content={pageUrl} />
@@ -208,6 +213,7 @@ export const NewsPage = () => {
             "description": pageDescription,
             "image": pageImage,
             "datePublished": article.date,
+            "keywords": article.keywords || pageKeywords,
             "author": {
               "@type": "Person",
               "name": article.author

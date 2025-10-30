@@ -44,7 +44,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute('''
             SELECT id, title, excerpt, content, category, image_url, 
-                   published_at, updated_at, tags, is_svo, is_showbiz
+                   published_at, updated_at, tags, is_svo, is_showbiz, keywords
             FROM news 
             WHERE status = 'published' 
             ORDER BY published_at DESC 
@@ -89,6 +89,12 @@ def generate_news_feed(news_items, base_url):
         elif tags and 'СВО' in tags:
             category = 'СВО'
         
+        keywords = item.get('keywords', '')
+        keyword_tags = ''
+        if keywords:
+            kw_list = [kw.strip() for kw in keywords.split(',') if kw.strip()]
+            keyword_tags = ''.join(f'<yandex:full-text>{escape(kw)}</yandex:full-text>' for kw in kw_list)
+        
         rss_item = f'''
         <item>
             <title>{escape(item['title'])}</title>
@@ -97,6 +103,7 @@ def generate_news_feed(news_items, base_url):
             <pubDate>{pub_date.strftime('%a, %d %b %Y %H:%M:%S +0000')}</pubDate>
             <category>{escape(category)}</category>
             <description>{escape(item.get('excerpt', ''))}</description>
+            {keyword_tags}
             {'<enclosure url="' + escape(item['image_url']) + '" type="image/jpeg"/>' if item.get('image_url') else ''}
         </item>'''
         rss_items.append(rss_item)
