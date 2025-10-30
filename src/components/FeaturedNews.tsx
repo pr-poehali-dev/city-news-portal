@@ -22,12 +22,29 @@ export const FeaturedNews = ({
   onNewsClick
 }: FeaturedNewsProps) => {
   const stripHtml = (html: string) => {
+    if (!html) return '';
+    
+    let text = html;
+    
+    text = text.replace(/&nbsp;/g, ' ');
+    text = text.replace(/&mdash;/g, '-');
+    text = text.replace(/&ndash;/g, '-');
+    text = text.replace(/&rsquo;/g, "'");
+    text = text.replace(/&lsquo;/g, "'");
+    text = text.replace(/&rdquo;/g, '"');
+    text = text.replace(/&ldquo;/g, '"');
+    text = text.replace(/&hellip;/g, '...');
+    
     const tmp = document.createElement('div');
-    tmp.innerHTML = html;
-    let text = tmp.textContent || tmp.innerText || '';
-    text = text.replace(/\u00a0|\u202f|\u2009/g, ' ');
-    text = text.replace(/\u2011|\u2012|\u2013|\u2014|\u2015/g, '-');
+    tmp.innerHTML = text;
+    text = tmp.textContent || tmp.innerText || '';
+    
+    text = text.replace(/[\u00a0\u202f\u2009\u2000-\u200b]/g, ' ');
+    text = text.replace(/[\u2011-\u2015]/g, '-');
+    text = text.replace(/[\u2018\u2019]/g, "'");
+    text = text.replace(/[\u201c\u201d]/g, '"');
     text = text.replace(/\s+/g, ' ');
+    
     return text.trim();
   };
 
