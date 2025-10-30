@@ -4,6 +4,7 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import re
+import html
 from typing import Dict, Any, Optional, List
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
@@ -103,6 +104,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 
 def clean_html(text: str) -> str:
     '''Remove HTML tags and convert to plain text'''
+    text = html.unescape(text)
     text = re.sub(r'<img[^>]*>', '', text)
     text = re.sub(r'<br\s*/?>', '\n', text)
     text = re.sub(r'<strong>(.*?)</strong>', r'\1', text, flags=re.DOTALL)
@@ -116,6 +118,8 @@ def clean_html(text: str) -> str:
     text = re.sub(r'<p[^>]*>(.*?)</p>', r'\1\n\n', text, flags=re.DOTALL)
     text = re.sub(r'<ul[^>]*>|</ul>|<ol[^>]*>|</ol>', '\n', text)
     text = re.sub(r'<[^>]+>', '', text)
+    text = re.sub(r'\u00a0|\u202f|\u2009', ' ', text)
+    text = re.sub(r'\u2011|\u2012|\u2013|\u2014|\u2015', '-', text)
     text = re.sub(r'\n{3,}', '\n\n', text)
     text = re.sub(r' {2,}', ' ', text)
     return text.strip()
