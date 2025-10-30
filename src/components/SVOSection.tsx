@@ -114,7 +114,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
                     {mainNews.title}
                   </h3>
                   <p className="text-gray-300 text-base mb-4 line-clamp-2">
-                    {mainNews.content || mainNews.excerpt}
+                    {mainNews.excerpt}
                   </p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-6 text-gray-400 text-sm">
