@@ -69,7 +69,9 @@ const Admin = () => {
     handleDeleteAuthor,
     handleAboutSubmit,
     handlePublishToTelegram,
-    handleSaveVkDraft
+    handleSaveVkDraft,
+    handleToggleSVO,
+    handleToggleShowbiz
   } = useAdminState();
 
   if (!authenticated) {
@@ -117,6 +119,8 @@ const Admin = () => {
               onEditNews={handleEditNewsOpen}
               onPublishToTelegram={handlePublishToTelegram}
               onSaveVkDraft={handleSaveVkDraft}
+              onToggleSVO={handleToggleSVO}
+              onToggleShowbiz={handleToggleShowbiz}
             />
           </TabsContent>
 

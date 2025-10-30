@@ -18,6 +18,8 @@ interface NewsManagementProps {
   onEditNews: (news: any) => void;
   onPublishToTelegram: (news: any) => Promise<void>;
   onSaveVkDraft: (news?: any) => Promise<void>;
+  onToggleSVO?: (id: number) => Promise<void>;
+  onToggleShowbiz?: (id: number) => Promise<void>;
 }
 
 export const NewsManagement = ({
@@ -33,7 +35,9 @@ export const NewsManagement = ({
   onPublishDraft,
   onEditNews,
   onPublishToTelegram,
-  onSaveVkDraft
+  onSaveVkDraft,
+  onToggleSVO,
+  onToggleShowbiz
 }: NewsManagementProps) => {
   return (
     <div className="space-y-4 md:space-y-6">
@@ -62,6 +66,8 @@ export const NewsManagement = ({
                 onSetFeatured={onSetFeatured}
                 onPublishToTelegram={onPublishToTelegram}
                 onSaveVkDraft={() => onSaveVkDraft(news)}
+                onToggleSVO={onToggleSVO}
+                onToggleShowbiz={onToggleShowbiz}
               />
             ))}
           </div>

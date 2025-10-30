@@ -13,6 +13,8 @@ interface NewsCardProps {
   onDelete: (id: number) => void;
   onPublishToTelegram?: (news: any) => void;
   onSaveVkDraft?: () => void;
+  onToggleSVO?: (id: number) => void;
+  onToggleShowbiz?: (id: number) => void;
 }
 
 export const NewsCard = ({
@@ -24,7 +26,9 @@ export const NewsCard = ({
   onEdit,
   onDelete,
   onPublishToTelegram,
-  onSaveVkDraft
+  onSaveVkDraft,
+  onToggleSVO,
+  onToggleShowbiz
 }: NewsCardProps) => {
   const handleClick = (e: React.MouseEvent, action: () => void) => {
     e.preventDefault();
@@ -45,6 +49,18 @@ export const NewsCard = ({
               <Badge className="bg-red-600 text-xs">
                 <Icon name="Pin" size={10} className="mr-1" />
                 Главная
+              </Badge>
+            )}
+            {news.is_svo && (
+              <Badge className="bg-red-600 text-white text-xs">
+                <Icon name="Shield" size={10} className="mr-1" />
+                СВО
+              </Badge>
+            )}
+            {news.is_showbiz && (
+              <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs">
+                <Icon name="Star" size={10} className="mr-1" />
+                Шоубиз
               </Badge>
             )}
             {!isDraft && (
@@ -137,6 +153,40 @@ export const NewsCard = ({
           >
             <Icon name="FileText" size={14} />
             VK
+          </Button>
+        )}
+        {!isDraft && onToggleSVO && (
+          <Button 
+            size="sm" 
+            variant={news.is_svo ? "default" : "outline"}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (!loading) onToggleSVO(news.id);
+            }}
+            disabled={loading}
+            className="gap-1 text-xs md:text-sm h-8 touch-manipulation"
+            type="button"
+          >
+            <Icon name="Shield" size={14} />
+            <span className="hidden sm:inline">СВО</span>
+          </Button>
+        )}
+        {!isDraft && onToggleShowbiz && (
+          <Button 
+            size="sm" 
+            variant={news.is_showbiz ? "default" : "outline"}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (!loading) onToggleShowbiz(news.id);
+            }}
+            disabled={loading}
+            className="gap-1 text-xs md:text-sm h-8 touch-manipulation"
+            type="button"
+          >
+            <Icon name="Sparkles" size={14} />
+            <span className="hidden sm:inline">Шоубиз</span>
           </Button>
         )}
         <Button 

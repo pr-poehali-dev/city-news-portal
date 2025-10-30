@@ -1149,6 +1149,64 @@ export const useAdminState = () => {
     }
   };
 
+  const handleToggleSVO = async (newsId: number) => {
+    setLoading(true);
+
+    try {
+      const currentNews = newsList.find((n: any) => n.id === newsId);
+      const response = await fetch(FUNCTIONS_URL.news, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: newsId, is_svo: !currentNews?.is_svo })
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно!',
+          description: currentNews?.is_svo ? 'Убрано из СВО' : 'Добавлено в СВО'
+        });
+        await loadNews();
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleToggleShowbiz = async (newsId: number) => {
+    setLoading(true);
+
+    try {
+      const currentNews = newsList.find((n: any) => n.id === newsId);
+      const response = await fetch(FUNCTIONS_URL.news, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: newsId, is_showbiz: !currentNews?.is_showbiz })
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно!',
+          description: currentNews?.is_showbiz ? 'Убрано из Шоубиза' : 'Добавлено в Шоубиз'
+        });
+        await loadNews();
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     authenticated,
@@ -1197,6 +1255,8 @@ export const useAdminState = () => {
     handleTogglePublishMemory,
     handleEditMemory,
     handleUpdateMemory,
+    handleToggleSVO,
+    handleToggleShowbiz,
     handleAuthorSubmit,
     handleDeleteAuthor,
     handleAboutSubmit,
