@@ -20,6 +20,7 @@ interface NewsArticle {
   id: number;
   title: string;
   content: string;
+  excerpt?: string;
   date: string;
   author: string;
   image_url: string;
@@ -173,7 +174,7 @@ export const NewsPage = () => {
   }
 
   const pageTitle = article ? `${article.title} — Город говорит` : 'Город говорит — новостной портал Краснодара';
-  const pageDescription = article?.content?.substring(0, 155) || 'Актуальные новости Краснодара';
+  const pageDescription = article?.excerpt || article?.content?.substring(0, 155) || 'Актуальные новости Краснодара';
   const pageImage = article?.image_url || 'https://cdn.poehali.dev/intertnal/img/og.png';
   const pageUrl = `https://ggkrasnodar.ru/news/${id}`;
 
@@ -189,12 +190,42 @@ export const NewsPage = () => {
         <meta property="og:description" content={pageDescription} />
         <meta property="og:image" content={pageImage} />
         <meta property="og:site_name" content="Город говорит" />
+        <meta property="article:published_time" content={article.date} />
+        <meta property="article:author" content={article.author} />
+        <meta property="article:section" content={article.section} />
         
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:url" content={pageUrl} />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={pageImage} />
+        
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "NewsArticle",
+            "headline": article.title,
+            "description": pageDescription,
+            "image": pageImage,
+            "datePublished": article.date,
+            "author": {
+              "@type": "Person",
+              "name": article.author
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "Город говорит",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://ggkrasnodar.ru/logo.png"
+              }
+            },
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": pageUrl
+            }
+          })}
+        </script>
       </Helmet>
 
       <SiteHeader 
