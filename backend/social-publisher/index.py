@@ -101,6 +101,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     }
 
 
+def clean_html(text: str) -> str:
+    '''Remove HTML tags and convert to plain text'''
+    text = re.sub(r'<img[^>]*>', '', text)
+    text = re.sub(r'<h[1-6][^>]*>(.*?)</h[1-6]>', r'\1\n', text)
+    text = re.sub(r'<strong>(.*?)</strong>', r'\1', text)
+    text = re.sub(r'<b>(.*?)</b>', r'\1', text)
+    text = re.sub(r'<em>(.*?)</em>', r'\1', text)
+    text = re.sub(r'<i>(.*?)</i>', r'\1', text)
+    text = re.sub(r'<blockquote>(.*?)</blockquote>', r'"\1"', text)
+    text = re.sub(r'<p>(.*?)</p>', r'\1\n', text)
+    text = re.sub(r'<li>(.*?)</li>', r'• \1\n', text)
+    text = re.sub(r'<[^>]+>', '', text)
+    text = re.sub(r'\n{3,}', '\n\n', text)
+    return text.strip()
+
 def clean_markdown(text: str) -> str:
     '''Remove markdown syntax from text'''
     text = re.sub(r'!\[.*?\]\(.*?\)', '', text)
@@ -111,6 +126,7 @@ def clean_markdown(text: str) -> str:
 
 def truncate_text(text: str, max_length: int = 800, add_read_more: bool = False, news_url: Optional[str] = None) -> str:
     '''Truncate text to max length, keeping whole words'''
+    text = clean_html(text)
     text = clean_markdown(text)
     if len(text) <= max_length:
         return text
