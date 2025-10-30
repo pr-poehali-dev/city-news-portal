@@ -11,9 +11,8 @@ Allow: /
 User-agent: *
 Allow: /
 
-# Sitemaps
+# Sitemap
 Sitemap: https://ggkrasnodar.ru/sitemap.xml
-Sitemap: https://functions.poehali.dev/ca2cee13-dce4-42ea-8fb9-2b5c115b07dc
 
 # Host
 Host: https://ggkrasnodar.ru
