@@ -458,8 +458,16 @@ export const useAdminState = () => {
         await loadNews();
         await loadDrafts();
         await updateSitemap();
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        toast({
+          title: 'Ошибка',
+          description: errorData.error || 'Не удалось опубликовать',
+          variant: 'destructive'
+        });
       }
     } catch (error) {
+      console.error('Publish draft error:', error);
       toast({
         title: 'Ошибка',
         description: 'Не удалось опубликовать',

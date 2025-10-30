@@ -50,93 +50,89 @@ export const ShowbizSection = () => {
   const [mainNews, ...sideNews] = news;
 
   return (
-    <section className="py-12 md:py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-purple-950/20">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-8">
+    <section className="py-16 md:py-20 bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.05),transparent_50%)]" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-purple-400/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-pink-400/5 rounded-full blur-3xl" />
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="flex items-center justify-between mb-10">
           <div>
-            <div className="flex items-center gap-3 mb-2">
-              <Icon name="Star" size={32} className="text-purple-600" />
-              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg">
+                <Icon name="Sparkles" size={24} className="text-white" />
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white">
                 Город говорит о шоубизе
               </h2>
             </div>
-            <p className="text-muted-foreground text-sm md:text-base">
+            <p className="text-slate-600 dark:text-slate-400 text-base md:text-lg ml-14">
               Звёзды, премьеры и светская жизнь глазами Краснодара
             </p>
           </div>
           <Link to="/showbiz">
-            <Button variant="outline" className="hidden md:flex gap-2 border-purple-300 hover:bg-purple-100">
+            <Button className="hidden md:flex gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg">
               Все новости
               <Icon name="ArrowRight" size={16} />
             </Button>
           </Link>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-3 gap-6">
           {mainNews && (
-            <Link to={`/news/${mainNews.id}`} className="group">
-              <Card className="overflow-hidden h-full hover:shadow-2xl transition-all duration-300 border-purple-200 hover:border-purple-400">
-                <div className="relative h-80">
+            <Link to={`/news/${mainNews.id}`} className="lg:col-span-2 group">
+              <Card className="overflow-hidden h-full hover:shadow-2xl transition-all duration-500 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                <div className="relative h-[400px] md:h-[500px]">
                   <img
                     src={mainNews.image_url}
                     alt={mainNews.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                  <Badge className="absolute top-4 left-4 bg-purple-600 hover:bg-purple-700 text-white">
-                    <Icon name="Star" size={12} className="mr-1" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+                  <Badge className="absolute top-6 left-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 px-4 py-2 text-sm shadow-lg">
+                    <Icon name="Star" size={14} className="mr-2" />
                     {mainNews.category}
                   </Badge>
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="text-white text-2xl font-bold mb-2 group-hover:text-purple-200 transition-colors">
+                  <div className="absolute bottom-0 left-0 right-0 p-8">
+                    <h3 className="text-white text-2xl md:text-4xl font-bold mb-3 group-hover:text-purple-200 transition-colors leading-tight">
                       {mainNews.title}
                     </h3>
-                    <p className="text-white/90 text-sm line-clamp-2 mb-3">
+                    <p className="text-white/90 text-base md:text-lg line-clamp-2">
                       {mainNews.excerpt}
                     </p>
-                    <div className="flex items-center gap-2 text-white/70 text-xs">
-                      <Icon name="Clock" size={14} />
-                      <span>{mainNews.read_time}</span>
-                    </div>
                   </div>
                 </div>
               </Card>
             </Link>
           )}
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             {sideNews.slice(0, 2).map((item) => (
-              <Link key={item.id} to={`/news/${item.id}`} className="group">
-                <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 border-purple-100 hover:border-purple-300">
-                  <div className="flex gap-4 p-4">
-                    <div className="relative w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden">
-                      <img
-                        src={item.image_url}
-                        alt={item.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <Badge className="mb-2 bg-purple-100 text-purple-700 hover:bg-purple-200 text-xs">
-                        <Icon name="Sparkles" size={10} className="mr-1" />
-                        {item.category}
-                      </Badge>
-                      <h4 className="font-bold text-base mb-2 line-clamp-2 group-hover:text-purple-700 transition-colors">
-                        {item.title}
-                      </h4>
-                      <div className="flex items-center gap-2 text-muted-foreground text-xs">
-                        <Icon name="Clock" size={12} />
-                        <span>{item.read_time}</span>
-                      </div>
-                    </div>
+              <Link key={item.id} to={`/news/${item.id}`} className="group block">
+                <Card className="overflow-hidden hover:shadow-xl transition-all duration-500 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 h-full">
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={item.image_url}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <Badge className="absolute top-4 right-4 bg-white/95 text-slate-900 border-0 text-xs">
+                      <Icon name="Sparkles" size={10} className="mr-1 text-purple-600" />
+                      {item.category}
+                    </Badge>
+                  </div>
+                  <div className="p-5">
+                    <h4 className="font-bold text-lg line-clamp-3 group-hover:text-purple-600 transition-colors dark:text-white dark:group-hover:text-purple-400">
+                      {item.title}
+                    </h4>
                   </div>
                 </Card>
               </Link>
             ))}
 
-            <Link to="/showbiz" className="md:hidden">
-              <Button variant="outline" className="w-full gap-2 border-purple-300 hover:bg-purple-100">
+            <Link to="/showbiz" className="lg:hidden">
+              <Button className="w-full gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg">
                 Все новости шоубизнеса
                 <Icon name="ArrowRight" size={16} />
               </Button>

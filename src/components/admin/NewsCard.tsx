@@ -29,7 +29,8 @@ export const NewsCard = ({
   const handleClick = (e: React.MouseEvent, action: () => void) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!loading) {
+    const target = e.target as HTMLElement;
+    if (target.closest('button') && !loading) {
       action();
     }
   };
@@ -71,9 +72,14 @@ export const NewsCard = ({
         {isDraft && onPublish && (
           <Button 
             size="sm" 
-            onClick={(e) => handleClick(e, () => onPublish(news))}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (!loading) onPublish(news);
+            }}
             disabled={loading}
-            className="text-xs md:text-sm h-8"
+            className="text-xs md:text-sm h-8 touch-manipulation"
+            type="button"
           >
             <Icon name="Upload" size={14} className="mr-1" />
             <span className="hidden sm:inline">Опубликовать</span>
@@ -84,9 +90,14 @@ export const NewsCard = ({
           <Button 
             size="sm" 
             variant={news.is_featured ? "default" : "secondary"}
-            onClick={(e) => handleClick(e, () => onSetFeatured(news.id))}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (!loading && !news.is_featured) onSetFeatured(news.id);
+            }}
             disabled={loading || news.is_featured}
-            className="text-xs md:text-sm h-8"
+            className="text-xs md:text-sm h-8 touch-manipulation"
+            type="button"
           >
             <Icon name="Pin" size={14} className="mr-1" />
             <span className="hidden sm:inline">{news.is_featured ? 'Главная новость' : 'В главную'}</span>
@@ -97,9 +108,14 @@ export const NewsCard = ({
           <Button 
             size="sm" 
             variant="outline"
-            onClick={(e) => handleClick(e, () => onPublishToTelegram(news))}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (!loading) onPublishToTelegram(news);
+            }}
             disabled={loading}
-            className="gap-1 text-xs md:text-sm h-8"
+            className="gap-1 text-xs md:text-sm h-8 touch-manipulation"
+            type="button"
           >
             <Icon name="Send" size={14} />
             <span className="hidden sm:inline">Telegram</span>
@@ -110,9 +126,14 @@ export const NewsCard = ({
           <Button 
             size="sm" 
             variant="outline"
-            onClick={(e) => handleClick(e, onSaveVkDraft)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (!loading) onSaveVkDraft();
+            }}
             disabled={loading}
-            className="gap-1 text-xs md:text-sm h-8"
+            className="gap-1 text-xs md:text-sm h-8 touch-manipulation"
+            type="button"
           >
             <Icon name="FileText" size={14} />
             VK
@@ -121,9 +142,14 @@ export const NewsCard = ({
         <Button 
           size="sm" 
           variant="outline"
-          onClick={(e) => handleClick(e, () => onEdit(news))}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!loading) onEdit(news);
+          }}
           disabled={loading}
-          className="text-xs md:text-sm h-8"
+          className="text-xs md:text-sm h-8 touch-manipulation"
+          type="button"
         >
           <Icon name="Edit" size={14} className="mr-1" />
           <span className="hidden sm:inline">Редактировать</span>

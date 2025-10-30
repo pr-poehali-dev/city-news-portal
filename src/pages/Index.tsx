@@ -99,11 +99,18 @@ const Index = () => {
       setLikedArticles(new Set(JSON.parse(savedLikes)));
     }
     
-    const interval = setInterval(() => {
+    const tickerInterval = setInterval(() => {
       loadLatestForTicker();
     }, 5 * 60 * 1000);
 
-    return () => clearInterval(interval);
+    const weatherInterval = setInterval(() => {
+      loadWeather();
+    }, 60 * 60 * 1000);
+
+    return () => {
+      clearInterval(tickerInterval);
+      clearInterval(weatherInterval);
+    };
   }, []);
 
   useEffect(() => {
