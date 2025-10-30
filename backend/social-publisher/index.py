@@ -478,11 +478,13 @@ def send_telegram_photo(bot_token: str, channel_id: str, photo_url: str, caption
     }
     
     try:
+        print(f'Sending Telegram photo with caption length: {len(caption)}')
         data = urllib.parse.urlencode(params).encode('utf-8')
         req = urllib.request.Request(url, data=data)
         
         with urllib.request.urlopen(req, timeout=10) as response:
             result = json.loads(response.read().decode('utf-8'))
+            print(f'Telegram photo response: {result}')
             
             if result.get('ok'):
                 return {
@@ -491,12 +493,15 @@ def send_telegram_photo(bot_token: str, channel_id: str, photo_url: str, caption
                     'message_id': result['result']['message_id']
                 }
             else:
+                error_msg = result.get('description', 'Unknown Telegram error')
+                print(f'Telegram photo error: {error_msg}')
                 return {
                     'success': False,
-                    'error': result.get('description', 'Unknown Telegram error'),
+                    'error': error_msg,
                     'message_id': None
                 }
     except Exception as e:
+        print(f'Telegram photo exception: {str(e)}')
         return {
             'success': False,
             'error': str(e),
@@ -515,11 +520,13 @@ def send_telegram_message(bot_token: str, channel_id: str, text: str) -> Dict[st
     }
     
     try:
+        print(f'Sending Telegram message with text length: {len(text)}')
         data = urllib.parse.urlencode(params).encode('utf-8')
         req = urllib.request.Request(url, data=data)
         
         with urllib.request.urlopen(req, timeout=10) as response:
             result = json.loads(response.read().decode('utf-8'))
+            print(f'Telegram message response: {result}')
             
             if result.get('ok'):
                 return {
@@ -528,12 +535,15 @@ def send_telegram_message(bot_token: str, channel_id: str, text: str) -> Dict[st
                     'message_id': result['result']['message_id']
                 }
             else:
+                error_msg = result.get('description', 'Unknown Telegram error')
+                print(f'Telegram message error: {error_msg}')
                 return {
                     'success': False,
-                    'error': result.get('description', 'Unknown Telegram error'),
+                    'error': error_msg,
                     'message_id': None
                 }
     except Exception as e:
+        print(f'Telegram message exception: {str(e)}')
         return {
             'success': False,
             'error': str(e),
