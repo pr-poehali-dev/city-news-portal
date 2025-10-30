@@ -63,7 +63,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     <!-- Главная страница -->
     <url>
-        <loc>https://gorodgovorit.ru/</loc>
+        <loc>https://ggkrasnodar.ru/</loc>
         <lastmod>{today}</lastmod>
         <changefreq>hourly</changefreq>
         <priority>1.0</priority>
@@ -71,28 +71,49 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     <!-- Статические страницы -->
     <url>
-        <loc>https://gorodgovorit.ru/places</loc>
+        <loc>https://ggkrasnodar.ru/places</loc>
         <lastmod>{today}</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
     
     <url>
-        <loc>https://gorodgovorit.ru/places/map</loc>
+        <loc>https://ggkrasnodar.ru/places/map</loc>
         <lastmod>{today}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     
     <url>
-        <loc>https://gorodgovorit.ru/about</loc>
+        <loc>https://ggkrasnodar.ru/memory</loc>
+        <lastmod>{today}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.9</priority>
+    </url>
+    
+    <url>
+        <loc>https://ggkrasnodar.ru/youth-notes</loc>
+        <lastmod>{today}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://ggkrasnodar.ru/showbiz</loc>
+        <lastmod>{today}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://ggkrasnodar.ru/about</loc>
         <lastmod>{today}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     
     <url>
-        <loc>https://gorodgovorit.ru/contacts</loc>
+        <loc>https://ggkrasnodar.ru/contacts</loc>
         <lastmod>{today}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
@@ -104,7 +125,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         lastmod = updated_at.strftime('%Y-%m-%d') if updated_at else today
         sitemap_xml += f'''
     <url>
-        <loc>https://gorodgovorit.ru/news/{news_id}</loc>
+        <loc>https://ggkrasnodar.ru/news/{news_id}</loc>
         <lastmod>{lastmod}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
@@ -118,7 +139,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         lastmod = updated_at.strftime('%Y-%m-%d') if updated_at else today
         sitemap_xml += f'''
     <url>
-        <loc>https://gorodgovorit.ru/memory/{memory_id}</loc>
+        <loc>https://ggkrasnodar.ru/memory/{memory_id}</loc>
         <lastmod>{lastmod}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
