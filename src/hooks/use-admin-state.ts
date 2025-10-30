@@ -25,7 +25,8 @@ export const useAdminState = () => {
     read_time: '5 мин',
     status: 'published',
     publish_telegram: true,
-    tags: [] as string[]
+    tags: [] as string[],
+    keywords: ''
   });
 
   const [eventForm, setEventForm] = useState({
@@ -271,7 +272,8 @@ export const useAdminState = () => {
                 image_url: newsForm.image_url,
                 news_url: newsUrl,
                 publish_vk: false,
-                publish_telegram: true
+                publish_telegram: true,
+                keywords: newsForm.keywords || ''
               })
             });
             
@@ -1119,7 +1121,8 @@ export const useAdminState = () => {
           news_url: newsUrl,
           publish_vk: false,
           publish_telegram: false,
-          save_vk_draft: true
+          save_vk_draft: true,
+          keywords: data.keywords || ''
         })
       });
       

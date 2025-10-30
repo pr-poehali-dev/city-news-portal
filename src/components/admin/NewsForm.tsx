@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { ImageUpload } from './ImageUpload';
+import { RichTextEditor } from './RichTextEditor';
 import { TAGS } from '@/lib/admin-constants';
 
 interface NewsFormProps {
@@ -20,6 +21,7 @@ interface NewsFormProps {
     read_time: string;
     publish_telegram?: boolean;
     tags?: string[];
+    keywords?: string;
   };
   categories: string[];
   loading: boolean;
@@ -29,55 +31,7 @@ interface NewsFormProps {
 }
 
 export const NewsForm = ({ newsForm, categories, loading, onFormChange, onSubmit, onSaveVkDraft }: NewsFormProps) => {
-  const [imageUrlForInsert, setImageUrlForInsert] = useState('');
-  const contentTextareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const insertImageIntoContent = (imageUrl: string) => {
-    if (!imageUrl) return;
-    
-    const textarea = contentTextareaRef.current;
-    if (!textarea) return;
-
-    const cursorPos = textarea.selectionStart || newsForm.content.length;
-    const textBefore = newsForm.content.substring(0, cursorPos);
-    const textAfter = newsForm.content.substring(cursorPos);
-    
-    const imageMarkdown = `\n![Изображение](${imageUrl})\n`;
-    const newContent = textBefore + imageMarkdown + textAfter;
-    
-    onFormChange('content', newContent);
-    setImageUrlForInsert('');
-    
-    setTimeout(() => {
-      textarea.focus();
-      const newPos = cursorPos + imageMarkdown.length;
-      textarea.setSelectionRange(newPos, newPos);
-    }, 0);
-  };
-
-  const handleImageUploadForContent = async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const response = await fetch('https://cdn.poehali.dev/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) throw new Error('Upload failed');
-
-      const data = await response.json();
-      const imageUrl = data.url || data.file_url;
-      
-      if (imageUrl) {
-        insertImageIntoContent(imageUrl);
-      }
-    } catch (error) {
-      console.error('Failed to upload image:', error);
-      alert('Ошибка загрузки изображения');
-    }
-  };
+  const [showKeywordsHelp] = useState(false);
 
   return (
     <Card>
@@ -161,73 +115,39 @@ export const NewsForm = ({ newsForm, categories, loading, onFormChange, onSubmit
 
           <div>
             <label className="text-sm font-medium mb-2 block">Полный текст</label>
-            <Textarea
-              ref={contentTextareaRef}
-              value={newsForm.content}
-              onChange={(e) => onFormChange('content', e.target.value)}
-              placeholder="Полный текст новости. Используйте ![Описание](URL) для вставки изображений"
-              rows={8}
+            <RichTextEditor
+              content={newsForm.content}
+              onChange={(content) => onFormChange('content', content)}
+              placeholder="Начните писать новость. Используйте панель инструментов для форматирования текста и вставки изображений."
             />
-            <div className="mt-2 p-3 bg-muted rounded-lg space-y-3">
-              <div className="text-xs font-medium">Вставить изображение в текст:</div>
-              <div className="flex gap-2">
-                <Input
-                  type="text"
-                  placeholder="Вставьте URL изображения"
-                  value={imageUrlForInsert}
-                  onChange={(e) => setImageUrlForInsert(e.target.value)}
-                  className="flex-1"
-                />
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    insertImageIntoContent(imageUrlForInsert);
-                  }}
-                  disabled={!imageUrlForInsert}
-                >
-                  <Icon name="Image" size={16} className="mr-1" />
-                  Вставить
-                </Button>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = 'image/*';
-                    input.onchange = (e: any) => {
-                      const file = e.target?.files?.[0];
-                      if (file) handleImageUploadForContent(file);
-                    };
-                    input.click();
-                  }}
-                  className="flex-1"
-                >
-                  <Icon name="Upload" size={16} className="mr-1" />
-                  Загрузить с компьютера
-                </Button>
-              </div>
-              <div className="text-xs text-muted-foreground">
-                <Icon name="Info" size={12} className="inline mr-1" />
-                Изображения будут вставлены в текущую позицию курсора
-              </div>
-            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              <Icon name="Info" size={12} className="inline mr-1" />
+              Используйте кнопку <Icon name="Image" size={12} className="inline mx-1" /> или <Icon name="Upload" size={12} className="inline mx-1" /> на панели инструментов для добавления изображений в текст
+            </p>
           </div>
 
           <div>
-            <label className="text-sm font-medium mb-2 block">Изображение</label>
+            <label className="text-sm font-medium mb-2 block">Изображение обложки</label>
             <ImageUpload
               value={newsForm.image_url}
               onChange={(url) => onFormChange('image_url', url)}
             />
+            <p className="text-xs text-muted-foreground mt-1">
+              Главное изображение для карточки новости и соцсетей
+            </p>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">Ключевые слова</label>
+            <Input
+              value={newsForm.keywords || ''}
+              onChange={(e) => onFormChange('keywords', e.target.value)}
+              placeholder="Краснодар, новости, события (через запятую)"
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              <Icon name="Hash" size={12} className="inline mr-1" />
+              Ключевые слова для SEO и хештегов в соцсетях (через запятую)
+            </p>
           </div>
 
           <div>

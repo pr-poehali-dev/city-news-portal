@@ -43,6 +43,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     publish_vk: bool = body_data.get('publish_vk', True)
     publish_telegram: bool = body_data.get('publish_telegram', True)
     save_vk_draft: bool = body_data.get('save_vk_draft', False)
+    keywords: str = body_data.get('keywords', '')
     
     if not title or not excerpt:
         return {
@@ -58,7 +59,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     }
     
     if save_vk_draft:
-        vk_draft_result = save_vk_draft_post(title, excerpt, image_url, news_url)
+        vk_draft_result = save_vk_draft_post(title, excerpt, image_url, news_url, keywords)
         results['vk_draft'] = vk_draft_result
         
         return {
@@ -76,11 +77,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     if publish_vk:
-        vk_result = publish_to_vk(title, excerpt, image_url, news_url)
+        vk_result = publish_to_vk(title, excerpt, image_url, news_url, keywords)
         results['vk'] = vk_result
     
     if publish_telegram:
-        tg_result = publish_to_telegram(title, excerpt, image_url, news_url)
+        tg_result = publish_to_telegram(title, excerpt, image_url, news_url, keywords)
         results['telegram'] = tg_result
     
     success_count = sum(1 for r in results.values() if r['success'])
@@ -108,16 +109,30 @@ def clean_markdown(text: str) -> str:
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
 
-def truncate_text(text: str, max_length: int = 800) -> str:
+def truncate_text(text: str, max_length: int = 800, add_read_more: bool = False, news_url: Optional[str] = None) -> str:
     '''Truncate text to max length, keeping whole words'''
     text = clean_markdown(text)
     if len(text) <= max_length:
         return text
     
     truncated = text[:max_length].rsplit(' ', 1)[0]
-    return truncated + '...'
+    result = truncated + '...'
+    
+    if add_read_more and news_url:
+        result += f'\n\nЧитать далее: {news_url}'
+    
+    return result
 
-def publish_to_vk(title: str, excerpt: str, image_url: Optional[str], news_url: Optional[str]) -> Dict[str, Any]:
+def keywords_to_hashtags(keywords: str) -> str:
+    '''Convert keywords to hashtags'''
+    if not keywords:
+        return ''
+    
+    tags = [kw.strip() for kw in keywords.split(',') if kw.strip()]
+    hashtags = ['#' + tag.replace(' ', '') for tag in tags]
+    return ' '.join(hashtags)
+
+def publish_to_vk(title: str, excerpt: str, image_url: Optional[str], news_url: Optional[str], keywords: str = '') -> Dict[str, Any]:
     '''Publish news to VK group wall'''
     group_token = os.environ.get('VK_ACCESS_TOKEN')
     user_token = os.environ.get('VK_USER_ACCESS_TOKEN')
@@ -132,10 +147,35 @@ def publish_to_vk(title: str, excerpt: str, image_url: Optional[str], news_url: 
     
     access_token = user_token if user_token and image_url else group_token
     
-    clean_text = truncate_text(excerpt, 1000)
-    message_parts: List[str] = [title, '', clean_text]
+    vk_max_length = 1000
+    title_and_newline_length = len(title) + 2
+    available_for_text = vk_max_length - title_and_newline_length
+    
     if news_url:
+        read_more_text = f'\n\nЧитать далее: {news_url}'
+        available_for_text -= len(read_more_text)
+    else:
+        read_more_text = ''
+    
+    if keywords:
+        hashtags = keywords_to_hashtags(keywords)
+        if hashtags:
+            available_for_text -= len(hashtags) + 2
+    else:
+        hashtags = ''
+    
+    clean_text = truncate_text(excerpt, available_for_text)
+    
+    message_parts: List[str] = [title, '', clean_text]
+    
+    if len(title) + len(clean_text) + 2 > vk_max_length - len(read_more_text) - len(hashtags):
+        if news_url:
+            message_parts.append(read_more_text.strip())
+    elif news_url:
         message_parts.extend(['', f'Читать полностью: {news_url}'])
+    
+    if hashtags:
+        message_parts.extend(['', hashtags])
     
     message = '\n'.join(message_parts)
     
@@ -280,7 +320,7 @@ def upload_photo_to_vk_user_token(image_url: str, access_token: str, group_id: s
         return None
 
 
-def save_vk_draft_post(title: str, excerpt: str, image_url: Optional[str], news_url: Optional[str]) -> Dict[str, Any]:
+def save_vk_draft_post(title: str, excerpt: str, image_url: Optional[str], news_url: Optional[str], keywords: str = '') -> Dict[str, Any]:
     '''Save news as postponed post in VK group (acts as draft - publish date set to +1 year)'''
     group_token = os.environ.get('VK_ACCESS_TOKEN')
     user_token = os.environ.get('VK_USER_ACCESS_TOKEN')
@@ -295,10 +335,35 @@ def save_vk_draft_post(title: str, excerpt: str, image_url: Optional[str], news_
     
     access_token = user_token if user_token and image_url else group_token
     
-    clean_text = truncate_text(excerpt, 1000)
-    message_parts: List[str] = [title, '', clean_text]
+    vk_max_length = 1000
+    title_and_newline_length = len(title) + 2
+    available_for_text = vk_max_length - title_and_newline_length
+    
     if news_url:
+        read_more_text = f'\n\nЧитать далее: {news_url}'
+        available_for_text -= len(read_more_text)
+    else:
+        read_more_text = ''
+    
+    if keywords:
+        hashtags = keywords_to_hashtags(keywords)
+        if hashtags:
+            available_for_text -= len(hashtags) + 2
+    else:
+        hashtags = ''
+    
+    clean_text = truncate_text(excerpt, available_for_text)
+    
+    message_parts: List[str] = [title, '', clean_text]
+    
+    if len(title) + len(clean_text) + 2 > vk_max_length - len(read_more_text) - len(hashtags):
+        if news_url:
+            message_parts.append(read_more_text.strip())
+    elif news_url:
         message_parts.extend(['', f'Читать полностью: {news_url}'])
+    
+    if hashtags:
+        message_parts.extend(['', hashtags])
     
     message = '\n'.join(message_parts)
     
@@ -354,7 +419,7 @@ def save_vk_draft_post(title: str, excerpt: str, image_url: Optional[str], news_
         }
 
 
-def publish_to_telegram(title: str, excerpt: str, image_url: Optional[str], news_url: Optional[str]) -> Dict[str, Any]:
+def publish_to_telegram(title: str, excerpt: str, image_url: Optional[str], news_url: Optional[str], keywords: str = '') -> Dict[str, Any]:
     '''Publish news to Telegram channel'''
     bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
     channel_id = os.environ.get('TELEGRAM_CHANNEL_ID')
@@ -370,6 +435,11 @@ def publish_to_telegram(title: str, excerpt: str, image_url: Optional[str], news
     caption_parts: List[str] = [f'<b>{title}</b>', '', clean_text]
     if news_url:
         caption_parts.extend(['', f'<a href="{news_url}">Читать полностью</a>'])
+    
+    if keywords:
+        hashtags = keywords_to_hashtags(keywords)
+        if hashtags:
+            caption_parts.extend(['', hashtags])
     
     caption = '\n'.join(caption_parts)
     

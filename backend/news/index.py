@@ -182,6 +182,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             status = body.get('status', 'published')
             is_featured = body.get('is_featured', False)
             tags = body.get('tags', [])
+            keywords = body.get('keywords', '')
             
             if not title or not category or not excerpt:
                 return {
@@ -203,10 +204,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 is_showbiz = body.get('is_showbiz', False)
                 
                 cur.execute('''
-                    INSERT INTO news (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured, likes, tags, is_svo, is_showbiz)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO news (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured, likes, tags, is_svo, is_showbiz, keywords)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING *
-                ''', (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured, random_likes, tags, is_svo, is_showbiz))
+                ''', (title, category, excerpt, content, image_url, video_url, author_id, read_time, status, is_featured, random_likes, tags, is_svo, is_showbiz, keywords))
                 
                 new_news = cur.fetchone()
                 conn.commit()
@@ -279,6 +280,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if 'is_showbiz' in body:
                 fields.append('is_showbiz = %s')
                 values.append(body['is_showbiz'])
+            if 'keywords' in body:
+                fields.append('keywords = %s')
+                values.append(body['keywords'])
             
             fields.append('updated_at = CURRENT_TIMESTAMP')
             values.append(news_id)
