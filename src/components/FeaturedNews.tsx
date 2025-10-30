@@ -26,18 +26,16 @@ export const FeaturedNews = ({
     
     let text = html;
     
-    text = text.replace(/&nbsp;/g, ' ');
-    text = text.replace(/&mdash;/g, '-');
-    text = text.replace(/&ndash;/g, '-');
-    text = text.replace(/&rsquo;/g, "'");
-    text = text.replace(/&lsquo;/g, "'");
-    text = text.replace(/&rdquo;/g, '"');
-    text = text.replace(/&ldquo;/g, '"');
-    text = text.replace(/&hellip;/g, '...');
-    
-    const tmp = document.createElement('div');
-    tmp.innerHTML = text;
-    text = tmp.textContent || tmp.innerText || '';
+    text = text.replace(/<[^>]+>/g, '');
+    text = text.replace(/&nbsp;/gi, ' ');
+    text = text.replace(/&mdash;/gi, '-');
+    text = text.replace(/&ndash;/gi, '-');
+    text = text.replace(/&rsquo;/gi, "'");
+    text = text.replace(/&lsquo;/gi, "'");
+    text = text.replace(/&rdquo;/gi, '"');
+    text = text.replace(/&ldquo;/gi, '"');
+    text = text.replace(/&hellip;/gi, '...');
+    text = text.replace(/&[a-z]+;/gi, ' ');
     
     text = text.replace(/[\u00a0\u202f\u2009\u2000-\u200b]/g, ' ');
     text = text.replace(/[\u2011-\u2015]/g, '-');
@@ -104,12 +102,7 @@ export const FeaturedNews = ({
             </h2>
             <div className="text-muted-foreground text-sm leading-relaxed mb-4">
               <p className="line-clamp-3">
-                {(() => {
-                  const raw = news.excerpt || news.content || '';
-                  const cleaned = stripHtml(raw);
-                  console.log('Featured news preview:', { id: news.id, raw: raw.substring(0, 50), cleaned: cleaned.substring(0, 50) });
-                  return cleaned;
-                })()}
+                {stripHtml(news.excerpt || news.content || '')}
               </p>
               <span className="text-primary font-medium text-sm mt-2 inline-block cursor-pointer hover:underline">
                 Читать далее →

@@ -32,18 +32,16 @@ export function NewsSection({
     
     let text = html;
     
-    text = text.replace(/&nbsp;/g, ' ');
-    text = text.replace(/&mdash;/g, '-');
-    text = text.replace(/&ndash;/g, '-');
-    text = text.replace(/&rsquo;/g, "'");
-    text = text.replace(/&lsquo;/g, "'");
-    text = text.replace(/&rdquo;/g, '"');
-    text = text.replace(/&ldquo;/g, '"');
-    text = text.replace(/&hellip;/g, '...');
-    
-    const tmp = document.createElement('div');
-    tmp.innerHTML = text;
-    text = tmp.textContent || tmp.innerText || '';
+    text = text.replace(/<[^>]+>/g, '');
+    text = text.replace(/&nbsp;/gi, ' ');
+    text = text.replace(/&mdash;/gi, '-');
+    text = text.replace(/&ndash;/gi, '-');
+    text = text.replace(/&rsquo;/gi, "'");
+    text = text.replace(/&lsquo;/gi, "'");
+    text = text.replace(/&rdquo;/gi, '"');
+    text = text.replace(/&ldquo;/gi, '"');
+    text = text.replace(/&hellip;/gi, '...');
+    text = text.replace(/&[a-z]+;/gi, ' ');
     
     text = text.replace(/[\u00a0\u202f\u2009\u2000-\u200b]/g, ' ');
     text = text.replace(/[\u2011-\u2015]/g, '-');
