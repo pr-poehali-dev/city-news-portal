@@ -104,17 +104,20 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 def clean_html(text: str) -> str:
     '''Remove HTML tags and convert to plain text'''
     text = re.sub(r'<img[^>]*>', '', text)
-    text = re.sub(r'<h[1-6][^>]*>(.*?)</h[1-6]>', r'\1\n\n', text, flags=re.DOTALL)
+    text = re.sub(r'<br\s*/?>', '\n', text)
     text = re.sub(r'<strong>(.*?)</strong>', r'\1', text, flags=re.DOTALL)
     text = re.sub(r'<b>(.*?)</b>', r'\1', text, flags=re.DOTALL)
     text = re.sub(r'<em>(.*?)</em>', r'\1', text, flags=re.DOTALL)
     text = re.sub(r'<i>(.*?)</i>', r'\1', text, flags=re.DOTALL)
-    text = re.sub(r'<blockquote>(.*?)</blockquote>', r'"\1"\n\n', text, flags=re.DOTALL)
-    text = re.sub(r'<p>(.*?)</p>', r'\1\n\n', text, flags=re.DOTALL)
-    text = re.sub(r'<br\s*/?>', '\n', text)
-    text = re.sub(r'<li>(.*?)</li>', r'• \1\n', text, flags=re.DOTALL)
+    text = re.sub(r'<a[^>]*>(.*?)</a>', r'\1', text, flags=re.DOTALL)
+    text = re.sub(r'<li[^>]*>(.*?)</li>', r'• \1\n', text, flags=re.DOTALL)
+    text = re.sub(r'<h[1-6][^>]*>(.*?)</h[1-6]>', r'\1\n\n', text, flags=re.DOTALL)
+    text = re.sub(r'<blockquote[^>]*>(.*?)</blockquote>', r'"\1"\n\n', text, flags=re.DOTALL)
+    text = re.sub(r'<p[^>]*>(.*?)</p>', r'\1\n\n', text, flags=re.DOTALL)
+    text = re.sub(r'<ul[^>]*>|</ul>|<ol[^>]*>|</ol>', '\n', text)
     text = re.sub(r'<[^>]+>', '', text)
     text = re.sub(r'\n{3,}', '\n\n', text)
+    text = re.sub(r' {2,}', ' ', text)
     return text.strip()
 
 def clean_markdown(text: str) -> str:
