@@ -11,6 +11,20 @@ interface HeroSectionProps {
 export const HeroSection = ({ mainNews, sideNews, onNewsClick }: HeroSectionProps) => {
   if (!mainNews) return null;
 
+  const stripHtml = (html: string) => {
+    if (!html) return '';
+    let text = html;
+    text = text.replace(/<[^>]+>/g, '');
+    text = text.replace(/&nbsp;/gi, ' ');
+    text = text.replace(/&mdash;/gi, '-');
+    text = text.replace(/&ndash;/gi, '-');
+    text = text.replace(/&[a-z]+;/gi, ' ');
+    text = text.replace(/[\u00a0\u202f\u2009\u2000-\u200b]/g, ' ');
+    text = text.replace(/[\u2011-\u2015]/g, '-');
+    text = text.replace(/\s+/g, ' ');
+    return text.trim();
+  };
+
   return (
     <section className="mb-12">
       <div className="grid lg:grid-cols-2 gap-6">
@@ -34,7 +48,7 @@ export const HeroSection = ({ mainNews, sideNews, onNewsClick }: HeroSectionProp
                 {mainNews.title}
               </h2>
               <p className="text-white/90 text-base mb-4 line-clamp-2 drop-shadow-md">
-                {mainNews.content || mainNews.excerpt}
+                {stripHtml(mainNews.excerpt || mainNews.content)}
               </p>
               <div className="flex items-center gap-4 text-white/80 text-sm">
                 <div className="flex items-center gap-1.5">
