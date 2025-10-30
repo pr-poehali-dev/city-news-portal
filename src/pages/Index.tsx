@@ -105,7 +105,7 @@ const Index = () => {
 
     const weatherInterval = setInterval(() => {
       loadWeather();
-    }, 60 * 60 * 1000);
+    }, 15 * 60 * 1000);
 
     return () => {
       clearInterval(tickerInterval);

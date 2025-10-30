@@ -81,7 +81,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'statusCode': 200,
                 'headers': {
                     'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
+                    'Access-Control-Allow-Origin': '*',
+                    'Cache-Control': 'public, max-age=900'
                 },
                 'body': json.dumps(weather_data),
                 'isBase64Encoded': False
