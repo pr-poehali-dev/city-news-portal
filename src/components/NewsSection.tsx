@@ -87,7 +87,7 @@ export function NewsSection({
                 </h3>
 
                 <div 
-                  className="text-muted-foreground text-xs mb-3 line-clamp-2 hidden md:block"
+                  className="text-muted-foreground text-xs mb-3 line-clamp-2 hidden md:block prose prose-sm"
                   dangerouslySetInnerHTML={{ __html: article.excerpt }}
                 />
 

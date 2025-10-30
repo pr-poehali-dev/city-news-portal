@@ -130,6 +130,44 @@
       padding-bottom: env(safe-area-inset-bottom);
     }
   }
+
+  .prose p {
+    margin-bottom: 1em;
+    line-height: 1.6;
+  }
+
+  .prose ul,
+  .prose ol {
+    margin: 1em 0;
+    padding-left: 1.5em;
+  }
+
+  .prose li {
+    margin-bottom: 0.5em;
+  }
+
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    margin-top: 1.5em;
+    margin-bottom: 0.75em;
+    font-weight: 700;
+  }
+
+  .prose strong,
+  .prose b {
+    font-weight: 600;
+  }
+
+  .prose blockquote {
+    padding-left: 1em;
+    border-left: 3px solid hsl(var(--primary));
+    margin: 1em 0;
+    font-style: italic;
+  }
 }
 
 @keyframes marquee {

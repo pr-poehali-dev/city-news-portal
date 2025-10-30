@@ -46,7 +46,7 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 6 }: LatestNewsGridP
                 {item.title}
               </h3>
               <div 
-                className="text-muted-foreground text-sm mb-4 line-clamp-2"
+                className="text-muted-foreground text-sm mb-4 line-clamp-2 prose prose-sm"
                 dangerouslySetInnerHTML={{ __html: item.excerpt || item.content }}
               />
               <div className="flex items-center justify-between text-xs text-muted-foreground">

@@ -144,7 +144,7 @@ export const NewsArticle = ({
           {article.title}
         </h2>
         <div 
-          className="text-muted-foreground mb-4 leading-relaxed"
+          className="text-muted-foreground mb-4 leading-relaxed prose prose-sm"
           dangerouslySetInnerHTML={{ __html: article.excerpt }}
         />
 
@@ -197,12 +197,10 @@ export const NewsArticle = ({
         {isExpanded && (
           <div className="mt-6 space-y-6">
             <Separator />
-            <div className="prose max-w-none">
-              <div 
-                className="text-foreground leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: article.content }}
-              />
-            </div>
+            <div 
+              className="prose prose-lg max-w-none text-foreground"
+              dangerouslySetInnerHTML={{ __html: article.content }}
+            />
 
             {article.video_url && (
               <>

@@ -278,12 +278,10 @@ export const NewsPage = () => {
           </div>
 
           <div className="container mx-auto px-4 max-w-4xl">
-            <div className="prose prose-sm md:prose-lg max-w-none mb-12">
-              <div 
-                className="text-foreground leading-relaxed break-words"
-                dangerouslySetInnerHTML={{ __html: article.content }}
-              />
-            </div>
+            <div 
+              className="prose prose-sm md:prose-lg max-w-none mb-12 text-foreground"
+              dangerouslySetInnerHTML={{ __html: article.content }}
+            />
 
             <div className="border-t border-border pt-8 mb-12">
               <h3 className="text-lg md:text-xl font-semibold mb-4">Поделиться:</h3>

@@ -77,7 +77,7 @@ export const FeaturedNews = ({
             </h2>
             <div className="text-muted-foreground text-sm leading-relaxed mb-4">
               <div 
-                className="line-clamp-3"
+                className="line-clamp-3 prose prose-sm"
                 dangerouslySetInnerHTML={{ __html: news.excerpt || news.content }}
               />
               <span className="text-primary font-medium text-sm mt-2 inline-block cursor-pointer hover:underline">
