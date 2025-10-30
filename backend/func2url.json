@@ -1,9 +1,9 @@
 {
+  "check-indexation": "https://functions.poehali.dev/dd5e12a7-8eb0-4e4b-b74b-56d6caf61472",
   "youth-notes": "https://functions.poehali.dev/97a5ec9d-d662-4652-be23-350205ec6759",
   "kinopoisk": "https://functions.poehali.dev/8276deb7-23a1-45e7-b53f-390b386d0d71",
   "telegram-analytics-cron": "https://functions.poehali.dev/8bfc1d75-4cbb-4cb7-b2b1-3b51017deb96",
   "telegram-analytics": "https://functions.poehali.dev/a27a92d6-132c-48dd-b6c4-96bf62aa923c",
-  "sync-sitemap": "https://functions.poehali.dev/18228f45-4f0b-4776-8e8e-ba4f616be795",
   "update-sitemap": "https://functions.poehali.dev/a3682adf-931b-4c62-8bd9-3f1fc603b95c",
   "sitemap": "https://functions.poehali.dev/d4012dd0-b39f-4610-88ce-4f935e27dfcf",
   "generate-sitemap": "https://functions.poehali.dev/0d0f69b6-8c6c-441f-ba89-36f59adf440b",

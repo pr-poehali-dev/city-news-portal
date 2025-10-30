@@ -52,6 +52,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     try:
         current_hour = datetime.now().hour
+        current_minute = datetime.now().minute
+        
+        check_indexation_url = 'https://functions.poehali.dev/dd5e12a7-8eb0-4e4b-b74b-56d6caf61472'
+        try:
+            req = urllib.request.Request(
+                check_indexation_url,
+                method='POST',
+                headers={'Content-Type': 'application/json'}
+            )
+            urllib.request.urlopen(req, timeout=10)
+        except Exception:
+            pass
         
         should_generate = current_hour in [8, 14, 20]
         
