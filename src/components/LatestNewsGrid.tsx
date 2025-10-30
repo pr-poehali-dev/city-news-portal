@@ -11,6 +11,12 @@ interface LatestNewsGridProps {
 export const LatestNewsGrid = ({ news, onNewsClick, limit = 6 }: LatestNewsGridProps) => {
   const displayNews = news.slice(0, limit);
 
+  const stripHtml = (html: string) => {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  };
+
   return (
     <section className="mb-12">
       <div className="flex items-center justify-between mb-8">
@@ -45,10 +51,9 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 6 }: LatestNewsGridP
               <h3 className="font-bold text-lg leading-tight mb-3 line-clamp-2 group-hover:text-primary transition-colors">
                 {item.title}
               </h3>
-              <div 
-                className="text-muted-foreground text-sm mb-4 line-clamp-2 prose prose-sm"
-                dangerouslySetInnerHTML={{ __html: item.excerpt || item.content }}
-              />
+              <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                {stripHtml(item.excerpt || item.content)}
+              </p>
               <div className="flex items-center justify-between text-xs text-muted-foreground">
                 <div className="flex items-center gap-1.5">
                   <Icon name="Calendar" size={14} />

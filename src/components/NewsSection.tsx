@@ -27,6 +27,12 @@ export function NewsSection({
   const currentCategory = availableCategories[currentCategoryIndex];
   const categoryNews = articles.filter(a => a.category === currentCategory);
 
+  const stripHtml = (html: string) => {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  };
+
   if (availableCategories.length === 0) {
     return null;
   }
@@ -86,10 +92,9 @@ export function NewsSection({
                   {article.title}
                 </h3>
 
-                <div 
-                  className="text-muted-foreground text-xs mb-3 line-clamp-2 hidden md:block prose prose-sm"
-                  dangerouslySetInnerHTML={{ __html: article.excerpt }}
-                />
+                <p className="text-muted-foreground text-xs mb-3 line-clamp-2 hidden md:block">
+                  {stripHtml(article.excerpt)}
+                </p>
 
                 <div className="flex items-center gap-3 md:gap-4 text-xs md:text-sm text-muted-foreground">
                   <button

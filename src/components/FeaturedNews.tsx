@@ -21,6 +21,12 @@ export const FeaturedNews = ({
   onClick,
   onNewsClick
 }: FeaturedNewsProps) => {
+  const stripHtml = (html: string) => {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  };
+
   const getYouTubeEmbedUrl = (url: string) => {
     const videoId = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/)?.[1];
     return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
@@ -76,10 +82,9 @@ export const FeaturedNews = ({
               {news.title}
             </h2>
             <div className="text-muted-foreground text-sm leading-relaxed mb-4">
-              <div 
-                className="line-clamp-3 prose prose-sm"
-                dangerouslySetInnerHTML={{ __html: news.excerpt || news.content }}
-              />
+              <p className="line-clamp-3">
+                {stripHtml(news.excerpt || news.content)}
+              </p>
               <span className="text-primary font-medium text-sm mt-2 inline-block cursor-pointer hover:underline">
                 Читать далее →
               </span>
