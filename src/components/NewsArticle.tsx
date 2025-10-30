@@ -143,9 +143,10 @@ export const NewsArticle = ({
         <h2 className="text-2xl font-serif font-bold mb-3 leading-tight hover:text-primary transition-colors cursor-pointer break-words">
           {article.title}
         </h2>
-        <p className="text-muted-foreground mb-4 leading-relaxed">
-          {article.excerpt}
-        </p>
+        <div 
+          className="text-muted-foreground mb-4 leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: article.excerpt }}
+        />
 
         <div className="flex items-center justify-between mb-4">
           <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
@@ -197,9 +198,10 @@ export const NewsArticle = ({
           <div className="mt-6 space-y-6">
             <Separator />
             <div className="prose max-w-none">
-              <div className="text-foreground leading-relaxed whitespace-pre-wrap">
-                {renderContentWithImages(article.content)}
-              </div>
+              <div 
+                className="text-foreground leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: article.content }}
+              />
             </div>
 
             {article.video_url && (

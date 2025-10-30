@@ -45,9 +45,10 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 6 }: LatestNewsGridP
               <h3 className="font-bold text-lg leading-tight mb-3 line-clamp-2 group-hover:text-primary transition-colors">
                 {item.title}
               </h3>
-              <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                {item.content || item.excerpt}
-              </p>
+              <div 
+                className="text-muted-foreground text-sm mb-4 line-clamp-2"
+                dangerouslySetInnerHTML={{ __html: item.excerpt || item.content }}
+              />
               <div className="flex items-center justify-between text-xs text-muted-foreground">
                 <div className="flex items-center gap-1.5">
                   <Icon name="Calendar" size={14} />

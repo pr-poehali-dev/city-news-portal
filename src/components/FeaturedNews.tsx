@@ -76,9 +76,10 @@ export const FeaturedNews = ({
               {news.title}
             </h2>
             <div className="text-muted-foreground text-sm leading-relaxed mb-4">
-              <div className="line-clamp-3 whitespace-pre-wrap">
-                {news.content || news.excerpt}
-              </div>
+              <div 
+                className="line-clamp-3"
+                dangerouslySetInnerHTML={{ __html: news.excerpt || news.content }}
+              />
               <span className="text-primary font-medium text-sm mt-2 inline-block cursor-pointer hover:underline">
                 Читать далее →
               </span>

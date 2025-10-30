@@ -86,9 +86,10 @@ export function NewsSection({
                   {article.title}
                 </h3>
 
-                <p className="text-muted-foreground text-xs mb-3 line-clamp-2 hidden md:block">
-                  {article.excerpt}
-                </p>
+                <div 
+                  className="text-muted-foreground text-xs mb-3 line-clamp-2 hidden md:block"
+                  dangerouslySetInnerHTML={{ __html: article.excerpt }}
+                />
 
                 <div className="flex items-center gap-3 md:gap-4 text-xs md:text-sm text-muted-foreground">
                   <button
