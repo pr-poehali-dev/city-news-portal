@@ -7,14 +7,18 @@ import random
 import urllib.request
 import urllib.error
 
-SITEMAP_FUNCTION_URL = 'https://functions.poehali.dev/0d0f69b6-8c6c-441f-ba89-36f59adf440b'
+UPDATE_SITEMAP_URL = 'https://functions.poehali.dev/a3682adf-931b-4c62-8bd9-3f1fc603b95c'
 
 def trigger_sitemap_regeneration():
-    '''Trigger sitemap regeneration in background'''
+    '''Trigger sitemap update and notify search engines'''
     try:
-        urllib.request.urlopen(SITEMAP_FUNCTION_URL, timeout=1)
-    except:
-        pass
+        req = urllib.request.Request(UPDATE_SITEMAP_URL, method='GET')
+        with urllib.request.urlopen(req, timeout=15) as response:
+            if response.status == 200:
+                result = json.loads(response.read().decode('utf-8'))
+                print(f"Sitemap updated and search engines notified: {result.get('ping_results', {})}")
+    except Exception as e:
+        print(f"Failed to update sitemap: {str(e)}")
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
