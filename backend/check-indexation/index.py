@@ -11,29 +11,22 @@ from datetime import datetime, timedelta
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
     Business: Check news indexation status in Yandex and Google, send Telegram notifications
-    Args: event - dict with httpMethod
+    Args: event - dict with httpMethod (GET or POST both work)
           context - object with request_id
     Returns: HTTP response with indexation check results
     '''
-    method: str = event.get('httpMethod', 'POST')
+    method: str = event.get('httpMethod', 'GET')
     
     if method == 'OPTIONS':
         return {
             'statusCode': 200,
             'headers': {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'POST, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Max-Age': '86400'
             },
             'body': ''
-        }
-    
-    if method != 'POST':
-        return {
-            'statusCode': 405,
-            'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'Method not allowed'})
         }
     
     dsn = os.environ.get('DATABASE_URL')
@@ -69,7 +62,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     for news in news_to_check:
         news_id = news['id']
-        news_url = f'https://ggkrasnodar.ru/news/{news_id}'
+        news_url = f'https://gorodgovorit.ru/news/{news_id}'
         title = news['title']
         was_yandex_indexed = news['indexed_yandex']
         was_google_indexed = news['indexed_google']
