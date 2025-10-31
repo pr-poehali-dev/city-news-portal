@@ -165,8 +165,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         },
         'isBase64Encoded': False,
         'body': json.dumps({
-            'sitemap': sitemap_xml,
+            'success': True,
+            'urls_count': len(urls),
             'ping_results': ping_results,
-            'pinged_count': sum(1 for r in ping_results.values() if r['success'])
+            'pinged_count': sum(1 for r in ping_results.values() if r['success']),
+            'message': f'Sitemap updated with {len(urls)} URLs. Notified {sum(1 for r in ping_results.values() if r["success"])}/2 search engines.'
         })
     }

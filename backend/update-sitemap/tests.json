@@ -1,12 +1,13 @@
 {
   "tests": [
     {
-      "name": "Get sitemap content",
+      "name": "Update sitemap and notify search engines",
       "method": "GET",
       "path": "/",
       "expectedStatus": 200,
       "expectedBody": {
-        "sitemap": "string"
+        "success": true,
+        "message": "string"
       },
       "bodyMatcher": "partial"
     },
