@@ -36,25 +36,26 @@ export function YouthNotesSection({ notes }: YouthNotesSectionProps) {
   return (
     <section className="py-32 px-6 lg:px-20 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
       <div className="max-w-[1800px] mx-auto">
-        <div className="mb-20">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-4">
-            <div className="flex items-center gap-4">
-              <div className="text-6xl flex-shrink-0">📱</div>
-              <h2 className="text-5xl lg:text-8xl font-black tracking-tight">
+        <div className="flex items-center justify-between mb-20">
+          <div>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="text-6xl">📱</div>
+              <h2 className="text-6xl lg:text-8xl font-black tracking-tight">
                 Пульс города
               </h2>
             </div>
-            <button
-              onClick={() => navigate('/youth-notes')}
-              className="hidden lg:flex px-8 py-4 bg-black text-white font-bold rounded-2xl hover:bg-gray-800 transition-colors items-center gap-3 whitespace-nowrap flex-shrink-0"
-            >
-              Все заметки
-              <Icon name="ArrowRight" size={20} />
-            </button>
+            <p className="text-gray-500 text-2xl font-light">
+              Короткие заметки от редакции
+            </p>
           </div>
-          <p className="text-gray-500 text-xl lg:text-2xl font-light">
-            Короткие заметки от редакции
-          </p>
+          
+          <button
+            onClick={() => navigate('/youth-notes')}
+            className="px-8 py-4 bg-black text-white font-bold rounded-2xl hover:bg-gray-800 transition-colors flex items-center gap-3"
+          >
+            Все заметки
+            <Icon name="ArrowRight" size={20} />
+          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
+import { MagneticCard } from '../MagneticCard';
 import { useState, useEffect } from 'react';
 
 interface News {
@@ -35,8 +36,8 @@ export const ShowbizSection = () => {
 
   if (loading) {
     return (
-      <section className="bg-white">
-        <div className="max-w-[1800px] mx-auto px-6 lg:px-20 py-20 lg:py-32">
+      <section className="py-32 px-6 lg:px-20 bg-gradient-to-br from-purple-50 to-pink-50">
+        <div className="max-w-[1800px] mx-auto">
           <div className="text-center">
             <div className="animate-spin w-12 h-12 border-4 border-gray-200 border-t-black rounded-full mx-auto"></div>
           </div>
@@ -48,62 +49,65 @@ export const ShowbizSection = () => {
   if (news.length === 0) return null;
 
   return (
-    <section className="bg-gradient-to-br from-purple-50 to-pink-50">
-      <div className="max-w-[1800px] mx-auto px-6 lg:px-20 py-20 lg:py-32">
-        <div className="flex items-end justify-between mb-16 lg:mb-24">
+    <section className="py-32 px-6 lg:px-20 bg-gradient-to-br from-purple-50 to-pink-50">
+      <div className="max-w-[1800px] mx-auto">
+        <div className="flex items-center justify-between mb-20">
           <div>
-            <h2 className="text-5xl lg:text-8xl font-black tracking-tight mb-4">
-              Шоу-бизнес
-            </h2>
-            <div className="w-24 h-1 bg-purple-600"></div>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                <Icon name="Star" size={32} className="text-white" />
+              </div>
+              <h2 className="text-6xl lg:text-8xl font-black tracking-tight">
+                Шоу-бизнес
+              </h2>
+            </div>
+            <p className="text-gray-500 text-2xl font-light">
+              Звёзды и светская жизнь глазами Краснодара
+            </p>
           </div>
           
-          <Link 
-            to="/showbiz"
-            className="hidden lg:flex items-center gap-3 px-8 py-4 bg-black text-white font-black hover:bg-gray-800 transition-colors"
-          >
-            <span className="tracking-wider">ВСЕ СТАТЬИ</span>
-            <Icon name="ArrowRight" size={20} />
+          <Link to="/showbiz">
+            <button className="px-8 py-4 bg-black text-white font-bold rounded-2xl hover:bg-gray-800 transition-colors flex items-center gap-3">
+              Все новости
+              <Icon name="ArrowRight" size={20} />
+            </button>
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-gray-200">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {news.map((item) => (
-            <article
+            <MagneticCard
               key={item.id}
-              className="group cursor-pointer bg-white hover:bg-purple-600 transition-colors duration-300"
               onClick={() => navigate(`/news/${item.id}`)}
+              className="cursor-pointer"
             >
-              <div className="p-8 lg:p-12 h-full flex flex-col justify-between min-h-[400px]">
-                <div>
-                  <div className="mb-6">
-                    <span className="text-xs font-mono tracking-widest uppercase text-purple-600 group-hover:text-white transition-colors">
-                      {item.category}
-                    </span>
-                  </div>
-                  
-                  <h3 className="text-2xl lg:text-3xl font-black leading-tight mb-6 group-hover:text-white transition-colors">
-                    {item.title}
-                  </h3>
+              <div className="bg-white rounded-3xl overflow-hidden h-full">
+                <div className="relative h-80 overflow-hidden">
+                  <img
+                    src={item.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
+                    alt={item.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 </div>
                 
-                <div className="flex items-center gap-2 text-xs font-mono text-gray-400 group-hover:text-purple-200 transition-colors">
-                  <Icon name="Calendar" size={12} />
-                  <span>{new Date(item.published_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</span>
+                <div className="p-8">
+                  <span className="inline-block text-xs font-bold text-purple-600 uppercase tracking-wider mb-4">
+                    {item.category}
+                  </span>
+                  
+                  <h3 className="text-2xl font-bold mb-4 line-clamp-2 leading-tight">
+                    {item.title}
+                  </h3>
+                  
+                  <div className="flex items-center gap-3 text-gray-400 text-sm">
+                    <Icon name="Calendar" size={14} />
+                    <span>{new Date(item.published_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}</span>
+                  </div>
                 </div>
               </div>
-            </article>
+            </MagneticCard>
           ))}
-        </div>
-
-        <div className="lg:hidden mt-8">
-          <Link 
-            to="/showbiz"
-            className="flex items-center justify-center gap-3 px-8 py-4 bg-black text-white font-black w-full"
-          >
-            <span className="tracking-wider">ВСЕ СТАТЬИ</span>
-            <Icon name="ArrowRight" size={20} />
-          </Link>
         </div>
       </div>
     </section>

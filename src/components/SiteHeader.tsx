@@ -34,7 +34,6 @@ export const SiteHeader = ({ onSearch }: SiteHeaderProps) => {
             <h1 className="text-3xl lg:text-4xl font-black tracking-tight hover:text-gray-600 transition-colors">
               Город Говорит
             </h1>
-            <p className="text-sm text-gray-400 font-medium">Краснодар</p>
           </div>
 
           <div className="flex items-center gap-3">
