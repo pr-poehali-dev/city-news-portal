@@ -1,15 +1,18 @@
 import { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { SiteHeader } from '@/components/SiteHeader';
 import { Footer } from '@/components/Footer';
+import { MiniNewsCard } from '@/components/MiniNewsCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import Icon from '@/components/ui/icon';
 import { Helmet } from 'react-helmet';
+import { SocialSubscribeButtons } from '@/components/SocialSubscribeButtons';
 
 const FUNCTIONS_URL = {
   news: 'https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe',
+  events: 'https://functions.poehali.dev/383dd478-9fc2-4b12-bcc4-72b87c103a3d',
   comments: 'https://functions.poehali.dev/e442a5de-b5ed-4ff1-b15c-da8b0bfea9b5',
 };
 
@@ -22,7 +25,6 @@ interface NewsArticle {
   author: string;
   image_url: string;
   section: string;
-  keywords?: string;
 }
 
 interface Comment {
@@ -40,19 +42,11 @@ export const NewsPage = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentName, setCommentName] = useState('');
   const [commentText, setCommentText] = useState('');
+  const [sections, setSections] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [promoUsageCount] = useState(() => Math.floor(Math.random() * 100) + 1);
+  const [displayCount, setDisplayCount] = useState(0);
   const adRenderedRef = useRef(false);
-
-  const formatDate = (dateString: string | undefined) => {
-    if (!dateString) return 'Дата не указана';
-    try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) return 'Дата не указана';
-      return date.toLocaleDateString('ru-RU');
-    } catch {
-      return 'Дата не указана';
-    }
-  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -82,6 +76,8 @@ export const NewsPage = () => {
           }
         }
 
+        const allSections = ['Главная', 'Спорт', 'Культура', 'Экономика', 'Политика', 'Общество'];
+        setSections(allSections);
         setLoading(false);
       } catch (error) {
         console.error('Error loading news:', error);
@@ -91,6 +87,27 @@ export const NewsPage = () => {
 
     loadData();
   }, [id]);
+
+  useEffect(() => {
+    if (!loading && article) {
+      const duration = 1500;
+      const steps = 60;
+      const increment = promoUsageCount / steps;
+      let currentStep = 0;
+
+      const timer = setInterval(() => {
+        currentStep++;
+        if (currentStep >= steps) {
+          setDisplayCount(promoUsageCount);
+          clearInterval(timer);
+        } else {
+          setDisplayCount(Math.floor(increment * currentStep));
+        }
+      }, duration / steps);
+
+      return () => clearInterval(timer);
+    }
+  }, [loading, article, promoUsageCount]);
 
   useEffect(() => {
     if (!loading && article && !adRenderedRef.current) {
@@ -116,7 +133,7 @@ export const NewsPage = () => {
   const handleAddComment = async () => {
     if (commentName.trim() && commentText.trim() && id) {
       try {
-        const response = await fetch(FUNCTIONS_URL.comments, {
+        const response = await fetch('https://functions.poehali.dev/e442a5de-b5ed-4ff1-b15c-da8b0bfea9b5', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -163,7 +180,7 @@ export const NewsPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-muted-foreground font-bold uppercase">Загрузка...</div>
+        <div className="text-muted-foreground">Загрузка...</div>
       </div>
     );
   }
@@ -172,7 +189,7 @@ export const NewsPage = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4 uppercase">Новость не найдена</h1>
+          <h1 className="text-2xl font-bold mb-4">Новость не найдена</h1>
           <Button onClick={() => navigate('/')}>На главную</Button>
         </div>
       </div>
@@ -201,6 +218,9 @@ export const NewsPage = () => {
         <meta property="article:published_time" content={article.date} />
         <meta property="article:author" content={article.author} />
         <meta property="article:section" content={article.section} />
+        {article.keywords && article.keywords.split(',').map((kw: string, idx: number) => (
+          <meta key={idx} property="article:tag" content={kw.trim()} />
+        ))}
         
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:url" content={pageUrl} />
@@ -208,195 +228,274 @@ export const NewsPage = () => {
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={pageImage} />
         
-        <script async src="https://yandex.ru/ads/system/context.js"></script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "NewsArticle",
+            "headline": article.title,
+            "description": pageDescription,
+            "image": pageImage,
+            "datePublished": article.date,
+            "keywords": article.keywords || pageKeywords,
+            "author": {
+              "@type": "Person",
+              "name": article.author
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "Город говорит",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://ggkrasnodar.ru/logo.png"
+              }
+            },
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": pageUrl
+            }
+          })}
+        </script>
       </Helmet>
 
-      <SiteHeader />
+      <SiteHeader 
+        sections={sections} 
+        onSectionChange={(section) => {
+          navigate('/');
+          setTimeout(() => {
+            const element = document.getElementById(section);
+            element?.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
+        }} 
+      />
 
-      <div className="bg-white">
-        <div className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-8">
-          <Link 
-            to="/" 
-            className="inline-flex items-center gap-2 text-sm font-bold uppercase text-muted-foreground hover:text-primary transition-colors mb-6 group"
+      <main className="pt-16">
+        <div className="container mx-auto px-4 py-1">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate(-1)}
+            className="-ml-3"
           >
-            <Icon name="ArrowLeft" size={16} className="group-hover:-translate-x-1 transition-transform" />
-            На главную
-          </Link>
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            Назад
+          </Button>
+        </div>
 
-          <article className="space-y-6 md:space-y-8">
-            <div className="space-y-4">
-              <div className="inline-block bg-accent px-4 py-2 border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                <span className="text-white font-black text-xs uppercase tracking-wider">
-                  {article.section}
-                </span>
-              </div>
-
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-black uppercase leading-tight tracking-tighter">
-                {article.title}
-              </h1>
-
-              <div className="flex items-center gap-4 text-sm text-muted-foreground font-bold uppercase">
-                <div className="flex items-center gap-2">
-                  <Icon name="User" size={16} />
-                  {article.author}
-                </div>
-                <span>•</span>
-                <div className="flex items-center gap-2">
-                  <Icon name="Calendar" size={16} />
-                  {formatDate(article.date)}
-                </div>
-              </div>
+        <article>
+          <div className="container mx-auto px-4 mb-3 max-w-4xl">
+            <span className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm mb-3">
+              {article.section}
+            </span>
+            <h1 className="text-2xl md:text-4xl font-bold mb-3 break-words">{article.title}</h1>
+            <div className="flex items-center gap-4 text-muted-foreground">
+              <span className="flex items-center gap-2">
+                <Icon name="User" size={16} />
+                {article.author}
+              </span>
+              <span className="flex items-center gap-2">
+                <Icon name="Calendar" size={16} />
+                {article.date}
+              </span>
             </div>
+          </div>
 
-            <div className="relative aspect-video overflow-hidden border-4 border-primary shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-              <img
-                src={article.image_url}
-                alt={article.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
+          <div className="container mx-auto px-4 max-w-4xl mb-8">
+            <img 
+              src={article.image_url} 
+              alt={article.title}
+              className="w-full h-auto rounded-lg object-contain max-h-[500px]"
+            />
+          </div>
 
+          <div className="container mx-auto px-4 max-w-4xl">
             <div 
-              className="prose prose-lg max-w-none
-                prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight
-                prose-p:text-foreground prose-p:leading-relaxed
-                prose-a:text-accent prose-a:font-bold prose-a:no-underline hover:prose-a:underline
-                prose-strong:font-black prose-strong:text-foreground
-                prose-ul:list-none prose-ul:pl-0 prose-li:pl-6 prose-li:relative prose-li:before:content-['▪'] prose-li:before:absolute prose-li:before:left-0 prose-li:before:text-accent prose-li:before:font-black"
+              className="prose prose-sm md:prose-lg max-w-none mb-12 text-foreground"
               dangerouslySetInnerHTML={{ __html: article.content }}
             />
 
-            <div className="border-t-4 border-primary pt-6">
-              <h3 className="text-lg font-black uppercase mb-4">Поделиться:</h3>
+            <div className="border-t border-border pt-8 mb-12">
+              <h3 className="text-lg md:text-xl font-semibold mb-4">Поделиться:</h3>
               <div className="flex flex-wrap gap-3">
-                <Button
-                  onClick={() => handleShare('vk')}
-                  className="bg-[#0077FF] hover:bg-[#0077FF]/90 text-white font-black uppercase border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5"
-                >
-                  <Icon name="Share2" size={16} className="mr-2" />
-                  VK
+                <Button variant="outline" onClick={handleCopyLink} className="text-xs md:text-sm">
+                  <Icon name="Link" size={16} className="mr-1 md:mr-2" />
+                  <span className="hidden sm:inline">Копировать ссылку</span>
+                  <span className="sm:hidden">Ссылка</span>
                 </Button>
-                <Button
-                  onClick={() => handleShare('telegram')}
-                  className="bg-[#0088cc] hover:bg-[#0088cc]/90 text-white font-black uppercase border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5"
-                >
-                  <Icon name="Send" size={16} className="mr-2" />
+                <Button variant="outline" onClick={() => handleShare('vk')} className="text-xs md:text-sm">
+                  <Icon name="Share2" size={16} className="mr-1 md:mr-2" />
+                  ВКонтакте
+                </Button>
+                <Button variant="outline" onClick={() => handleShare('telegram')} className="text-xs md:text-sm">
+                  <Icon name="Send" size={16} className="mr-1 md:mr-2" />
                   Telegram
                 </Button>
-                <Button
-                  onClick={() => handleShare('whatsapp')}
-                  className="bg-[#25D366] hover:bg-[#25D366]/90 text-white font-black uppercase border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5"
-                >
-                  <Icon name="MessageCircle" size={16} className="mr-2" />
+                <Button variant="outline" onClick={() => handleShare('whatsapp')} className="text-xs md:text-sm">
+                  <Icon name="MessageCircle" size={16} className="mr-1 md:mr-2" />
                   WhatsApp
                 </Button>
-                <Button
-                  onClick={handleCopyLink}
-                  variant="outline"
-                  className="font-black uppercase border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5"
-                >
-                  <Icon name="Link" size={16} className="mr-2" />
-                  Копировать ссылку
-                </Button>
-              </div>
-            </div>
-          </article>
-
-          {relatedNews.length > 0 && (
-            <section className="mt-12 border-t-4 border-primary pt-8">
-              <h2 className="text-2xl md:text-3xl font-black uppercase mb-6 tracking-tight">Читайте также</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {relatedNews.map((news) => (
-                  <Link
-                    key={news.id}
-                    to={`/news/${news.id}`}
-                    className="group"
-                  >
-                    <div className="aspect-video relative overflow-hidden bg-black border-4 border-primary shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:shadow-none group-hover:translate-x-1 group-hover:translate-y-1 transition-all">
-                      <img
-                        src={news.image_url}
-                        alt={news.title}
-                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 className="text-white text-lg font-black uppercase leading-tight tracking-tighter group-hover:text-accent transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)]">
-                          {news.title}
-                        </h3>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
-
-          <section className="mt-12 border-t-4 border-primary pt-8">
-            <h2 className="text-2xl md:text-3xl font-black uppercase mb-6 tracking-tight">
-              Комментарии ({comments.length})
-            </h2>
-
-            <div className="bg-accent/5 border-4 border-primary p-6 mb-8 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              <h3 className="text-lg font-black uppercase mb-4">Оставить комментарий</h3>
-              <div className="space-y-4">
-                <Input
-                  placeholder="Ваше имя"
-                  value={commentName}
-                  onChange={(e) => setCommentName(e.target.value)}
-                  className="font-bold border-2 border-primary"
-                />
-                <Textarea
-                  placeholder="Ваш комментарий"
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  rows={4}
-                  className="font-medium border-2 border-primary"
-                />
-                <Button
-                  onClick={handleAddComment}
-                  disabled={!commentName.trim() || !commentText.trim()}
-                  className="w-full md:w-auto bg-accent hover:bg-accent/90 text-white font-black uppercase border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5"
-                >
-                  <Icon name="Send" size={16} className="mr-2" />
-                  Отправить
-                </Button>
               </div>
             </div>
 
-            <div className="space-y-4">
-              {comments.length === 0 && (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Icon name="MessageSquare" size={48} className="mx-auto mb-4 opacity-20" />
-                  <p className="font-bold uppercase">Пока нет комментариев. Будьте первым!</p>
-                </div>
-              )}
+            <div className="mb-12">
+              <div id="yandex_rtb_R-A-17651616-1"></div>
+            </div>
+
+            <div className="border-t border-border pt-6 pb-8 mb-8">
+              <SocialSubscribeButtons size="compact" className="justify-center" />
+            </div>
+
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-pink-50 via-purple-50 to-orange-50 border-4 border-pink-400 p-6 md:p-8 mb-12 hover:shadow-2xl transition-all duration-500 cursor-pointer group"
+                 onClick={() => {
+                   navigate('/');
+                   setTimeout(() => {
+                     document.getElementById('partner')?.scrollIntoView({ behavior: 'smooth' });
+                   }, 100);
+                 }}>
+              <div className="absolute top-4 right-4 animate-bounce">
+                <Icon name="Sparkles" size={32} className="text-pink-500 drop-shadow-lg" />
+              </div>
+              <div className="absolute top-4 left-4 animate-pulse">
+                <Icon name="PartyPopper" size={32} className="text-orange-500 drop-shadow-lg" />
+              </div>
               
-              {comments.map((comment) => (
-                <div key={comment.id} className="bg-white border-4 border-primary p-6 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-white font-black text-lg border-2 border-primary flex-shrink-0">
-                      {comment.author_name[0].toUpperCase()}
+              <div className="relative z-10">
+                <div className="mb-4">
+                  <h3 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                    🎁 Подарок от LaaKids для читателей!
+                  </h3>
+                  <p className="text-sm md:text-base text-muted-foreground">
+                    Агентство детских праздников дарит специальную скидку
+                  </p>
+                </div>
+                
+                <div className="bg-gradient-to-r from-orange-500/10 to-pink-500/10 border-2 border-orange-500/30 rounded-xl p-4 md:p-5 mb-4">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="bg-gradient-to-r from-orange-500 to-pink-500 p-2 rounded-full flex-shrink-0">
+                      <Icon name="Gift" size={24} className="text-white" />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="font-black uppercase">{comment.author_name}</span>
-                        <span className="text-muted-foreground text-sm">
-                          {new Date(comment.created_at).toLocaleDateString('ru-RU')}
-                        </span>
-                      </div>
-                      <p className="text-foreground leading-relaxed break-words">{comment.text}</p>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-foreground mb-1">Специальное предложение!</p>
+                      <p className="text-lg md:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-pink-600">
+                        500 ₽ скидка при переходе с «Город говорит»
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-orange-300/30 pt-3">
+                    <p className="text-xs text-muted-foreground mb-2">Промокод для скидки:</p>
+                    <div className="bg-white border-2 border-dashed border-pink-400 rounded-lg px-4 py-3 text-center">
+                      <p className="font-mono font-bold text-xl md:text-2xl text-pink-600 tracking-wider">
+                        Праздник500
+                      </p>
                     </div>
                   </div>
                 </div>
+
+                <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
+                  <Icon name="Users" size={16} className="text-green-600" />
+                  <span>Промокодом уже воспользовались <span className="font-bold text-green-600 tabular-nums">{displayCount}</span> {displayCount === 1 ? 'человек' : displayCount < 5 && displayCount > 0 ? 'человека' : 'человек'}</span>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a
+                    href={`https://wa.me/79508270441?text=${encodeURIComponent('Праздник500')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="relative inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-lg hover:scale-110 transition-all duration-300 animate-whatsapp-glow"
+                  >
+                    <Icon name="MessageCircle" size={20} />
+                    <span>Написать в WhatsApp</span>
+                    <Icon name="ArrowRight" size={20} />
+                  </a>
+                  
+                  <a
+                    href="https://laakids.ru"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
+                  >
+                    <Icon name="Info" size={20} />
+                    Узнать больше о партнёре
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {relatedNews.length > 0 && (
+              <div className="border-t border-border pt-12 mb-12">
+                <h3 className="text-xl md:text-2xl font-semibold mb-6">Читайте также</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {relatedNews.map((news) => (
+                    <MiniNewsCard
+                      key={news.id}
+                      news={news}
+                      onClick={() => {
+                        navigate(`/news/${news.id}`);
+                        window.scrollTo(0, 0);
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="border-t border-border pt-12">
+              <h3 className="text-xl md:text-2xl font-semibold mb-6">
+                Комментарии ({comments.length})
+              </h3>
+
+              <div className="space-y-6 mb-8">
+              {comments.map((comment) => (
+                <div key={comment.id} className="bg-muted/50 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="font-semibold">{comment.author_name}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {new Date(comment.created_at).toLocaleDateString('ru-RU', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </span>
+                  </div>
+                  <p className="text-foreground">{comment.text}</p>
+                </div>
               ))}
             </div>
-          </section>
 
-          <div id="yandex_rtb_R-A-17651616-1" className="mt-8"></div>
-        </div>
-      </div>
+              <div className="bg-card rounded-lg p-6 border border-border">
+                <h4 className="text-lg font-semibold mb-4">Оставить комментарий</h4>
+                <div className="space-y-4">
+                  <Input
+                    placeholder="Ваше имя"
+                    value={commentName}
+                    onChange={(e) => setCommentName(e.target.value)}
+                  />
+                  <Textarea
+                    placeholder="Ваш комментарий"
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    rows={4}
+                  />
+                  <Button onClick={handleAddComment} className="w-full">
+                    Отправить комментарий
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </main>
 
-      <Footer />
+      <Footer sections={sections} onSectionChange={(section) => {
+        navigate('/');
+        setTimeout(() => {
+          const element = document.getElementById(section);
+          element?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }} />
     </div>
   );
 };

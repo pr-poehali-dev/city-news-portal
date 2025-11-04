@@ -65,7 +65,7 @@ export default function YouthNotes() {
         onSearch={() => {}}
       />
 
-      <main className="container mx-auto px-4 py-8 mt-8 md:mt-20 max-w-full overflow-x-hidden">
+      <main className="container mx-auto px-4 py-8 mt-20">
         <div className="max-w-3xl mx-auto">
           <Button 
             variant="ghost" 
@@ -77,11 +77,11 @@ export default function YouthNotes() {
           </Button>
 
           <div className="mb-8">
-            <div className="flex items-center gap-2 md:gap-3 mb-2">
-              <div className="text-3xl md:text-5xl">📱</div>
-              <h1 className="text-2xl md:text-4xl font-bold">Пульс города</h1>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="text-5xl">📱</div>
+              <h1 className="text-4xl font-bold">Пульс города</h1>
             </div>
-            <p className="text-muted-foreground text-sm md:text-lg">
+            <p className="text-muted-foreground text-lg">
               Все короткие заметки от редакции для молодёжи
             </p>
           </div>

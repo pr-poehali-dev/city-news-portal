@@ -1,4 +1,5 @@
 import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { useState } from 'react';
 
@@ -31,8 +32,38 @@ const partners: Partner[] = [
   }
 ];
 
+const Confetti = () => {
+  const colors = ['#FF6B9D', '#C44569', '#FFA502', '#FF6348', '#A55EEA'];
+  const confettiPieces = Array.from({ length: 30 }, (_, i) => ({
+    id: i,
+    left: Math.random() * 100,
+    delay: Math.random() * 2,
+    duration: 2 + Math.random() * 2,
+    color: colors[Math.floor(Math.random() * colors.length)]
+  }));
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {confettiPieces.map((piece) => (
+        <div
+          key={piece.id}
+          className="absolute w-2 h-2 animate-confetti"
+          style={{
+            left: `${piece.left}%`,
+            top: '-10px',
+            backgroundColor: piece.color,
+            animationDelay: `${piece.delay}s`,
+            animationDuration: `${piece.duration}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 export const PartnersSection = () => {
   const [copiedPromo, setCopiedPromo] = useState<string | null>(null);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const copyPromoCode = (code: string) => {
     navigator.clipboard.writeText(code);
@@ -41,112 +72,183 @@ export const PartnersSection = () => {
   };
 
   return (
-    <section className="mb-0 border-t-4 border-primary max-w-full overflow-hidden">
-      <div className="bg-[#2ECC40] px-4 md:px-8 py-8 md:py-12 border-b-4 border-primary">
-        <div className="flex items-center justify-between gap-4">
-          <div className="min-w-0">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-3 md:mb-4">
-              ПАРТНЁРЫ
-            </h2>
-            <div className="h-1 md:h-2 w-20 md:w-32 bg-white"></div>
-          </div>
-          <Icon name="Handshake" size={48} className="text-white/30 flex-shrink-0 md:w-16 md:h-16" />
-        </div>
+    <section className="mb-12">
+      <div className="flex items-center gap-3 mb-6">
+        <Icon name="Handshake" size={32} className="text-primary" />
+        <h2 className="text-3xl font-bold text-foreground">Наши партнёры</h2>
       </div>
-
-      <div className="grid gap-0">
+      
+      <div className="grid gap-6">
         {partners.map((partner, idx) => (
-          <div 
+          <Card 
             key={idx}
-            className="grid grid-cols-1 md:grid-cols-3 gap-0 border-b-4 border-primary"
+            className="overflow-hidden hover:shadow-2xl transition-all duration-500 border-4 border-transparent hover:border-pink-400 bg-gradient-to-br from-pink-50 via-purple-50 to-orange-50 dark:from-pink-950/30 dark:via-purple-950/30 dark:to-orange-950/30 relative"
+            onMouseEnter={() => setShowConfetti(true)}
+            onMouseLeave={() => setShowConfetti(false)}
           >
-            <a
-              href={partner.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="md:col-span-2 group relative overflow-hidden bg-white border-b-4 md:border-b-0 md:border-r-4 border-primary"
-            >
-              <div className="aspect-[16/9] md:aspect-[21/9] relative overflow-hidden bg-black">
+            {showConfetti && <Confetti />}
+            
+            <div className="absolute top-4 right-4 animate-bounce z-40">
+              <Icon name="Sparkles" size={32} className="text-pink-500 drop-shadow-lg" />
+            </div>
+            <div className="absolute top-4 left-4 z-40 animate-pulse">
+              <Icon name="PartyPopper" size={32} className="text-orange-500 drop-shadow-lg" />
+            </div>
+            <div className="absolute top-12 right-16 z-40 animate-bounce" style={{ animationDelay: '0.3s' }}>
+              <Icon name="Heart" size={24} className="text-red-500 fill-red-500 drop-shadow-lg" />
+            </div>
+            
+            <div className="grid md:grid-cols-[320px_1fr] gap-0">
+              <div className="relative overflow-hidden group h-[280px] md:h-auto">
+                <div className="absolute inset-0 bg-gradient-to-br from-pink-400/20 via-purple-400/20 to-orange-400/20 z-10"></div>
+                <div className="absolute top-0 left-0 w-full h-16 bg-gradient-to-b from-pink-500/40 to-transparent z-20"></div>
+                <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-orange-500/40 to-transparent z-20"></div>
+                <div className="absolute inset-0 border-8 border-pink-300/50 z-20 pointer-events-none shadow-inner"></div>
+                <div className="absolute top-2 left-2 right-2 h-2 bg-gradient-to-r from-pink-500 via-purple-500 to-orange-500 rounded-full z-20"></div>
+                <div className="absolute bottom-2 left-2 right-2 h-2 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 rounded-full z-20"></div>
                 <img 
                   src={partner.image} 
                   alt={partner.name}
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   style={{ objectPosition: '50% 25%' }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/95 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
-                
-                <div className="absolute top-3 left-3 md:top-6 md:left-6">
-                  <div className="bg-[#2ECC40] px-4 py-2 rotate-[-2deg] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                    <span className="text-white font-black text-xs uppercase tracking-[0.2em]">
-                      <Icon name="Gift" size={14} className="inline mr-2" />
-                      {partner.category}
-                    </span>
+                <div className="absolute top-3 left-3 z-30 animate-pulse">
+                  <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-orange-500 text-white px-4 py-2 rounded-full font-bold text-sm shadow-xl flex items-center gap-2 border-2 border-white dark:border-slate-900">
+                    <Icon name="Gift" size={18} />
+                    {partner.category}
                   </div>
                 </div>
-
-                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 lg:p-8">
-                  <h3 className="text-white text-base md:text-lg font-black leading-[1.2] mb-2 md:mb-3 group-hover:text-[#2ECC40] transition-colors line-clamp-3">
-                    {partner.name}
-                  </h3>
-                  
-                  <p className="text-white/80 text-sm md:text-base line-clamp-2 mb-3 md:mb-4 hidden md:block">
-                    {partner.description}
-                  </p>
-                  
-                  <div className="flex items-center gap-2 text-white font-black uppercase text-xs">
-                    <Icon name="ExternalLink" size={16} />
-                    Перейти на сайт
-                  </div>
+                <div className="absolute top-3 right-3 z-30">
+                  <Icon name="Star" className="text-yellow-400 fill-yellow-400 animate-bounce" size={24} />
                 </div>
               </div>
-            </a>
 
-            <div className="p-4 md:p-6 bg-white flex flex-col justify-between">
-              {partner.discount && (
+              <div className="p-4 md:p-8">
                 <div className="mb-4">
-                  <div className="mb-3 pb-3 border-b-2 border-primary">
-                    <div className="text-xs uppercase tracking-wider text-muted-foreground font-bold mb-1">Специальное предложение</div>
-                    <div className="text-lg font-black text-[#2ECC40]">{partner.discount}</div>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-3">
+                    <h3 className="text-xl md:text-2xl font-bold text-foreground">
+                      {partner.name}
+                    </h3>
+                    <Badge className="bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold w-fit">
+                      {partner.category}
+                    </Badge>
                   </div>
-
-                  {partner.promoCode && (
-                    <div className="space-y-2">
-                      <div className="text-xs uppercase tracking-wider text-muted-foreground font-bold">Промокод</div>
-                      <div className="bg-[#F5F5F5] border-2 border-primary px-4 py-3 font-mono font-black text-lg text-center">
-                        {partner.promoCode}
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed mb-4">
+                    {partner.description}
+                  </p>
+                  {partner.discount && (
+                    <div className="bg-gradient-to-r from-orange-500/10 to-pink-500/10 dark:from-orange-500/20 dark:to-pink-500/20 border-2 border-orange-500/30 dark:border-orange-500/50 rounded-lg p-4 mb-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className="bg-gradient-to-r from-orange-500 to-pink-500 p-2 rounded-full">
+                            <Icon name="Gift" size={24} className="text-white" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-foreground mb-1">Специальное предложение!</p>
+                            <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-pink-600">
+                              {partner.discount}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <button
-                        onClick={() => copyPromoCode(partner.promoCode!)}
-                        className="w-full px-4 py-3 bg-[#2ECC40] hover:bg-[#27AE38] text-white font-black uppercase border-4 border-primary shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-2"
-                      >
-                        {copiedPromo === partner.promoCode ? (
-                          <>
-                            <Icon name="Check" size={18} />
-                            Скопировано
-                          </>
-                        ) : (
-                          <>
-                            <Icon name="Copy" size={18} />
-                            Скопировать
-                          </>
-                        )}
-                      </button>
+                      {partner.promoCode && (
+                        <div className="mt-3 pt-3 border-t border-orange-300/30">
+                          <p className="text-xs text-muted-foreground mb-2">Промокод для скидки:</p>
+                          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                            <div className="flex-1 bg-white dark:bg-slate-900 border-2 border-dashed border-pink-400 dark:border-pink-500 rounded-lg px-3 py-2 font-mono font-bold text-base sm:text-lg text-center text-pink-600 dark:text-pink-400">
+                              {partner.promoCode}
+                            </div>
+                            <button
+                              onClick={() => copyPromoCode(partner.promoCode!)}
+                              className="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
+                            >
+                              {copiedPromo === partner.promoCode ? (
+                                <>
+                                  <Icon name="Check" size={18} />
+                                  Скопировано
+                                </>
+                              ) : (
+                                <>
+                                  <Icon name="Copy" size={18} />
+                                  Скопировать
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
-              )}
 
-              <div className="space-y-2">
-                {partner.highlights.map((highlight, i) => (
-                  <div key={i} className="flex items-center gap-2 text-sm">
-                    <div className="w-2 h-2 bg-[#2ECC40] border border-primary flex-shrink-0"></div>
-                    <span className="font-bold">{highlight}</span>
-                  </div>
-                ))}
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                  {partner.highlights.map((highlight, i) => (
+                    <div 
+                      key={i}
+                      className="flex items-center gap-2 text-sm text-foreground/90 dark:text-foreground"
+                    >
+                      <div className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-pink-500"></div>
+                      <span className="font-medium">{highlight}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a
+                    href={`https://wa.me/79508270441?text=${encodeURIComponent('Праздник500')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-lg hover:scale-110 transition-all duration-300 animate-whatsapp-glow"
+                  >
+                    <Icon name="MessageCircle" size={20} />
+                    <span>Написать в WhatsApp</span>
+                    <Icon name="ArrowRight" size={20} />
+                  </a>
+                  
+                  <a
+                    href={partner.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
+                  >
+                    <Icon name="Globe" size={20} />
+                    Посетить сайт
+                  </a>
+                </div>
+
+                <div className="mt-4 pt-4 border-t border-border/50">
+                  <p className="text-xs text-muted-foreground flex items-center gap-2">
+                    <Icon name="Star" size={14} className="text-orange-500" />
+                    Проверенный партнёр портала «Город говорит»
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          </Card>
         ))}
+      </div>
+
+      <div className="mt-6 p-6 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg border-2 border-dashed border-primary/30">
+        <div className="flex items-start gap-4">
+          <div className="bg-primary/20 p-3 rounded-full">
+            <Icon name="Building2" size={24} className="text-primary" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-bold text-foreground mb-2">
+              Хотите стать нашим партнёром?
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Расскажите о вашем бизнесе жителям Краснодара! Мы предлагаем выгодные условия размещения для местных компаний.
+            </p>
+            <a 
+              href="/contacts"
+              className="inline-flex items-center gap-2 text-primary font-semibold hover:underline"
+            >
+              Связаться с нами
+              <Icon name="Mail" size={16} />
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   );

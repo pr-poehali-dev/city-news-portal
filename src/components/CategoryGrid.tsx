@@ -1,3 +1,5 @@
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 
 interface CategoryGridProps {
@@ -12,102 +14,64 @@ export const CategoryGrid = ({ categories, articles, onNewsClick, onCategoryClic
     return articles.filter(a => a.category === category).slice(0, 3);
   };
 
-  const categoryIcons: { [key: string]: string } = {
-    'Политика': 'Flag',
-    'Экономика': 'TrendingUp',
-    'Культура': 'Palette',
-    'Спорт': 'Trophy',
-    'События': 'Zap',
-  };
-
   const categoryColors: { [key: string]: string } = {
-    'Политика': '#000000',
-    'Экономика': '#000000',
-    'Культура': '#000000',
-    'Спорт': '#000000',
-    'События': '#000000',
-  };
-
-  const categoryAccents: { [key: string]: string } = {
-    'Политика': '#FF4136',
-    'Экономика': '#2ECC40',
-    'Культура': '#B10DC9',
-    'Спорт': '#FF851B',
-    'События': '#0074D9',
+    'Политика': 'bg-blue-600',
+    'Экономика': 'bg-green-600',
+    'Культура': 'bg-purple-600',
+    'Спорт': 'bg-red-600',
+    'События': 'bg-orange-600',
   };
 
   return (
-    <section className="mb-0 border-t-4 border-primary max-w-full overflow-x-hidden">
-      <div className="grid md:grid-cols-2 gap-0">
-        {categories.map((category, catIndex) => {
+    <section className="mb-12">
+      <h2 className="text-3xl font-bold font-serif mb-8 text-foreground">Рубрики</h2>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {categories.map((category) => {
           const categoryNews = getCategoryNews(category);
           if (categoryNews.length === 0) return null;
 
-          const bgColor = categoryColors[category] || '#000000';
-          const accentColor = categoryAccents[category] || '#FF6B35';
-
           return (
-            <div 
-              key={category} 
-              className={`relative border-b-4 border-primary ${
-                catIndex % 2 === 0 ? 'md:border-r-4' : ''
-              }`}
-              style={{ backgroundColor: bgColor }}
-            >
+            <Card key={category} className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow">
               <div 
-                className="cursor-pointer px-4 md:px-8 py-8 md:py-12 hover:opacity-90 transition-opacity"
+                className={`${categoryColors[category] || 'bg-primary'} px-6 py-4 cursor-pointer hover:opacity-90 transition-opacity`}
                 onClick={() => onCategoryClick(category)}
               >
-                <div className="flex items-start justify-between mb-6 md:mb-8">
-                  <div className="flex-1">
-                    <div 
-                      className="inline-block px-4 md:px-6 py-2 md:py-3 mb-3 md:mb-4 rotate-[-1deg] shadow-[4px_4px_0px_0px_rgba(255,107,53,1)] md:shadow-[6px_6px_0px_0px_rgba(255,107,53,1)]"
-                      style={{ backgroundColor: accentColor }}
-                    >
-                      <Icon name={categoryIcons[category] || 'Sparkles'} size={24} className="text-white md:w-8 md:h-8" />
-                    </div>
-                    <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-white uppercase leading-[0.9] tracking-tighter mb-3 md:mb-4">
-                      {category}
-                    </h2>
-                    <div className="h-2 w-24" style={{ backgroundColor: accentColor }}></div>
-                  </div>
-                  <Icon name="ArrowUpRight" size={40} className="text-white/60 mt-2" />
-                </div>
-
-                <div className="space-y-6">
-                  {categoryNews.map((news, idx) => (
-                    <div
-                      key={news.id}
-                      className="group/item cursor-pointer border-l-4 border-white/20 pl-4 hover:border-white transition-all"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onNewsClick(news.id);
-                      }}
-                    >
-                      <div className="flex gap-4">
-                        {news.image_url && (
-                          <div className="w-20 h-20 flex-shrink-0 overflow-hidden bg-white/10">
-                            <img
-                              src={news.image_url}
-                              alt={news.title}
-                              className="w-full h-full object-cover grayscale group-hover/item:grayscale-0 transition-all duration-500"
-                            />
-                          </div>
-                        )}
-                        <div className="flex-1">
-                          <h4 className="text-white font-black text-base md:text-lg leading-[1.2] line-clamp-2 group-hover/item:text-accent transition-colors">
-                            {news.title}
-                          </h4>
-                          <p className="text-white/50 text-xs uppercase tracking-wider font-bold mt-2">
-                            {new Date(news.created_at).toLocaleDateString('ru-RU')}
-                          </p>
+                <h3 className="text-white text-2xl font-bold font-serif flex items-center justify-between">
+                  {category}
+                  <Icon name="ChevronRight" size={24} className="text-white/80" />
+                </h3>
+              </div>
+              <div className="p-4 space-y-3">
+                {categoryNews.map((news, idx) => (
+                  <div
+                    key={news.id}
+                    className={`cursor-pointer group ${idx !== categoryNews.length - 1 ? 'border-b pb-3' : ''}`}
+                    onClick={() => onNewsClick(news.id)}
+                  >
+                    <div className="flex gap-3">
+                      {news.image_url && (
+                        <div className="relative w-24 h-20 flex-shrink-0 overflow-hidden rounded">
+                          <img
+                            src={news.image_url}
+                            alt={news.title}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                          />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors mb-1">
+                          {news.title}
+                        </h4>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Icon name="Clock" size={12} />
+                          <span>{new Date(news.created_at).toLocaleDateString('ru-RU')}</span>
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-            </div>
+            </Card>
           );
         })}
       </div>
