@@ -389,3 +389,5 @@ export const NewsPage = () => {
     </div>
   );
 };
+
+export default NewsPage;
