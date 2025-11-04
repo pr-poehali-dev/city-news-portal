@@ -85,7 +85,7 @@ export const CategoryGrid = ({ categories, articles, onNewsClick, onCategoryClic
                   </div>
                 ))}
               </div>
-            </Card>
+            </div>
           );
         })}
       </div>
