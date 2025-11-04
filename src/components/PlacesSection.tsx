@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { PlaceDialog } from '@/components/PlaceDialog';
@@ -21,85 +21,88 @@ export function PlacesSection({
   onShowAllToggle,
 }: PlacesSectionProps) {
   const navigate = useNavigate();
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [selectedPlace, setSelectedPlace] = useState<any>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [hoveredId, setHoveredId] = useState<number | null>(null);
-  
-  const filteredByCategory = selectedCategory
-    ? cityPlaces.filter(p => p.category === selectedCategory)
-    : cityPlaces;
 
-  const displayedPlaces = filteredByCategory.slice(0, 6);
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const scrollAmount = 400;
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
-  const bentoLayout = [
-    { cols: 'lg:col-span-6', rows: 'lg:row-span-2' },
-    { cols: 'lg:col-span-3', rows: 'lg:row-span-1' },
-    { cols: 'lg:col-span-3', rows: 'lg:row-span-1' },
-    { cols: 'lg:col-span-4', rows: 'lg:row-span-1' },
-    { cols: 'lg:col-span-4', rows: 'lg:row-span-1' },
-    { cols: 'lg:col-span-4', rows: 'lg:row-span-1' },
-  ];
+  if (cityPlaces.length === 0) return null;
 
   return (
-    <section className="relative bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 py-20 lg:py-32 overflow-hidden">
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-yellow-300 rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="relative z-10 max-w-[2000px] mx-auto px-6 lg:px-20">
-        <div className="flex items-end justify-between mb-16">
-          <div>
-            <h2 className="text-7xl lg:text-9xl font-black text-white mb-4">
-              Город
+    <>
+      <section className="bg-white py-12 lg:py-20">
+        <div className="max-w-[1400px] mx-auto px-4 lg:px-8">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl lg:text-5xl font-black text-gray-900 border-l-4 border-red-600 pl-4">
+              🏖️ Город говорит
             </h2>
-            <h2 className="text-7xl lg:text-9xl font-black text-white/20">
-              говорит
-            </h2>
-          </div>
-          <button
-            onClick={() => navigate('/places')}
-            className="hidden lg:flex items-center gap-3 px-8 py-4 bg-white text-orange-600 font-bold rounded-full hover:scale-105 transition-transform"
-          >
-            ВСЕ МЕСТА
-            <Icon name="ArrowRight" size={20} />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 auto-rows-fr">
-          {displayedPlaces.map((place, index) => {
-            const layout = bentoLayout[index % bentoLayout.length];
-            const isHovered = hoveredId === place.id;
-            const isLarge = layout.cols === 'lg:col-span-6';
             
-            return (
-              <article
-                key={place.id}
-                className={`group cursor-pointer ${layout.cols} ${layout.rows}`}
-                onClick={() => {
-                  setSelectedPlace(place);
-                  setDialogOpen(true);
-                }}
-                onMouseEnter={() => setHoveredId(place.id)}
-                onMouseLeave={() => setHoveredId(null)}
+            <div className="hidden lg:flex gap-2">
+              <button
+                onClick={() => scroll('left')}
+                className="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-700 rounded-full hover:bg-red-600 hover:text-white transition-all"
               >
-                <div className={`relative h-full overflow-hidden rounded-3xl bg-white shadow-2xl transition-transform duration-500 ${
-                  isHovered ? 'scale-105' : 'scale-100'
-                }`}>
-                  <div className={`relative h-full ${isLarge ? 'aspect-[16/10] lg:aspect-auto' : 'aspect-square lg:aspect-auto'}`}>
+                <Icon name="ChevronLeft" size={24} />
+              </button>
+              <button
+                onClick={() => scroll('right')}
+                className="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-700 rounded-full hover:bg-red-600 hover:text-white transition-all"
+              >
+                <Icon name="ChevronRight" size={24} />
+              </button>
+              <button
+                onClick={() => navigate('/places')}
+                className="ml-2 px-4 py-2 bg-red-600 text-white text-sm font-bold rounded-full hover:bg-red-700 transition-colors flex items-center gap-2"
+              >
+                ВСЕ МЕСТА
+                <Icon name="ArrowRight" size={16} />
+              </button>
+            </div>
+          </div>
+
+          <div 
+            ref={scrollRef}
+            className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {cityPlaces.slice(0, 12).map((place) => {
+              const isHovered = hoveredId === place.id;
+              
+              return (
+                <article
+                  key={place.id}
+                  className="flex-shrink-0 w-[280px] group cursor-pointer"
+                  onClick={() => {
+                    setSelectedPlace(place);
+                    setDialogOpen(true);
+                  }}
+                  onMouseEnter={() => setHoveredId(place.id)}
+                  onMouseLeave={() => setHoveredId(null)}
+                >
+                  <div className="relative overflow-hidden rounded-2xl bg-white shadow-lg h-[380px] hover:shadow-2xl transition-all duration-300">
                     <img
                       src={place.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
                       alt={place.title}
-                      className={`w-full h-full object-cover transition-transform duration-700 ${
+                      className={`w-full h-full object-cover transition-transform duration-500 ${
                         isHovered ? 'scale-110' : 'scale-100'
                       }`}
                     />
                     
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
 
-                    <div className="absolute top-6 left-6">
+                    <div className="absolute top-3 left-3">
                       <span 
-                        className="inline-block px-4 py-2 text-white text-xs font-bold rounded-full"
+                        className="inline-block px-3 py-1 text-white text-xs font-bold rounded"
                         style={{ 
                           backgroundColor: categoryColors[place.category] || '#FF6B6B'
                         }}
@@ -108,39 +111,37 @@ export function PlacesSection({
                       </span>
                     </div>
 
-                    <div className={`absolute bottom-0 left-0 right-0 p-6 lg:p-8 ${isLarge ? 'lg:p-12' : ''}`}>
-                      <h3 className={`text-white font-black leading-tight mb-3 ${
-                        isLarge ? 'text-3xl lg:text-5xl' : 'text-2xl lg:text-3xl'
-                      }`}>
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <h3 className="text-white font-bold text-base leading-tight mb-2 line-clamp-2">
                         {place.title}
                       </h3>
                       
-                      <div className="flex items-start gap-2 text-white/80 text-sm">
-                        <Icon name="MapPin" size={16} className="flex-shrink-0 mt-0.5" />
-                        <span className="line-clamp-1">{place.address}</span>
+                      <div className="flex items-start gap-2 text-white/80 text-xs">
+                        <Icon name="MapPin" size={14} className="flex-shrink-0 mt-0.5" />
+                        <span className="line-clamp-2">{place.address}</span>
                       </div>
                     </div>
                   </div>
-                </div>
-              </article>
-            );
-          })}
+                </article>
+              );
+            })}
+          </div>
+
+          <button
+            onClick={() => navigate('/places')}
+            className="lg:hidden mt-6 w-full px-4 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
+          >
+            ВСЕ МЕСТА
+            <Icon name="ArrowRight" size={20} />
+          </button>
         </div>
+      </section>
 
-        <button
-          onClick={() => navigate('/places')}
-          className="lg:hidden mt-8 w-full flex items-center justify-center gap-3 px-8 py-4 bg-white text-orange-600 font-bold rounded-full"
-        >
-          ВСЕ МЕСТА
-          <Icon name="ArrowRight" size={20} />
-        </button>
-
-        <PlaceDialog
-          place={selectedPlace}
-          open={dialogOpen}
-          onOpenChange={setDialogOpen}
-        />
-      </div>
-    </section>
+      <PlaceDialog
+        place={selectedPlace}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+      />
+    </>
   );
 }

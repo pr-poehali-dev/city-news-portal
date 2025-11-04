@@ -3,12 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { SEO } from '@/components/SEO';
 import { SiteHeader } from '@/components/SiteHeader';
-import { HeroHorizontal } from '@/components/HeroHorizontal';
-import { HorizontalNewsScroll } from '@/components/HorizontalNewsScroll';
-import { EventsHorizontal } from '@/components/EventsHorizontal';
-import { PlacesHorizontal } from '@/components/PlacesHorizontal';
-import { ShowbizHorizontal } from '@/components/ShowbizHorizontal';
-import { YouthHorizontal } from '@/components/YouthHorizontal';
+import { HeroMain } from '@/components/HeroMain';
+import { LatestNewsGrid } from '@/components/LatestNewsGrid';
+import { EventsSection } from '@/components/EventsSection';
+import { PlacesSection } from '@/components/PlacesSection';
+import { ShowbizSection } from '@/components/home/ShowbizSection';
+import { YouthNotesSection } from '@/components/YouthNotesSection';
+import { MemorySection } from '@/components/MemorySection';
+import { SVOSection } from '@/components/SVOSection';
+import { PartnersSection } from '@/components/PartnersSection';
 import { Footer } from '@/components/Footer';
 
 
@@ -30,13 +33,26 @@ const Index = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [cityPlaces, setCityPlaces] = useState<any[]>([]);
   const [youthNotes, setYouthNotes] = useState<any[]>([]);
+  const [memoryArticles, setMemoryArticles] = useState<any[]>([]);
+  const [svoNews, setSvoNews] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showAllPlaces, setShowAllPlaces] = useState(false);
 
   useEffect(() => {
     loadNews();
     loadEvents();
     loadCityPlaces();
     loadYouthNotes();
+    loadMemoryArticles();
+    loadSVONews();
   }, []);
+
+  const categoryColors = {
+    'Город завтракает': '#FF6B6B',
+    'Город и кофе': '#8B4513',
+    'Город поет': '#9B59B6',
+    'Город танцует': '#3498DB',
+  };
 
   const loadNews = async () => {
     try {
@@ -105,6 +121,40 @@ const Index = () => {
     }
   };
 
+  const loadMemoryArticles = async () => {
+    try {
+      const response = await fetch(FUNCTIONS_URL.memory);
+      if (!response.ok) return;
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setMemoryArticles(data.filter((m: any) => m.is_published));
+      }
+    } catch (error) {
+      console.error('Failed to load memory articles:', error);
+      setMemoryArticles([]);
+    }
+  };
+
+  const loadSVONews = async () => {
+    try {
+      const response = await fetch(FUNCTIONS_URL.news);
+      if (!response.ok) return;
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        const svoFiltered = data.filter((article: any) => 
+          article.tags && Array.isArray(article.tags) && article.tags.includes('СВО')
+        );
+        const sortedData = svoFiltered.sort((a: any, b: any) => 
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        setSvoNews(sortedData);
+      }
+    } catch (error) {
+      console.error('Failed to load SVO news:', error);
+      setSvoNews([]);
+    }
+  };
+
   const handleNewsClick = (newsId: number) => {
     navigate(`/news/${newsId}`);
   };
@@ -116,27 +166,47 @@ const Index = () => {
         <title>Город сегодня | Главная</title>
       </Helmet>
       
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen bg-white">
         <SiteHeader onSectionChange={() => {}} activeSection="Главная" />
         
-        <HeroHorizontal 
-          news={articles.slice(0, 5)} 
+        <HeroMain 
+          news={articles.slice(0, 3)} 
           onNewsClick={handleNewsClick}
         />
         
-        <EventsHorizontal events={events} />
-        
-        <HorizontalNewsScroll 
-          news={articles.slice(5, 20)} 
+        <LatestNewsGrid 
+          news={articles.slice(3, 12)} 
           onNewsClick={handleNewsClick}
-          title="Городские новости"
+          limit={9}
         />
         
-        <PlacesHorizontal places={cityPlaces} />
+        <EventsSection events={events} />
         
-        <ShowbizHorizontal />
+        <PlacesSection 
+          cityPlaces={cityPlaces}
+          selectedCategory={selectedCategory}
+          showAllPlaces={showAllPlaces}
+          categoryColors={categoryColors}
+          onCategorySelect={setSelectedCategory}
+          onShowAllToggle={() => setShowAllPlaces(!showAllPlaces)}
+        />
         
-        <YouthHorizontal notes={youthNotes} />
+        <ShowbizSection />
+        
+        <SVOSection 
+          svoNews={svoNews}
+          onNewsClick={handleNewsClick}
+        />
+        
+        <YouthNotesSection 
+          youthNotes={youthNotes}
+        />
+        
+        <MemorySection 
+          memoryArticles={memoryArticles}
+        />
+        
+        <PartnersSection />
         
         <Footer />
       </div>
