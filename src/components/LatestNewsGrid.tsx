@@ -36,23 +36,21 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 9 }: LatestNewsGridP
   };
 
   return (
-    <section className="mb-0 border-t-4 border-primary max-w-full overflow-hidden">
-      <div className="bg-accent px-4 md:px-8 py-8 md:py-12 border-b-4 border-primary">
+    <section className="mb-12 md:mb-16 border-t-4 border-primary max-w-full overflow-hidden">
+      <div className="bg-primary px-6 md:px-12 py-12 md:py-16 border-b-4 border-primary">
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
-            <h2 className="text-4xl md:text-6xl lg:text-8xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-3 md:mb-4">
+            <h2 className="text-5xl md:text-7xl lg:text-9xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-4 md:mb-6">
               СЕЙЧАС
             </h2>
-            <div className="h-1 md:h-2 w-20 md:w-32 bg-white"></div>
+            <div className="h-2 md:h-3 w-24 md:w-40 bg-accent"></div>
           </div>
-          <Icon name="Zap" size={48} className="text-white/30 flex-shrink-0 md:w-16 md:h-16" />
+          <Icon name="Zap" size={48} className="text-white/20 flex-shrink-0 md:w-20 md:h-20" />
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 p-4 md:p-8 bg-white">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 p-6 md:p-12 bg-white">
         {displayNews.map((item, index) => {
-          const accentColors = ['#FF4136', '#2ECC40', '#B10DC9', '#FF851B', '#0074D9'];
-          const itemAccent = accentColors[index % accentColors.length];
           
           return (
             <article
@@ -74,21 +72,18 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 9 }: LatestNewsGridP
                 )}
               </div>
               
-              <div className="p-4 md:p-6">
-                <div 
-                  className="inline-block px-3 py-1 mb-3 rotate-[-1deg] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                  style={{ backgroundColor: itemAccent }}
-                >
+              <div className="p-6 md:p-8">
+                <div className="inline-block px-4 py-1.5 mb-4 bg-primary">
                   <span className="text-white font-black text-xs uppercase tracking-wider">
                     {item.category}
                   </span>
                 </div>
                 
-                <h3 className="text-foreground font-black uppercase leading-tight tracking-tighter mb-3 text-lg md:text-xl group-hover:text-accent transition-colors">
+                <h3 className="text-foreground font-black uppercase leading-[1.1] tracking-tight mb-4 text-xl md:text-2xl group-hover:text-accent transition-colors">
                   {item.title}
                 </h3>
                 
-                <p className="text-muted-foreground text-sm md:text-base mb-4 line-clamp-3">
+                <p className="text-muted-foreground text-base md:text-lg mb-6 line-clamp-3 leading-relaxed">
                   {stripHtml(item.excerpt || item.content)}
                 </p>
                 

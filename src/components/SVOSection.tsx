@@ -10,16 +10,16 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
   const displayNews = news && news.length > 0 ? news.slice(0, 4) : [];
 
   return (
-    <section className="mb-0 border-t-4 border-primary max-w-full overflow-hidden">
-      <div className="bg-black px-4 md:px-8 py-6 md:py-8 border-b-4 border-primary">
+    <section className="mb-12 md:mb-16 border-t-4 border-primary max-w-full overflow-hidden">
+      <div className="bg-primary px-6 md:px-12 py-12 md:py-16 border-b-4 border-primary">
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-2 md:mb-3">
+            <h2 className="text-5xl md:text-7xl lg:text-9xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-4 md:mb-6">
               СВО
             </h2>
-            <div className="h-1 w-16 md:w-24 bg-accent"></div>
+            <div className="h-2 md:h-3 w-24 md:w-40 bg-accent"></div>
           </div>
-          <Icon name="Shield" size={32} className="text-accent/30 flex-shrink-0 md:w-12 md:h-12" />
+          <Icon name="Shield" size={48} className="text-white/20 flex-shrink-0 md:w-20 md:h-20" />
         </div>
       </div>
 
@@ -92,12 +92,12 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
                   </div>
                 </div>
 
-                <div className="p-4 md:p-5 bg-black">
-                  <h4 className="text-white text-lg md:text-xl font-black uppercase leading-tight tracking-tighter line-clamp-3 group-hover:text-accent transition-colors">
+                <div className="p-6 md:p-8 bg-black">
+                  <h4 className="text-white text-xl md:text-2xl font-black uppercase leading-[1.1] tracking-tight line-clamp-3 group-hover:text-accent transition-colors">
                     {item.title}
                   </h4>
                   {item.excerpt && (
-                    <p className="text-white/60 text-xs md:text-sm mt-2 line-clamp-2">
+                    <p className="text-white/70 text-sm md:text-base mt-3 line-clamp-2 leading-relaxed">
                       {item.excerpt}
                     </p>
                   )}

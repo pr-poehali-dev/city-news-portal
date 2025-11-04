@@ -85,22 +85,22 @@ export function YouthNotesSection({ notes }: YouthNotesSectionProps) {
   };
 
   return (
-    <section className="mb-0 border-t-4 border-primary max-w-full overflow-hidden">
-      <div className="bg-[#2ECC40] px-4 md:px-8 py-8 md:py-12 border-b-4 border-primary">
+    <section className="mb-12 md:mb-16 border-t-4 border-primary max-w-full overflow-hidden">
+      <div className="bg-primary px-6 md:px-12 py-12 md:py-16 border-b-4 border-primary">
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-3 md:mb-4">
+            <h2 className="text-5xl md:text-7xl lg:text-9xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-4 md:mb-6">
               ПУЛЬС
             </h2>
-            <div className="h-1 md:h-2 w-20 md:w-32 bg-white"></div>
+            <div className="h-2 md:h-3 w-24 md:w-40 bg-accent"></div>
           </div>
           <Link to="/youth-notes" className="hidden md:block">
-            <Icon name="ArrowUpRight" size={32} className="text-white/30 flex-shrink-0 md:w-12 md:h-12 hover:text-white transition-colors" />
+            <Icon name="ArrowUpRight" size={48} className="text-white/20 flex-shrink-0 md:w-20 md:h-20 hover:text-white/40 transition-colors" />
           </Link>
         </div>
       </div>
 
-      <div className="bg-white border-b-4 border-primary p-4 md:p-8">
+      <div className="bg-white border-b-4 border-primary p-6 md:p-12">
         <div className="space-y-3">
           {displayedNotes.map((note, index) => (
             <div

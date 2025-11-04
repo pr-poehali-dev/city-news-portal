@@ -29,20 +29,20 @@ export function MemorySection({ articles, onArticleClick }: MemorySectionProps) 
   const otherArticles = publishedArticles.slice(1, 3);
 
   return (
-    <section className="mb-0 border-t-4 border-primary max-w-full overflow-hidden">
-      <div className="bg-[#FF851B] px-4 md:px-8 py-8 md:py-12 border-b-4 border-primary">
+    <section className="mb-12 md:mb-16 border-t-4 border-primary max-w-full overflow-hidden">
+      <div className="bg-primary px-6 md:px-12 py-12 md:py-16 border-b-4 border-primary">
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-3 md:mb-4">
+            <h2 className="text-5xl md:text-7xl lg:text-9xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-4 md:mb-6">
               ПАМЯТЬ
             </h2>
-            <div className="h-1 md:h-2 w-20 md:w-32 bg-white"></div>
+            <div className="h-2 md:h-3 w-24 md:w-40 bg-accent"></div>
           </div>
           <div 
             onClick={() => navigate('/memory')}
             className="cursor-pointer hidden md:block"
           >
-            <Icon name="ArrowUpRight" size={48} className="text-white/30 flex-shrink-0 md:w-16 md:h-16 hover:text-white transition-colors" />
+            <Icon name="ArrowUpRight" size={48} className="text-white/20 flex-shrink-0 md:w-20 md:h-20 hover:text-white/40 transition-colors" />
           </div>
         </div>
       </div>
@@ -66,24 +66,24 @@ export function MemorySection({ articles, onArticleClick }: MemorySectionProps) 
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
             
-            <div className="absolute top-3 left-3 md:top-6 md:left-6">
-              <div className="bg-[#FF851B] px-4 py-2 rotate-[-2deg] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                <span className="text-white font-black text-xs uppercase tracking-[0.2em]">
+            <div className="absolute top-6 left-6 md:top-8 md:left-8">
+              <div className="bg-primary px-5 py-2.5">
+                <span className="text-white font-black text-sm uppercase tracking-wider">
                   {latestArticle.year}
                 </span>
               </div>
             </div>
 
-            <div className="absolute bottom-0 left-0 right-0 p-3 md:p-6 lg:p-12">
-              <h3 className="text-white text-sm md:text-base font-black uppercase leading-tight tracking-tighter mb-2 md:mb-3 group-hover:text-[#FF851B] transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] line-clamp-2">
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 lg:p-12">
+              <h3 className="text-white text-xl md:text-3xl font-black uppercase leading-[1.1] tracking-tight mb-3 md:mb-4 group-hover:text-accent transition-colors [text-shadow:_3px_3px_0_rgb(0_0_0_/_100%)] line-clamp-2">
                 {latestArticle.title}
               </h3>
               
-              <p className="text-white/80 text-sm md:text-lg mb-3 md:mb-4 line-clamp-2 max-w-4xl hidden md:block">
+              <p className="text-white/90 text-base md:text-xl mb-4 md:mb-6 line-clamp-2 max-w-4xl hidden md:block leading-relaxed">
                 {latestArticle.excerpt}
               </p>
               
-              <div className="flex items-center gap-2 md:gap-4 text-white/60 text-[10px] md:text-xs uppercase tracking-wider font-bold flex-wrap">
+              <div className="flex items-center gap-3 md:gap-4 text-white/70 text-xs md:text-sm uppercase tracking-wider font-bold flex-wrap">
                 <span>{latestArticle.event_date 
                   ? new Date(latestArticle.event_date).toLocaleDateString('ru-RU')
                   : `${latestArticle.year} год`
@@ -116,14 +116,14 @@ export function MemorySection({ articles, onArticleClick }: MemorySectionProps) 
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
                 
-                <div className="absolute top-3 left-3">
-                  <div className="bg-[#FF851B] px-3 py-1 border-2 border-primary">
-                    <span className="text-white font-black text-xs">{article.year}</span>
+                <div className="absolute top-4 left-4">
+                  <div className="bg-primary px-4 py-2">
+                    <span className="text-white font-black text-sm">{article.year}</span>
                   </div>
                 </div>
                 
-                <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-                  <h4 className="text-white text-sm md:text-base font-black uppercase leading-tight tracking-tighter line-clamp-2 group-hover:text-[#FF851B] transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)]">
+                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
+                  <h4 className="text-white text-base md:text-xl font-black uppercase leading-[1.1] tracking-tight line-clamp-2 group-hover:text-accent transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)]">
                     {article.title}
                   </h4>
                 </div>
