@@ -14,7 +14,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
       <div className="bg-black px-4 md:px-8 py-6 md:py-8 border-b-4 border-primary">
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-2 md:mb-3">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-2 md:mb-3">
               СВО
             </h2>
             <div className="h-1 w-16 md:w-24 bg-accent"></div>

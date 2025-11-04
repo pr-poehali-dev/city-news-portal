@@ -38,7 +38,7 @@ export function PlacesSection({
       <div className="bg-[#0074D9] px-4 md:px-8 py-8 md:py-12 border-b-4 border-primary">
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
-            <h2 className="text-4xl md:text-6xl lg:text-8xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-3 md:mb-4">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-3 md:mb-4">
               МЕСТА
             </h2>
             <div className="h-1 md:h-2 w-20 md:w-32 bg-white"></div>
