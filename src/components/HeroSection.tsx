@@ -84,17 +84,17 @@ export const HeroSection = ({ mainNews, sideNews, onNewsClick }: HeroSectionProp
                     <Icon name="Newspaper" size={64} className="text-accent" />
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/95 to-transparent"></div>
               </div>
               
-              <div className="absolute inset-0 p-6 flex flex-col justify-end">
+              <div className="absolute inset-0 p-4 md:p-5 flex flex-col justify-end">
                 <div className="inline-block bg-white px-4 py-2 mb-4 w-fit">
                   <span className="text-black font-black text-xs uppercase tracking-[0.2em]">
                     {news.category}
                   </span>
                 </div>
                 
-                <h3 className="text-white text-sm md:text-base font-black uppercase leading-tight line-clamp-2 tracking-tighter [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)]">
+                <h3 className="text-white text-base md:text-lg font-black leading-[1.2] line-clamp-3">
                   {news.title}
                 </h3>
               </div>

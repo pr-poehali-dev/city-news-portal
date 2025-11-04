@@ -73,7 +73,7 @@ export const PartnersSection = () => {
                   className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
                   style={{ objectPosition: '50% 25%' }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/95 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
                 
                 <div className="absolute top-3 left-3 md:top-6 md:left-6">
                   <div className="bg-[#2ECC40] px-4 py-2 rotate-[-2deg] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
@@ -84,8 +84,8 @@ export const PartnersSection = () => {
                   </div>
                 </div>
 
-                <div className="absolute bottom-0 left-0 right-0 p-3 md:p-6 lg:p-8">
-                  <h3 className="text-white text-sm md:text-base font-black uppercase leading-tight tracking-tighter mb-2 md:mb-3 group-hover:text-[#2ECC40] transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] line-clamp-2">
+                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 lg:p-8">
+                  <h3 className="text-white text-base md:text-lg font-black leading-[1.2] mb-2 md:mb-3 group-hover:text-[#2ECC40] transition-colors line-clamp-3">
                     {partner.name}
                   </h3>
                   

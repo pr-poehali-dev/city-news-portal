@@ -86,7 +86,7 @@ export const PlacesHorizontal = ({ places }: PlacesHorizontalProps) => {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
                   
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/95 to-transparent"></div>
 
                   <div className="absolute top-6 left-6">
                     <span 
@@ -100,7 +100,7 @@ export const PlacesHorizontal = ({ places }: PlacesHorizontalProps) => {
                   </div>
 
                   <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="text-white font-black text-sm md:text-base leading-tight tracking-tighter mb-3 line-clamp-2">
+                    <h3 className="text-white font-black text-base md:text-lg leading-[1.2] mb-3 line-clamp-3">
                       {place.title}
                     </h3>
                     

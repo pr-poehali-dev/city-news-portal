@@ -32,7 +32,7 @@ export const MiniNewsCard = ({ news, onClick, onLike, hasLiked = false }: MiniNe
         )}
         <div className="flex-1 min-w-0">
           <Badge className="mb-2 text-xs bg-primary/10 text-primary border-0 rounded-full px-2.5 py-0.5">{news.category}</Badge>
-          <h4 className="font-bold text-sm md:text-base line-clamp-2 group-hover:text-primary transition-colors mb-1.5 leading-tight tracking-tighter">
+          <h4 className="font-bold text-lg md:text-xl line-clamp-2 group-hover:text-primary transition-colors mb-1.5 leading-snug">
             {news.title}
           </h4>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">

@@ -106,7 +106,7 @@ export function NewsSection({
 
                 <h3
                   onClick={() => onArticleClick(article.id)}
-                  className="text-sm md:text-base font-serif font-bold mb-2 group-hover:text-primary transition-colors cursor-pointer line-clamp-2 leading-tight tracking-tighter"
+                  className="text-lg md:text-xl font-serif font-bold mb-2 group-hover:text-primary transition-colors cursor-pointer line-clamp-2 leading-snug"
                 >
                   {article.title}
                 </h3>

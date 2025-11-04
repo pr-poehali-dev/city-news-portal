@@ -43,7 +43,7 @@ export function CategoryPreview({
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-3 left-3 right-3">
-                    <h3 className="text-white font-serif font-bold text-sm md:text-base line-clamp-2 drop-shadow-lg leading-tight tracking-tighter">
+                    <h3 className="text-white font-serif font-bold text-base md:text-lg line-clamp-2 drop-shadow-lg leading-snug">
                       {latestPlace.title}
                     </h3>
                   </div>

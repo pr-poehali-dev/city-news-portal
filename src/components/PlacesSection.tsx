@@ -64,7 +64,7 @@ export function PlacesSection({
               setDialogOpen(true);
             }}
           >
-            <div className="aspect-[4/3] relative overflow-hidden bg-black">
+            <div className="aspect-[3/4] relative overflow-hidden bg-black">
               {place.image_url ? (
                 <img
                   src={place.image_url}
@@ -76,7 +76,7 @@ export function PlacesSection({
                   <Icon name="MapPin" size={64} className="text-[#0074D9]" />
                 </div>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/95 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
               
               <div className="absolute top-3 left-3 md:top-6 md:left-6">
                 <div 
@@ -89,8 +89,8 @@ export function PlacesSection({
                 </div>
               </div>
 
-              <div className="absolute bottom-0 left-0 right-0 p-3 md:p-6">
-                <h3 className="text-white text-sm md:text-base font-black uppercase leading-tight tracking-tighter mb-2 group-hover:text-[#0074D9] transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] line-clamp-2">
+              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5">
+                <h3 className="text-white text-base md:text-lg font-black leading-[1.2] mb-2 group-hover:text-[#0074D9] transition-colors line-clamp-3">
                   {place.title}
                 </h3>
                 

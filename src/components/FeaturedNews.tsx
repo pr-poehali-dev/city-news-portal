@@ -97,7 +97,7 @@ export const FeaturedNews = ({
             <Badge className="w-fit mb-2 bg-orange-500 text-white text-sm">
               {news.category}
             </Badge>
-            <h2 className="text-2xl font-serif font-bold mb-3 text-foreground leading-tight">
+            <h2 className="text-2xl font-serif font-bold mb-3 text-foreground leading-snug">
               {news.title}
             </h2>
             <div className="text-muted-foreground text-sm leading-relaxed mb-4">
@@ -164,7 +164,7 @@ export const FeaturedNews = ({
                   <Badge variant="outline" className="mb-1.5 text-xs font-semibold uppercase tracking-wide">
                     {item.category}
                   </Badge>
-                  <h3 className="text-sm font-serif font-bold leading-tight line-clamp-2 tracking-tighter">
+                  <h3 className="text-sm font-serif font-bold leading-snug line-clamp-2">
                     {item.title}
                   </h3>
                 </div>
