@@ -16,12 +16,12 @@ export const ShowbizSection = () => {
   const navigate = useNavigate();
   const [news, setNews] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const fetchShowbizNews = async () => {
       try {
-        const response = await fetch('https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe?is_showbiz=true&limit=4');
+        const response = await fetch('https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe?is_showbiz=true&limit=5');
         const data = await response.json();
         setNews(Array.isArray(data) ? data : []);
       } catch (error) {
@@ -36,8 +36,8 @@ export const ShowbizSection = () => {
 
   if (loading) {
     return (
-      <section className="bg-gradient-to-br from-purple-900 via-pink-900 to-purple-900">
-        <div className="max-w-[1800px] mx-auto px-6 lg:px-20 py-20 lg:py-32">
+      <section className="bg-black py-20 lg:py-32">
+        <div className="max-w-[1800px] mx-auto px-6 lg:px-20">
           <div className="text-center">
             <div className="animate-spin w-12 h-12 border-4 border-white/20 border-t-white rounded-full mx-auto"></div>
           </div>
@@ -49,86 +49,113 @@ export const ShowbizSection = () => {
   if (news.length === 0) return null;
 
   return (
-    <section className="bg-gradient-to-br from-purple-900 via-pink-900 to-purple-900">
-      <div className="max-w-[1800px] mx-auto px-6 lg:px-20 py-20 lg:py-32">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12 lg:mb-16 gap-6">
+    <section className="bg-black text-white py-20 lg:py-32">
+      <div className="max-w-[1800px] mx-auto px-6 lg:px-20">
+        <div className="flex items-end justify-between mb-16">
           <div>
-            <h2 className="text-4xl lg:text-6xl font-black text-white tracking-tight mb-2">
+            <span className="text-red-500 text-xs font-bold tracking-[0.3em] uppercase mb-4 block">
+              ЗВЁЗДЫ И СВЕТСКАЯ ЖИЗНЬ
+            </span>
+            <h2 className="text-5xl lg:text-7xl font-black">
               Шоу-бизнес
             </h2>
-            <div className="w-20 h-1 bg-white"></div>
           </div>
-          
           <Link 
             to="/showbiz"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-white text-purple-900 font-black hover:bg-gray-200 transition-colors"
+            className="hidden lg:flex items-center gap-2 text-sm font-bold tracking-wider hover:text-red-500 transition-colors"
           >
-            <span className="tracking-wider">ВСЕ СТАТЬИ</span>
-            <Icon name="ArrowRight" size={20} />
+            ВСЕ СТАТЬИ
+            <Icon name="ArrowRight" size={16} />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+        <div className="relative h-[600px] lg:h-[700px]">
           {news.map((item, index) => {
-            const isLarge = index === 0;
-            const isHovered = hoveredId === item.id;
+            const isActive = activeIndex === index;
+            const offset = (index - activeIndex) * 100;
             
             return (
-              <article
+              <div
                 key={item.id}
-                className={`group relative cursor-pointer overflow-hidden ${
-                  isLarge ? 'md:row-span-2' : ''
+                className={`absolute inset-0 transition-all duration-1000 ease-out ${
+                  isActive ? 'opacity-100 z-10' : 'opacity-0 z-0'
                 }`}
-                onClick={() => navigate(`/news/${item.id}`)}
-                onMouseEnter={() => setHoveredId(item.id)}
-                onMouseLeave={() => setHoveredId(null)}
+                style={{
+                  transform: `translateX(${offset}%)`
+                }}
               >
-                <div className={`relative overflow-hidden ${
-                  isLarge ? 'aspect-[3/4]' : 'aspect-[16/10]'
-                }`}>
-                  <img
-                    src={item.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
-                    alt={item.title}
-                    className={`w-full h-full object-cover transition-all duration-[1500ms] ${
-                      isHovered ? 'scale-110 brightness-90' : 'scale-100'
-                    }`}
-                  />
-                  
-                  <div className={`absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent transition-opacity duration-500 ${
-                    isHovered ? 'opacity-100' : 'opacity-80'
-                  }`}></div>
-
-                  <div className="absolute top-6 left-6 z-10">
-                    <span className={`inline-block px-4 py-2 bg-white/10 backdrop-blur-md text-white text-xs font-bold uppercase tracking-widest transition-all duration-300 ${
-                      isHovered ? 'bg-purple-600 backdrop-blur-none' : ''
-                    }`}>
-                      {item.category}
-                    </span>
-                  </div>
-
-                  <div className={`absolute bottom-0 left-0 right-0 p-6 lg:p-8 transition-all duration-500 ${
-                    isLarge ? 'lg:p-12' : ''
-                  } ${
-                    isHovered ? 'translate-y-0' : 'translate-y-2'
-                  }`}>
-                    <h3 className={`text-white font-black leading-tight mb-4 transition-all duration-300 ${
-                      isLarge ? 'text-2xl lg:text-4xl' : 'text-xl lg:text-2xl'
-                    }`}>
-                      {item.title}
-                    </h3>
+                <div 
+                  className="h-full cursor-pointer group"
+                  onClick={() => navigate(`/news/${item.id}`)}
+                >
+                  <div className="relative h-full overflow-hidden">
+                    <img
+                      src={item.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
+                      alt={item.title}
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                    />
                     
-                    <div className={`flex items-center gap-3 text-gray-400 text-sm transition-all duration-300 ${
-                      isHovered ? 'opacity-100' : 'opacity-70'
-                    }`}>
-                      <Icon name="Calendar" size={14} />
-                      <span>{new Date(item.published_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}</span>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+
+                    <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-12">
+                      <span className="inline-block px-3 py-1 bg-red-600 text-white text-[10px] font-bold tracking-[0.3em] uppercase mb-4">
+                        {item.category}
+                      </span>
+                      
+                      <h3 className="text-3xl lg:text-5xl font-black leading-tight mb-6">
+                        {item.title}
+                      </h3>
+                      
+                      <div className="flex items-center gap-2 text-gray-400 text-sm">
+                        <Icon name="Calendar" size={14} />
+                        <span>{new Date(item.published_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </article>
+              </div>
             );
           })}
         </div>
+
+        <div className="mt-12 flex items-center justify-between">
+          <div className="flex gap-3">
+            {news.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setActiveIndex(index)}
+                className={`transition-all ${
+                  activeIndex === index
+                    ? 'w-16 h-1 bg-red-600'
+                    : 'w-8 h-1 bg-white/20 hover:bg-white/40'
+                }`}
+              />
+            ))}
+          </div>
+
+          <div className="flex gap-4">
+            <button
+              onClick={() => setActiveIndex((prev) => (prev === 0 ? news.length - 1 : prev - 1))}
+              className="w-12 h-12 border border-white/20 hover:bg-white hover:text-black transition-colors flex items-center justify-center"
+            >
+              <Icon name="ChevronLeft" size={20} />
+            </button>
+            <button
+              onClick={() => setActiveIndex((prev) => (prev === news.length - 1 ? 0 : prev + 1))}
+              className="w-12 h-12 border border-white/20 hover:bg-white hover:text-black transition-colors flex items-center justify-center"
+            >
+              <Icon name="ChevronRight" size={20} />
+            </button>
+          </div>
+        </div>
+
+        <Link 
+          to="/showbiz"
+          className="lg:hidden mt-8 flex items-center justify-center gap-2 text-sm font-bold tracking-wider hover:text-red-500 transition-colors"
+        >
+          ВСЕ СТАТЬИ
+          <Icon name="ArrowRight" size={16} />
+        </Link>
       </div>
     </section>
   );
