@@ -67,7 +67,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
               } ${index === 2 ? 'lg:border-r-4' : ''} border-primary transition-all hover:z-10 rounded-none`}
               onClick={() => onNewsClick(item.id)}
             >
-              <div className="aspect-[4/3] relative overflow-hidden bg-black">
+              <div className="aspect-[3/4] relative overflow-hidden bg-black">
                 {item.image_url ? (
                   <img
                     src={item.image_url}
@@ -90,8 +90,8 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
                   </div>
                 </div>
 
-                <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-                  <h4 className="text-white text-sm md:text-base font-black uppercase leading-tight tracking-tighter line-clamp-2 group-hover:text-accent transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)]">
+                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 bg-gradient-to-t from-black via-black/95 to-transparent">
+                  <h4 className="text-white text-base md:text-lg font-black leading-[1.2] line-clamp-3 group-hover:text-accent transition-colors">
                     {item.title}
                   </h4>
                 </div>
