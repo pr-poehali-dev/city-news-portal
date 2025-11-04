@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import Icon from '@/components/ui/icon';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { Link } from 'react-router-dom';
 
 interface YouthNote {
   id: number;
@@ -84,93 +85,87 @@ export function YouthNotesSection({ notes }: YouthNotesSectionProps) {
   };
 
   return (
-    <div className="mb-12">
-      <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-gray-800 rounded-3xl p-6 md:p-8 shadow-xl border border-purple-100 dark:border-purple-900/30">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="text-3xl">📱</div>
-            <div>
-              <h2 className="text-2xl font-bold font-sans text-gray-900 dark:text-white tracking-tight">
-                Пульс города
-              </h2>
-              <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1.5 mt-0.5">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
-                </span>
-                В эфире сейчас
-              </p>
-            </div>
+    <section className="mb-0 border-t-4 border-primary max-w-full overflow-hidden">
+      <div className="bg-[#2ECC40] px-4 md:px-8 py-8 md:py-12 border-b-4 border-primary">
+        <div className="flex items-center justify-between gap-4">
+          <div className="min-w-0">
+            <h2 className="text-4xl md:text-6xl lg:text-8xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-3 md:mb-4">
+              ПУЛЬС
+            </h2>
+            <div className="h-1 md:h-2 w-20 md:w-32 bg-white"></div>
           </div>
+          <Link to="/youth-notes" className="hidden md:block">
+            <Icon name="ArrowUpRight" size={48} className="text-white/30 flex-shrink-0 md:w-16 md:h-16 hover:text-white transition-colors" />
+          </Link>
         </div>
+      </div>
 
+      <div className="bg-white border-b-4 border-primary p-4 md:p-8">
         <div className="space-y-3">
-          {displayedNotes.map((note, index) => {
-            const hasImage = !!note.image_url;
-            const isLongText = note.content.length > 100;
-            
-            return (
-              <div
-                key={`${note.id}-${index}`}
-                className={`transform transition-all duration-500 ${
-                  animatingOut === index
-                    ? 'translate-x-full opacity-0'
-                    : 'translate-x-0 opacity-100'
-                }`}
-              >
-                <div className="flex gap-2.5 items-end">
-                  <div className="flex-shrink-0 mb-1">
-                    <div 
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-lg"
-                      style={{ 
-                        backgroundColor: note.color,
-                      }}
-                    >
-                      {note.emoji}
-                    </div>
+          {displayedNotes.map((note, index) => (
+            <div
+              key={`${note.id}-${index}`}
+              className={`transform transition-all duration-500 ${
+                animatingOut === index
+                  ? 'translate-x-full opacity-0'
+                  : 'translate-x-0 opacity-100'
+              }`}
+            >
+              <div className="flex gap-2.5 items-end">
+                <div className="flex-shrink-0 mb-1">
+                  <div 
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-lg border-2 border-primary"
+                    style={{ backgroundColor: note.color }}
+                  >
+                    {note.emoji}
                   </div>
-                  
-                  <div className="flex-1 min-w-0 max-w-[85%]">
-                    <div className="bg-white dark:bg-gray-800 rounded-2xl rounded-bl-sm shadow-sm">
-                      {note.image_url && (
-                        <img 
-                          src={note.image_url} 
-                          alt=""
-                          className="w-full h-auto max-h-64 object-cover rounded-t-2xl"
-                        />
-                      )}
+                </div>
+                
+                <div className="flex-1 min-w-0 max-w-[85%]">
+                  <div className="bg-[#F5F5F5] border-2 border-primary shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                    {note.image_url && (
+                      <img 
+                        src={note.image_url} 
+                        alt=""
+                        className="w-full h-auto max-h-64 object-cover border-b-2 border-primary"
+                      />
+                    )}
+                    
+                    <div className="p-3">
+                      <p className="text-sm text-black leading-relaxed whitespace-pre-wrap break-words font-bold">
+                        {note.content}
+                      </p>
                       
-                      <div className="p-3">
-                        <p className="text-sm text-gray-900 dark:text-gray-100 leading-relaxed whitespace-pre-wrap break-words">
-                          {note.content}
-                        </p>
-                        
-                        <div className="flex items-center gap-1 mt-1.5">
-                          <span className="text-[10px] text-gray-400">
-                            {getTimeAgo(note.created_at)}
-                          </span>
-                        </div>
+                      <div className="flex items-center gap-1 mt-1.5">
+                        <span className="text-[10px] text-gray-600 uppercase font-bold">
+                          {getTimeAgo(note.created_at)}
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
 
         {publishedNotes.length > 4 && (
           <div className="text-center mt-4">
-            <div className="inline-flex items-center gap-2 text-[10px] px-3 py-1.5 bg-white/50 dark:bg-gray-800/50 rounded-full text-gray-500">
-              <div className="relative flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
-              </div>
+            <div className="inline-flex items-center gap-2 text-[10px] px-3 py-1.5 bg-[#2ECC40] text-white font-black uppercase rounded-none border-2 border-primary">
               Обновляется каждые 10 сек
             </div>
           </div>
         )}
       </div>
-    </div>
+
+      <div className="md:hidden bg-white border-b-4 border-primary p-4">
+        <Link to="/youth-notes">
+          <div className="flex items-center justify-center gap-2 text-black font-black uppercase text-sm hover:text-[#2ECC40] transition-colors">
+            Все заметки
+            <Icon name="ArrowRight" size={16} />
+          </div>
+        </Link>
+      </div>
+    </section>
   );
 }

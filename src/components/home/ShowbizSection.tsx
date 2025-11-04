@@ -1,7 +1,5 @@
 import { Link } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useState, useEffect } from 'react';
 
@@ -13,6 +11,8 @@ interface News {
   category: string;
   published_at: string;
   read_time: string;
+  created_at: string;
+  author_name: string;
 }
 
 export const ShowbizSection = () => {
@@ -35,113 +35,99 @@ export const ShowbizSection = () => {
     fetchShowbizNews();
   }, []);
 
-  if (loading) {
-    return (
-      <section className="py-12 bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center">Загрузка...</div>
-        </div>
-      </section>
-    );
-  }
-
-  if (news.length === 0) return null;
+  if (loading || news.length === 0) return null;
 
   const [mainNews, ...sideNews] = news;
 
   return (
-    <section className="py-12 md:py-16 bg-gradient-to-br from-background via-muted/30 to-background relative overflow-hidden border-y">
-      <div className="absolute inset-0">
-        <div className="absolute top-10 right-20 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 left-20 w-72 h-72 bg-pink-500/5 rounded-full blur-3xl" />
-      </div>
-      
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="flex items-center justify-between mb-8 md:mb-10">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg shadow-lg">
-                <Icon name="Sparkles" size={20} className="text-white" />
-              </div>
-              <h2 className="text-2xl md:text-4xl font-bold">
-                Город говорит о шоубизе
-              </h2>
-            </div>
-            <p className="text-muted-foreground text-sm md:text-base ml-14">
-              Звёзды, премьеры и светская жизнь глазами Краснодара
-            </p>
+    <section className="mb-0 border-t-4 border-primary max-w-full overflow-hidden">
+      <div className="bg-[#B10DC9] px-4 md:px-8 py-8 md:py-12 border-b-4 border-primary">
+        <div className="flex items-center justify-between gap-4">
+          <div className="min-w-0">
+            <h2 className="text-4xl md:text-6xl lg:text-8xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-3 md:mb-4">
+              ШОУБИЗ
+            </h2>
+            <div className="h-1 md:h-2 w-20 md:w-32 bg-white"></div>
           </div>
           <Link to="/showbiz" className="hidden md:block">
-            <Button variant="outline" className="gap-2">
-              Все новости
-              <Icon name="ArrowRight" size={16} />
-            </Button>
+            <Icon name="ArrowUpRight" size={48} className="text-white/30 flex-shrink-0 md:w-16 md:h-16 hover:text-white transition-colors" />
           </Link>
         </div>
+      </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-          {mainNews && (
-            <Link to={`/news/${mainNews.id}`} className="md:col-span-2 lg:col-span-2 group">
-              <Card className="overflow-hidden h-full hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-purple-500/20">
-                <div className="relative h-[300px] md:h-[420px]">
-                  <img
-                    src={mainNews.image_url}
-                    alt={mainNews.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                  <Badge className="absolute top-4 left-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 px-3 py-1.5 shadow-lg">
-                    <Icon name="Star" size={12} className="mr-1.5" />
-                    {mainNews.category}
-                  </Badge>
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="text-white text-xl md:text-3xl font-bold mb-2 group-hover:text-purple-300 transition-colors">
-                      {mainNews.title}
-                    </h3>
-                    <p className="text-white/90 text-sm md:text-base line-clamp-2">
-                      {mainNews.excerpt}
-                    </p>
-                  </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+        {mainNews && (
+          <Link 
+            to={`/news/${mainNews.id}`} 
+            className="md:col-span-2 group relative cursor-pointer overflow-hidden bg-white border-b-4 md:border-b-0 md:border-r-4 border-primary transition-all hover:z-10"
+          >
+            <div className="aspect-[16/9] md:aspect-[21/9] relative overflow-hidden bg-black">
+              <img
+                src={mainNews.image_url}
+                alt={mainNews.title}
+                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+              
+              <div className="absolute top-3 left-3 md:top-6 md:left-6">
+                <div className="bg-[#B10DC9] px-4 py-2 rotate-[-2deg] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                  <span className="text-white font-black text-xs uppercase tracking-[0.2em]">
+                    <Icon name="Star" size={14} className="inline mr-2" />
+                    Шоубиз
+                  </span>
                 </div>
-              </Card>
-            </Link>
-          )}
+              </div>
 
-          <div className="space-y-4 md:space-y-6">
-            {sideNews.slice(0, 2).map((item, idx) => (
-              <Link key={item.id} to={`/news/${item.id}`} className="group block">
-                <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 border hover:border-purple-500/30">
-                  <div className="relative h-40 md:h-48 overflow-hidden">
-                    <img
-                      src={item.image_url}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                    <Badge className="absolute top-3 right-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 text-xs shadow-md">
-                      <Icon name="Sparkles" size={10} className="mr-1" />
-                      {item.category}
-                    </Badge>
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <h4 className="font-bold text-white text-base md:text-lg line-clamp-2 group-hover:text-purple-300 transition-colors">
-                        {item.title}
-                      </h4>
-                    </div>
-                  </div>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div className="text-center mt-8 md:hidden">
-          <Link to="/showbiz">
-            <Button variant="outline" className="gap-2 w-full">
-              Все новости шоубизнеса
-              <Icon name="ArrowRight" size={16} />
-            </Button>
+              <div className="absolute bottom-0 left-0 right-0 p-3 md:p-6 lg:p-12">
+                <h3 className="text-white text-2xl md:text-4xl lg:text-5xl font-black uppercase leading-tight tracking-tighter mb-2 md:mb-3 group-hover:text-[#B10DC9] transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] line-clamp-2">
+                  {mainNews.title}
+                </h3>
+                
+                <div className="flex items-center gap-2 md:gap-4 text-white/60 text-[10px] md:text-xs uppercase tracking-wider font-bold flex-wrap">
+                  <span>{new Date(mainNews.created_at).toLocaleDateString('ru-RU')}</span>
+                  <span className="w-1 h-1 bg-[#B10DC9] rounded-full"></span>
+                  <span className="truncate max-w-[120px] md:max-w-none">{mainNews.author_name || 'Редакция'}</span>
+                </div>
+              </div>
+            </div>
           </Link>
+        )}
+
+        <div className="md:col-span-1 flex flex-col gap-0">
+          {sideNews.slice(0, 2).map((item, index) => (
+            <Link
+              key={item.id}
+              to={`/news/${item.id}`}
+              className={`group relative cursor-pointer overflow-hidden bg-white transition-all hover:z-10 ${
+                index === 0 ? 'border-b-4 border-primary' : ''
+              }`}
+            >
+              <div className="aspect-[16/9] md:aspect-[4/3] relative overflow-hidden bg-black">
+                <img
+                  src={item.image_url}
+                  alt={item.title}
+                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                
+                <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
+                  <h4 className="text-white text-lg md:text-xl font-black uppercase leading-tight tracking-tighter line-clamp-2 group-hover:text-[#B10DC9] transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)]">
+                    {item.title}
+                  </h4>
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
+      </div>
+
+      <div className="md:hidden bg-white border-b-4 border-primary p-4">
+        <Link to="/showbiz">
+          <div className="flex items-center justify-center gap-2 text-black font-black uppercase text-sm hover:text-[#B10DC9] transition-colors">
+            Все новости
+            <Icon name="ArrowRight" size={16} />
+          </div>
+        </Link>
       </div>
     </section>
   );

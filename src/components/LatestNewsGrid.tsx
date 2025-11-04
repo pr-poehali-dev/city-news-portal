@@ -36,16 +36,16 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 9 }: LatestNewsGridP
   };
 
   return (
-    <section className="mb-0 border-t-4 border-primary">
-      <div className="bg-accent px-8 py-12 border-b-4 border-primary">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-6xl lg:text-8xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-4">
+    <section className="mb-0 border-t-4 border-primary max-w-full overflow-hidden">
+      <div className="bg-accent px-4 md:px-8 py-8 md:py-12 border-b-4 border-primary">
+        <div className="flex items-center justify-between gap-4">
+          <div className="min-w-0">
+            <h2 className="text-4xl md:text-6xl lg:text-8xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-3 md:mb-4">
               СЕЙЧАС
             </h2>
-            <div className="h-2 w-32 bg-white"></div>
+            <div className="h-1 md:h-2 w-20 md:w-32 bg-white"></div>
           </div>
-          <Icon name="Zap" size={64} className="text-white/30" />
+          <Icon name="Zap" size={48} className="text-white/30 flex-shrink-0 md:w-16 md:h-16" />
         </div>
       </div>
       
@@ -63,7 +63,7 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 9 }: LatestNewsGridP
               }`}
               onClick={() => onNewsClick(item.id)}
             >
-              <div className={`${isLarge ? 'aspect-[21/9]' : 'aspect-[4/3]'} relative overflow-hidden bg-black`}>
+              <div className={`${isLarge ? 'aspect-[16/9] md:aspect-[21/9]' : 'aspect-[4/3]'} relative overflow-hidden bg-black`}>
                 {item.image_url ? (
                   <img
                     src={item.image_url}
@@ -79,7 +79,7 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 9 }: LatestNewsGridP
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
               </div>
               
-              <div className="absolute top-6 left-6">
+              <div className="absolute top-3 left-3 md:top-6 md:left-6">
                 <div 
                   className="px-4 py-2 rotate-[-2deg] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                   style={{ backgroundColor: itemAccent }}
@@ -90,23 +90,23 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 9 }: LatestNewsGridP
                 </div>
               </div>
               
-              <div className={`absolute bottom-0 left-0 right-0 p-6 ${isLarge ? 'lg:p-12' : ''}`}>
-                <h3 className={`text-white font-black uppercase leading-tight tracking-tighter mb-3 group-hover:text-accent transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] ${
-                  isLarge ? 'text-4xl lg:text-5xl line-clamp-2' : 'text-2xl line-clamp-3'
+              <div className={`absolute bottom-0 left-0 right-0 p-3 md:p-6 ${isLarge ? 'lg:p-12' : ''}`}>
+                <h3 className={`text-white font-black uppercase leading-tight tracking-tighter mb-2 md:mb-3 group-hover:text-accent transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] ${
+                  isLarge ? 'text-2xl md:text-4xl lg:text-5xl line-clamp-2' : 'text-lg md:text-2xl line-clamp-3'
                 }`}>
                   {item.title}
                 </h3>
                 
                 {isLarge && (
-                  <p className="text-white/80 text-lg mb-4 line-clamp-2 max-w-4xl">
+                  <p className="text-white/80 text-sm md:text-lg mb-3 md:mb-4 line-clamp-2 max-w-4xl hidden md:block">
                     {stripHtml(item.excerpt || item.content)}
                   </p>
                 )}
                 
-                <div className="flex items-center gap-4 text-white/60 text-xs uppercase tracking-wider font-bold">
+                <div className="flex items-center gap-2 md:gap-4 text-white/60 text-[10px] md:text-xs uppercase tracking-wider font-bold flex-wrap">
                   <span>{new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
                   <span className="w-1 h-1 bg-accent rounded-full"></span>
-                  <span>{item.author_name || 'Редакция'}</span>
+                  <span className="truncate max-w-[120px] md:max-w-none">{item.author_name || 'Редакция'}</span>
                 </div>
               </div>
             </article>
