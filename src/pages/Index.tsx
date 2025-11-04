@@ -7,12 +7,9 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { HeroSection } from '@/components/HeroSection';
 import { CategoryGrid } from '@/components/CategoryGrid';
 import { LatestNewsGrid } from '@/components/LatestNewsGrid';
-import { EventsSection } from '@/components/EventsSection';
 import { SocialSubscribe } from '@/components/SocialSubscribe';
 import { Footer } from '@/components/Footer';
-import { PlacesSection } from '@/components/PlacesSection';
 import { MemorySection } from '@/components/MemorySection';
-import { PartnersSection } from '@/components/PartnersSection';
 import { SVOSection } from '@/components/SVOSection';
 import { YouthNotesSection } from '@/components/YouthNotesSection';
 import { ShowbizSection } from '@/components/home/ShowbizSection';
@@ -469,25 +466,12 @@ const Index = () => {
 
                 <ShowbizSection />
 
-                <PlacesSection
-                  cityPlaces={cityPlaces}
-                  selectedCategory={selectedCategory}
-                  showAllPlaces={showAllPlaces}
-                  categoryColors={categoryColors}
-                  onCategorySelect={setSelectedCategory}
-                  onShowAllToggle={() => setShowAllPlaces(!showAllPlaces)}
-                />
-
                 <YouthNotesSection notes={youthNotes} />
 
                 <MemorySection
                   articles={memoryArticles}
                   onArticleClick={(id) => navigate(`/memory/${id}`)}
                 />
-
-                <EventsSection events={events} />
-
-                <PartnersSection />
               </>
             )}
           </>
