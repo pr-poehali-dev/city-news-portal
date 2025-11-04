@@ -102,16 +102,14 @@ export const HeroSection = ({ mainNews, sideNews, onNewsClick }: HeroSectionProp
                   className="bg-zinc-900/80 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden group"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  {news.image_url && (
-                    <div className="relative h-64 overflow-hidden">
-                      <img
-                        src={news.image_url}
-                        alt={news.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent"></div>
-                    </div>
-                  )}
+                  <div className="relative h-64 overflow-hidden">
+                    <img
+                      src={news.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
+                      alt={news.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent"></div>
+                  </div>
                   
                   <div className="p-8">
                     <span className="text-xs font-bold text-red-500 uppercase tracking-wider mb-4 block">

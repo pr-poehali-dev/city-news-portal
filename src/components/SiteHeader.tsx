@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +10,7 @@ interface SiteHeaderProps {
   onSearch?: (query: string) => void;
 }
 
-export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSearch }: SiteHeaderProps) => {
+export const SiteHeader = ({ onSearch }: SiteHeaderProps) => {
   const navigate = useNavigate();
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,33 +24,32 @@ export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSe
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200">
-
-      <div className="px-4 lg:px-20 py-4">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-2xl border-b border-gray-200">
+      <div className="px-6 lg:px-20 py-6">
         <div className="flex items-center justify-between">
           <div 
-            className="cursor-pointer" 
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              navigate('/');
-            }}
+            className="cursor-pointer group" 
+            onClick={() => navigate('/')}
           >
-            <h1 className="text-2xl lg:text-3xl font-bold tracking-tight hover:text-gray-600 transition-colors">
+            <h1 className="text-3xl lg:text-4xl font-black tracking-tight hover:text-gray-600 transition-colors">
               Город Говорит
             </h1>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setShowSearch(!showSearch)}
-              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
-            >
-              <Icon name="Search" size={20} />
-            </button>
+
+          <div className="flex items-center gap-3">
+            {!showSearch && (
+              <button
+                onClick={() => setShowSearch(true)}
+                className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <Icon name="Search" size={20} />
+              </button>
+            )}
+            
             <button
               onClick={() => window.location.href = '/admin'}
               title="Админка"
-              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+              className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
             >
               <Icon name="Settings" size={20} />
             </button>
@@ -59,31 +57,31 @@ export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSe
         </div>
 
         {showSearch && (
-          <div className="mt-4 flex gap-2">
+          <div className="mt-6 flex gap-3">
             <Input
               type="text"
-              placeholder="Поиск..."
+              placeholder="Поиск по новостям..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="flex-1"
+              className="flex-1 h-12 rounded-2xl border-2 border-gray-200 focus:border-black transition-colors"
               autoFocus
             />
-            <Button 
-              onClick={handleSearch} 
+            <button
+              onClick={handleSearch}
               disabled={!searchQuery.trim()}
-              className="bg-black text-white hover:bg-gray-800"
+              className="px-6 h-12 bg-black text-white font-semibold rounded-2xl hover:bg-gray-800 disabled:opacity-50 transition-colors"
             >
               Найти
-            </Button>
-            <button 
+            </button>
+            <button
               onClick={() => {
                 setShowSearch(false);
                 setSearchQuery('');
               }}
-              className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+              className="w-12 h-12 flex items-center justify-center border-2 border-gray-200 rounded-2xl hover:bg-gray-100 transition-colors"
             >
-              <Icon name="X" size={16} />
+              <Icon name="X" size={20} />
             </button>
           </div>
         )}
