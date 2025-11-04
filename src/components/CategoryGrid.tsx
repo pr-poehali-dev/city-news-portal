@@ -95,7 +95,7 @@ export const CategoryGrid = ({ categories, articles, onNewsClick, onCategoryClic
                           </div>
                         )}
                         <div className="flex-1">
-                          <h4 className="text-white font-black text-lg leading-tight line-clamp-2 uppercase tracking-tight group-hover/item:text-accent transition-colors">
+                          <h4 className="text-white font-black text-sm md:text-base leading-tight line-clamp-2 uppercase tracking-tighter group-hover/item:text-accent transition-colors">
                             {news.title}
                           </h4>
                           <p className="text-white/50 text-xs uppercase tracking-wider font-bold mt-2">

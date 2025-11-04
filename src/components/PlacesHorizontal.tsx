@@ -100,7 +100,7 @@ export const PlacesHorizontal = ({ places }: PlacesHorizontalProps) => {
                   </div>
 
                   <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="text-white font-black text-xl lg:text-2xl leading-tight mb-3">
+                    <h3 className="text-white font-black text-sm md:text-base leading-tight tracking-tighter mb-3 line-clamp-2">
                       {place.title}
                     </h3>
                     

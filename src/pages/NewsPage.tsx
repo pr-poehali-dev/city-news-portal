@@ -43,6 +43,17 @@ export const NewsPage = () => {
   const [loading, setLoading] = useState(true);
   const adRenderedRef = useRef(false);
 
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return 'Дата не указана';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Дата не указана';
+      return date.toLocaleDateString('ru-RU');
+    } catch {
+      return 'Дата не указана';
+    }
+  };
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -232,7 +243,7 @@ export const NewsPage = () => {
                 <span>•</span>
                 <div className="flex items-center gap-2">
                   <Icon name="Calendar" size={16} />
-                  {new Date(article.date).toLocaleDateString('ru-RU')}
+                  {formatDate(article.date)}
                 </div>
               </div>
             </div>

@@ -90,7 +90,7 @@ export function PlacesSection({
               </div>
 
               <div className="absolute bottom-0 left-0 right-0 p-3 md:p-6">
-                <h3 className="text-white text-xl md:text-2xl font-black uppercase leading-tight tracking-tighter mb-2 group-hover:text-[#0074D9] transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] line-clamp-2">
+                <h3 className="text-white text-sm md:text-base font-black uppercase leading-tight tracking-tighter mb-2 group-hover:text-[#0074D9] transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] line-clamp-2">
                   {place.title}
                 </h3>
                 

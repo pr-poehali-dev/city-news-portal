@@ -91,7 +91,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
                 </div>
 
                 <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-                  <h4 className="text-white text-base md:text-lg font-black uppercase leading-tight tracking-tighter line-clamp-3 group-hover:text-accent transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] break-words">
+                  <h4 className="text-white text-sm md:text-base font-black uppercase leading-tight tracking-tighter line-clamp-2 group-hover:text-accent transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)]">
                     {item.title}
                   </h4>
                 </div>

@@ -73,7 +73,7 @@ export const HorizontalNewsScroll = ({ news, onNewsClick, title }: HorizontalNew
                 </div>
 
                 <div className="absolute bottom-0 left-0 right-0 p-8">
-                  <h3 className="text-white font-black text-2xl lg:text-3xl leading-tight mb-3">
+                  <h3 className="text-white font-black text-sm md:text-base leading-tight tracking-tighter mb-3 line-clamp-2">
                     {item.title}
                   </h3>
                   

@@ -101,7 +101,7 @@ export const FeaturedNews = ({
               {news.title}
             </h2>
             <div className="text-muted-foreground text-sm leading-relaxed mb-4">
-              <p className="line-clamp-3">
+              <p className="line-clamp-2">
                 {stripHtml(news.excerpt || news.content || '')}
               </p>
               <span className="text-primary font-medium text-sm mt-2 inline-block cursor-pointer hover:underline">
@@ -164,7 +164,7 @@ export const FeaturedNews = ({
                   <Badge variant="outline" className="mb-1.5 text-xs font-semibold uppercase tracking-wide">
                     {item.category}
                   </Badge>
-                  <h3 className="text-sm font-serif font-bold leading-tight line-clamp-3">
+                  <h3 className="text-sm font-serif font-bold leading-tight line-clamp-2 tracking-tighter">
                     {item.title}
                   </h3>
                 </div>

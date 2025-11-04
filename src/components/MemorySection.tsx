@@ -75,7 +75,7 @@ export function MemorySection({ articles, onArticleClick }: MemorySectionProps) 
             </div>
 
             <div className="absolute bottom-0 left-0 right-0 p-3 md:p-6 lg:p-12">
-              <h3 className="text-white text-2xl md:text-4xl lg:text-5xl font-black uppercase leading-tight tracking-tighter mb-2 md:mb-3 group-hover:text-[#FF851B] transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] line-clamp-2">
+              <h3 className="text-white text-sm md:text-base font-black uppercase leading-tight tracking-tighter mb-2 md:mb-3 group-hover:text-[#FF851B] transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] line-clamp-2">
                 {latestArticle.title}
               </h3>
               
@@ -123,7 +123,7 @@ export function MemorySection({ articles, onArticleClick }: MemorySectionProps) 
                 </div>
                 
                 <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-                  <h4 className="text-white text-lg md:text-xl font-black uppercase leading-tight tracking-tighter line-clamp-2 group-hover:text-[#FF851B] transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)]">
+                  <h4 className="text-white text-sm md:text-base font-black uppercase leading-tight tracking-tighter line-clamp-2 group-hover:text-[#FF851B] transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)]">
                     {article.title}
                   </h4>
                 </div>

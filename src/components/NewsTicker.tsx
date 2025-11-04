@@ -10,9 +10,9 @@ export const NewsTicker = ({ latestNews }: NewsTickerProps) => {
   return (
     <div className="bg-black text-white overflow-hidden border-y-4 border-primary max-w-full">
       <div className="flex items-center min-w-0">
-        <div className="bg-accent px-3 md:px-6 py-3 md:py-4 flex items-center gap-1.5 md:gap-3 flex-shrink-0 border-r-4 border-primary">
-          <Icon name="Zap" size={14} className="text-white md:w-4 md:h-4" />
-          <span className="font-black uppercase tracking-widest text-[10px] md:text-sm">СРОЧНО</span>
+        <div className="bg-accent px-2 md:px-4 py-3 md:py-4 flex items-center gap-1 md:gap-2 flex-shrink-0 border-r-4 border-primary">
+          <Icon name="Zap" size={12} className="text-white md:w-3.5 md:h-3.5" />
+          <span className="font-black uppercase tracking-widest text-[9px] md:text-xs">МЫ В СЕТИ</span>
         </div>
         <div className="flex-1 overflow-hidden py-3 md:py-4">
           <div className="animate-marquee whitespace-nowrap inline-block pl-4">

@@ -95,7 +95,7 @@ export function YouthNotesSection({ notes }: YouthNotesSectionProps) {
             <div className="h-1 md:h-2 w-20 md:w-32 bg-white"></div>
           </div>
           <Link to="/youth-notes" className="hidden md:block">
-            <Icon name="ArrowUpRight" size={48} className="text-white/30 flex-shrink-0 md:w-16 md:h-16 hover:text-white transition-colors" />
+            <Icon name="ArrowUpRight" size={32} className="text-white/30 flex-shrink-0 md:w-12 md:h-12 hover:text-white transition-colors" />
           </Link>
         </div>
       </div>

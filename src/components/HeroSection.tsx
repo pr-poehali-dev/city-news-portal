@@ -94,7 +94,7 @@ export const HeroSection = ({ mainNews, sideNews, onNewsClick }: HeroSectionProp
                   </span>
                 </div>
                 
-                <h3 className="text-white text-2xl lg:text-3xl font-black uppercase leading-tight line-clamp-3 tracking-tight [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)]">
+                <h3 className="text-white text-sm md:text-base font-black uppercase leading-tight line-clamp-2 tracking-tighter [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)]">
                   {news.title}
                 </h3>
               </div>
