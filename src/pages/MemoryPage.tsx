@@ -27,10 +27,12 @@ const MemoryPage = () => {
   const [article, setArticle] = useState<MemoryArticle | null>(null);
   const [loading, setLoading] = useState(true);
   const [sections, setSections] = useState<string[]>([]);
+  const [adRendered, setAdRendered] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
       try {
+        setAdRendered(false);
         const response = await fetch(FUNCTIONS_URL.memory);
         if (response.ok) {
           const data = await response.json();
@@ -53,18 +55,22 @@ const MemoryPage = () => {
   }, [id]);
 
   useEffect(() => {
-    if (!loading && article && window.yaContextCb) {
-      window.yaContextCb.push(() => {
-        if (window.Ya?.Context?.AdvManager) {
-          window.Ya.Context.AdvManager.render({
-            blockId: "R-A-17651616-1",
-            renderTo: "yandex_rtb_R-A-17651616-1",
-            type: "feed"
-          });
-        }
-      });
+    if (!loading && article && !adRendered && window.yaContextCb) {
+      const container = document.getElementById('yandex_rtb_R-A-17651616-1');
+      if (container && container.children.length === 0) {
+        window.yaContextCb.push(() => {
+          if (window.Ya?.Context?.AdvManager) {
+            window.Ya.Context.AdvManager.render({
+              blockId: "R-A-17651616-1",
+              renderTo: "yandex_rtb_R-A-17651616-1",
+              type: "feed"
+            });
+            setAdRendered(true);
+          }
+        });
+      }
     }
-  }, [loading, article]);
+  }, [loading, article, adRendered]);
 
   const handleSectionChange = (section: string) => {
     navigate('/');

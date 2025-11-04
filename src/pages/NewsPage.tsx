@@ -46,10 +46,12 @@ export const NewsPage = () => {
   const [loading, setLoading] = useState(true);
   const [promoUsageCount] = useState(() => Math.floor(Math.random() * 100) + 1);
   const [displayCount, setDisplayCount] = useState(0);
+  const [adRendered, setAdRendered] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
       try {
+        setAdRendered(false);
         const articleResponse = await fetch(`${FUNCTIONS_URL.news}?id=${id}&increment_views=true`);
         const currentArticle = await articleResponse.json();
         
@@ -108,18 +110,22 @@ export const NewsPage = () => {
   }, [loading, article, promoUsageCount]);
 
   useEffect(() => {
-    if (!loading && article && window.yaContextCb) {
-      window.yaContextCb.push(() => {
-        if (window.Ya?.Context?.AdvManager) {
-          window.Ya.Context.AdvManager.render({
-            blockId: "R-A-17651616-1",
-            renderTo: "yandex_rtb_R-A-17651616-1",
-            type: "feed"
-          });
-        }
-      });
+    if (!loading && article && !adRendered && window.yaContextCb) {
+      const container = document.getElementById('yandex_rtb_R-A-17651616-1');
+      if (container && container.children.length === 0) {
+        window.yaContextCb.push(() => {
+          if (window.Ya?.Context?.AdvManager) {
+            window.Ya.Context.AdvManager.render({
+              blockId: "R-A-17651616-1",
+              renderTo: "yandex_rtb_R-A-17651616-1",
+              type: "feed"
+            });
+            setAdRendered(true);
+          }
+        });
+      }
     }
-  }, [loading, article]);
+  }, [loading, article, adRendered]);
 
   const handleAddComment = async () => {
     if (commentName.trim() && commentText.trim() && id) {
