@@ -8,15 +8,18 @@ interface FooterProps {
 
 export const Footer = ({ sections = [], onSectionChange }: FooterProps) => {
   return (
-    <footer className="bg-white dark:bg-card border-t dark:border-border/50 mt-12">
-      <div className="container mx-auto px-4 py-8">
+    <footer className="bg-muted/30 dark:bg-card border-t border-border mt-16">
+      <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-xl font-serif font-bold text-primary mb-4">
+            <h3 className="text-2xl font-serif font-black text-foreground mb-2">
               Город говорит
             </h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Ваш источник актуальных новостей и событий Краснодара
+            <p className="text-xs text-primary font-semibold uppercase tracking-wide mb-4">
+              Краснодар
+            </p>
+            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+              Ваш источник актуальных новостей и событий
             </p>
             <div className="flex gap-3">
               <a href="https://vk.com/club233389110" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" title="ВКонтакте">
@@ -30,7 +33,7 @@ export const Footer = ({ sections = [], onSectionChange }: FooterProps) => {
 
           {sections.length > 0 && (
             <div>
-              <h4 className="font-semibold mb-4">Разделы</h4>
+              <h4 className="font-bold text-foreground mb-4 uppercase text-xs tracking-wider">Разделы</h4>
               <ul className="space-y-2 text-sm">
                 {sections.slice(0, 6).map((section) => (
                   <li key={section}>
@@ -47,7 +50,7 @@ export const Footer = ({ sections = [], onSectionChange }: FooterProps) => {
           )}
 
           <div>
-            <h4 className="font-semibold mb-4">Социальные сети</h4>
+            <h4 className="font-bold text-foreground mb-4 uppercase text-xs tracking-wider">Социальные сети</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <a href="https://vk.com/club233389110" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
@@ -65,7 +68,7 @@ export const Footer = ({ sections = [], onSectionChange }: FooterProps) => {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4">Контакты</h4>
+            <h4 className="font-bold text-foreground mb-4 uppercase text-xs tracking-wider">Контакты</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <Icon name="Mail" size={16} />
@@ -97,7 +100,7 @@ export const Footer = ({ sections = [], onSectionChange }: FooterProps) => {
 
         <Separator className="my-6" />
 
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
           <p>© 2025 Город говорит: Краснодар. Все права защищены.</p>
           <div className="flex gap-4">
             <a href="#" className="hover:text-primary transition-colors">

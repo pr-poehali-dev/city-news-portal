@@ -54,23 +54,26 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
   const currentEvent = events[currentIndex];
 
   return (
-    <div className="py-16 bg-gradient-to-br from-orange-50/50 via-amber-50/30 to-background dark:from-orange-950/20 dark:via-amber-950/10 dark:to-background">
-      <div className="container mx-auto">
-        <div className="flex items-center justify-center gap-3 mb-3">
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-primary/30 to-primary/30 max-w-32" />
-          <Icon name="Ticket" size={28} className="text-primary" />
-          <h2 className="text-3xl font-bold text-center">Афиша Краснодара</h2>
-          <Icon name="Ticket" size={28} className="text-primary" />
-          <div className="h-px flex-1 bg-gradient-to-l from-transparent via-primary/30 to-primary/30 max-w-32" />
-        </div>
-
-        <div className="flex items-center justify-center gap-2 mb-12">
-          <Badge variant="outline" className="gap-1 border-primary/30">
-            <Icon name="Sparkles" size={12} />
-            KudaGo
-          </Badge>
-          <span className="text-sm text-muted-foreground">·</span>
-          <span className="text-sm text-muted-foreground">Лучшие события города</span>
+    <div className="py-20 bg-gradient-to-br from-primary/5 via-accent/5 to-background relative overflow-hidden">
+      <div className="absolute top-20 right-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-20 left-20 w-96 h-96 bg-accent/10 rounded-full blur-3xl"></div>
+      
+      <div className="container mx-auto relative z-10">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center shadow-lg">
+              <Icon name="Calendar" size={24} className="text-white" />
+            </div>
+            <h2 className="text-4xl font-bold font-serif">Афиша Краснодара</h2>
+          </div>
+          <div className="h-1 w-24 bg-gradient-to-r from-primary to-accent rounded-full mx-auto mb-4"></div>
+          <div className="flex items-center justify-center gap-2">
+            <Badge className="gap-1.5 bg-primary/10 text-primary border-0 px-3 py-1 rounded-full">
+              <Icon name="Sparkles" size={14} />
+              <span className="font-semibold">KudaGo</span>
+            </Badge>
+            <span className="text-sm text-muted-foreground">• Лучшие события города</span>
+          </div>
         </div>
 
         <div className="relative max-w-4xl mx-auto mb-12">

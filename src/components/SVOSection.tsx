@@ -67,7 +67,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
 
         <div className="flex items-center gap-4 mb-8">
           <div className="h-1 w-12 bg-red-700"></div>
-          <h2 className="text-3xl font-bold text-white uppercase tracking-wider font-serif flex items-center gap-3">
+          <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-wide font-serif flex items-center gap-3">
             <Icon name="Shield" size={32} className="text-red-700" />
             Специальная военная операция
           </h2>
@@ -110,7 +110,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
                 </div>
 
                 <div className="absolute bottom-0 left-0 right-0 p-8">
-                  <h3 className="text-white text-3xl font-bold font-serif mb-4 leading-tight">
+                  <h3 className="text-white text-2xl md:text-3xl font-black font-serif mb-4 leading-tight tracking-tight">
                     {mainNews.title}
                   </h3>
                   <p className="text-gray-300 text-base mb-4 line-clamp-2">

@@ -58,8 +58,8 @@ export function NewsSection({
 
   return (
     <div className="mb-12">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold">{currentCategory}</h2>
+      <div className="flex items-center justify-between mb-8 border-b border-border pb-4">
+        <h2 className="text-2xl md:text-3xl font-serif font-black tracking-tight">{currentCategory}</h2>
         <div className="flex gap-2">
           <Button
             variant="outline"
@@ -84,21 +84,21 @@ export function NewsSection({
         {categoryNews.slice(0, 4).map((article) => (
           <Card
             key={article.id}
-            className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            className="cursor-pointer hover:shadow-md transition-all border-0 shadow-sm group"
           >
             <CardContent className="p-0">
               {article.image_url && (
-                <div className="relative h-32 md:h-40 overflow-hidden rounded-t-lg">
+                <div className="relative h-32 md:h-48 overflow-hidden rounded-t-lg">
                   <img
                     src={article.image_url}
                     alt={article.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
               )}
-              <div className="p-3 md:p-4">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-2 mb-2">
-                  <Badge variant="secondary" className="text-xs whitespace-nowrap">{article.category}</Badge>
+              <div className="p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Badge variant="outline" className="text-xs font-semibold uppercase tracking-wide">{article.category}</Badge>
                   <span className="text-xs text-muted-foreground">
                     {new Date(article.created_at).toLocaleDateString('ru-RU')}
                   </span>
@@ -106,7 +106,7 @@ export function NewsSection({
 
                 <h3
                   onClick={() => onArticleClick(article.id)}
-                  className="text-sm md:text-base font-semibold mb-2 hover:text-primary cursor-pointer line-clamp-2"
+                  className="text-base md:text-lg font-serif font-bold mb-2 group-hover:text-primary transition-colors cursor-pointer line-clamp-2 leading-tight"
                 >
                   {article.title}
                 </h3>

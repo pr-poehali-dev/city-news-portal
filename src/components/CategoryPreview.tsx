@@ -25,12 +25,12 @@ export function CategoryPreview({
 
   return (
     <div className="mb-12">
-      <h2 className="text-3xl font-bold mb-6">Рубрики городской жизни</h2>
+      <h2 className="text-2xl md:text-3xl font-serif font-black mb-8 tracking-tight">Рубрики городской жизни</h2>
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         {categoryPreviews.map(({ category, latestPlace, count }) => (
           <Card
             key={category}
-            className="overflow-hidden hover:shadow-lg transition-all cursor-pointer"
+            className="overflow-hidden hover:shadow-md transition-all cursor-pointer border-0 shadow-sm group"
             onClick={() => onPlaceClick?.(latestPlace.id)}
           >
             <CardContent className="p-0">
@@ -43,7 +43,7 @@ export function CategoryPreview({
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-3 left-3 right-3">
-                    <h3 className="text-white font-semibold text-sm line-clamp-2">
+                    <h3 className="text-white font-serif font-bold text-base line-clamp-2 drop-shadow-lg">
                       {latestPlace.title}
                     </h3>
                   </div>
@@ -56,7 +56,7 @@ export function CategoryPreview({
                       className="w-3 h-3 rounded-full"
                       style={{ backgroundColor: categoryColors[category as keyof typeof categoryColors] }}
                     />
-                    <span className="font-medium text-sm">{category}</span>
+                    <span className="font-semibold text-sm">{category}</span>
                   </div>
                   <Badge variant="secondary" className="text-xs">
                     {count} {count === 1 ? 'место' : 'мест'}
