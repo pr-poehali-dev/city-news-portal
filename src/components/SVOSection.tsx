@@ -67,33 +67,40 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
               } ${index === 2 ? 'lg:border-r-4' : ''} border-primary transition-all hover:z-10 rounded-none`}
               onClick={() => onNewsClick(item.id)}
             >
-              <div className="aspect-[3/4] relative overflow-hidden bg-black">
-                {item.image_url ? (
-                  <img
-                    src={item.image_url}
-                    alt={item.title}
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-accent/20 flex items-center justify-center">
-                    <Icon name="Shield" size={48} className="text-accent" />
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
-                
-                <div className="absolute top-3 left-3">
-                  <div className="bg-accent px-3 py-1.5 border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                    <span className="text-white font-black text-[10px] uppercase tracking-wider">
-                      <Icon name="AlertCircle" size={12} className="inline mr-1" />
-                      Важно
-                    </span>
+              <div className="relative overflow-hidden bg-black">
+                <div className="aspect-[4/3] relative overflow-hidden">
+                  {item.image_url ? (
+                    <img
+                      src={item.image_url}
+                      alt={item.title}
+                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-accent/20 flex items-center justify-center">
+                      <Icon name="Shield" size={48} className="text-accent" />
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+                  
+                  <div className="absolute top-3 left-3">
+                    <div className="bg-accent px-3 py-1.5 border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                      <span className="text-white font-black text-[10px] uppercase tracking-wider">
+                        <Icon name="AlertCircle" size={12} className="inline mr-1" />
+                        Важно
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 bg-gradient-to-t from-black via-black/95 to-transparent">
-                  <h4 className="text-white text-base md:text-lg font-black leading-[1.2] line-clamp-3 group-hover:text-accent transition-colors">
+                <div className="p-4 md:p-5 bg-black">
+                  <h4 className="text-white text-base md:text-lg font-bold leading-[1.3] line-clamp-3 group-hover:text-accent transition-colors">
                     {item.title}
                   </h4>
+                  {item.excerpt && (
+                    <p className="text-white/60 text-xs md:text-sm mt-2 line-clamp-2">
+                      {item.excerpt}
+                    </p>
+                  )}
                 </div>
               </div>
             </Card>

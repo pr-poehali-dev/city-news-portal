@@ -37,14 +37,19 @@ export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSe
                 navigate('/');
               }}
             >
-              <div className="flex items-baseline gap-2 md:gap-3">
-                <h1 className="text-4xl md:text-6xl lg:text-8xl font-black text-white uppercase leading-[0.8] tracking-tighter group-hover:scale-105 transition-transform">
-                  ГОРОД
-                </h1>
-                <div className="bg-white px-2 py-1 md:px-4 md:py-2 rotate-[-2deg] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-                  <span className="text-lg md:text-2xl lg:text-4xl font-black text-accent uppercase tracking-tighter">
-                    ГОВОРИТ
-                  </span>
+              <div className="flex flex-col gap-1">
+                <div className="text-white text-xs md:text-sm font-bold uppercase tracking-widest mb-1">
+                  Краснодар
+                </div>
+                <div className="flex items-baseline gap-2 md:gap-3">
+                  <h1 className="text-4xl md:text-6xl lg:text-8xl font-black text-white uppercase leading-[0.8] tracking-tighter group-hover:scale-105 transition-transform">
+                    ГОРОД
+                  </h1>
+                  <div className="bg-white px-2 py-1 md:px-4 md:py-2 rotate-[-2deg] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                    <span className="text-lg md:text-2xl lg:text-4xl font-black text-accent uppercase tracking-tighter">
+                      ГОВОРИТ
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

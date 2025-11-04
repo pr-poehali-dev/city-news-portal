@@ -64,37 +64,39 @@ export function PlacesSection({
               setDialogOpen(true);
             }}
           >
-            <div className="aspect-[4/3] relative overflow-hidden bg-black">
-              {place.image_url ? (
-                <img
-                  src={place.image_url}
-                  alt={place.title}
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-                />
-              ) : (
-                <div className="w-full h-full bg-[#0074D9]/20 flex items-center justify-center">
-                  <Icon name="MapPin" size={64} className="text-[#0074D9]" />
-                </div>
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
-              
-              <div className="absolute top-3 left-3 md:top-6 md:left-6">
-                <div 
-                  className="px-4 py-2 rotate-[-2deg] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                  style={{ backgroundColor: categoryColors[place.category] || '#0074D9' }}
-                >
-                  <span className="text-white font-black text-xs uppercase tracking-[0.2em]">
-                    {place.category}
-                  </span>
+            <div className="relative overflow-hidden bg-black">
+              <div className="aspect-[16/9] relative overflow-hidden">
+                {place.image_url ? (
+                  <img
+                    src={place.image_url}
+                    alt={place.title}
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-[#0074D9]/20 flex items-center justify-center">
+                    <Icon name="MapPin" size={64} className="text-[#0074D9]" />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+                
+                <div className="absolute top-3 left-3 md:top-4 md:left-4">
+                  <div 
+                    className="px-3 py-1.5 border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                    style={{ backgroundColor: categoryColors[place.category] || '#0074D9' }}
+                  >
+                    <span className="text-white font-black text-[10px] uppercase tracking-wider">
+                      {place.category}
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <div className="absolute bottom-0 left-0 right-0 p-3 md:p-6">
-                <h3 className="text-white text-sm md:text-base font-black uppercase leading-tight tracking-tighter mb-2 group-hover:text-[#0074D9] transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] line-clamp-2">
+              <div className="p-4 md:p-5 bg-black">
+                <h3 className="text-white text-base md:text-lg font-bold leading-[1.3] mb-2 group-hover:text-[#0074D9] transition-colors line-clamp-2">
                   {place.title}
                 </h3>
                 
-                <div className="flex items-center gap-2 text-white/80 text-xs uppercase tracking-wider font-bold">
+                <div className="flex items-center gap-2 text-white/60 text-xs md:text-sm">
                   <Icon name="MapPin" size={14} />
                   <span className="truncate">{place.address}</span>
                 </div>
