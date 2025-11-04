@@ -20,98 +20,127 @@ interface EventsSectionProps {
 }
 
 export const EventsSection = ({ events }: EventsSectionProps) => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   if (events.length === 0) return null;
 
-  return (
-    <section className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 py-20 lg:py-32 overflow-hidden">
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/3 left-1/4 w-96 h-96 bg-cyan-300 rounded-full blur-3xl"></div>
-      </div>
+  const currentEvent = events[currentIndex];
 
-      <div className="relative z-10 max-w-[2000px] mx-auto px-6 lg:px-20">
-        <div className="mb-16">
-          <h2 className="text-7xl lg:text-9xl font-black text-white mb-4">
-            Куда
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev === 0 ? events.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev === events.length - 1 ? 0 : prev + 1));
+  };
+
+  return (
+    <section className="bg-black text-white">
+      <div className="max-w-[1800px] mx-auto px-6 lg:px-20 py-20 lg:py-32">
+        <div className="mb-16 lg:mb-24">
+          <h2 className="text-5xl lg:text-8xl font-black tracking-tight mb-4">
+            Афиша
           </h2>
-          <h2 className="text-7xl lg:text-9xl font-black text-white/20">
-            пойти
-          </h2>
+          <div className="w-24 h-1 bg-white"></div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {events.slice(0, 6).map((event, index) => {
-            const isHovered = hoveredIndex === index;
-            
-            return (
-              <a
-                key={event.id}
-                href={event.kudago_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block"
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-              >
-                <div className={`group relative transition-all duration-500 ${
-                  isHovered ? 'scale-105' : 'scale-100'
-                }`}>
-                  <div className="relative aspect-[3/4] overflow-hidden rounded-3xl bg-white shadow-2xl">
-                    <img
-                      src={event.image_url}
-                      alt={event.title}
-                      className={`w-full h-full object-cover transition-transform duration-700 ${
-                        isHovered ? 'scale-110' : 'scale-100'
-                      }`}
-                    />
-                    
-                    <div className={`absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent transition-opacity duration-500 ${
-                      isHovered ? 'opacity-95' : 'opacity-85'
-                    }`}></div>
-
-                    {event.is_free && (
-                      <div className="absolute top-6 right-6 px-4 py-2 bg-green-500 text-white text-xs font-bold rounded-full">
-                        БЕСПЛАТНО
-                      </div>
-                    )}
-
-                    <div className="absolute bottom-0 left-0 right-0 p-8">
-                      <h3 className={`text-white font-black leading-tight mb-6 transition-all duration-300 ${
-                        isHovered ? 'text-3xl' : 'text-2xl'
-                      }`}>
-                        {event.title}
-                      </h3>
-
-                      <div className={`space-y-3 text-white/80 text-sm transition-opacity duration-500 ${
-                        isHovered ? 'opacity-100' : 'opacity-0'
-                      }`}>
-                        <div className="flex items-center gap-3">
-                          <Icon name="MapPin" size={16} />
-                          <span className="line-clamp-1">{event.location}</span>
-                        </div>
-                        
-                        {event.event_date_display && (
-                          <div className="flex items-center gap-3">
-                            <Icon name="Clock" size={16} />
-                            <span>{event.event_date_display}</span>
-                          </div>
-                        )}
-                        
-                        {!event.is_free && event.price && (
-                          <div className="flex items-center gap-3">
-                            <Icon name="Ticket" size={16} />
-                            <span>{event.price}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
+          <div className="lg:col-span-7">
+            <a
+              href={currentEvent.kudago_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block group"
+            >
+              <div className="relative aspect-[4/3] lg:aspect-[16/10] overflow-hidden mb-8">
+                <img
+                  src={currentEvent.image_url}
+                  alt={currentEvent.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                
+                {currentEvent.is_free && (
+                  <div className="absolute top-6 right-6 bg-green-500 text-black px-6 py-2 font-black text-sm tracking-wider">
+                    БЕСПЛАТНО
                   </div>
+                )}
+              </div>
+            </a>
+
+            <div className="flex items-center gap-4 mb-8">
+              <button
+                onClick={handlePrev}
+                className="w-12 h-12 border border-white/20 hover:bg-white hover:text-black transition-colors flex items-center justify-center"
+              >
+                <Icon name="ChevronLeft" size={20} />
+              </button>
+              
+              <div className="flex-1 h-px bg-white/10"></div>
+              
+              <span className="text-sm font-mono text-gray-500">
+                {String(currentIndex + 1).padStart(2, '0')} / {String(events.length).padStart(2, '0')}
+              </span>
+              
+              <div className="flex-1 h-px bg-white/10"></div>
+
+              <button
+                onClick={handleNext}
+                className="w-12 h-12 border border-white/20 hover:bg-white hover:text-black transition-colors flex items-center justify-center"
+              >
+                <Icon name="ChevronRight" size={20} />
+              </button>
+            </div>
+          </div>
+
+          <div className="lg:col-span-5">
+            <a
+              href={currentEvent.kudago_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block group"
+            >
+              <h3 className="text-3xl lg:text-5xl font-black leading-tight mb-8 lg:mb-12 group-hover:text-gray-300 transition-colors">
+                {currentEvent.title}
+              </h3>
+
+              <div className="space-y-6 lg:space-y-8 mb-12">
+                <div className="flex gap-4">
+                  <Icon name="MapPin" size={24} className="flex-shrink-0 text-gray-500" />
+                  <span className="text-lg lg:text-xl text-gray-300">
+                    {currentEvent.location}
+                  </span>
                 </div>
-              </a>
-            );
-          })}
+
+                {currentEvent.event_date_display && (
+                  <div className="flex gap-4">
+                    <Icon name="Clock" size={24} className="flex-shrink-0 text-gray-500" />
+                    <span className="text-lg lg:text-xl text-gray-300">
+                      {currentEvent.event_date_display}
+                    </span>
+                  </div>
+                )}
+
+                {!currentEvent.is_free && currentEvent.price && (
+                  <div className="flex gap-4">
+                    <Icon name="Ticket" size={24} className="flex-shrink-0 text-gray-500" />
+                    <span className="text-lg lg:text-xl text-gray-300">
+                      {currentEvent.price}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between pt-8 border-t border-white/10">
+                <span className="text-sm font-mono text-gray-500">
+                  {currentEvent.age_restriction}
+                </span>
+                <div className="flex items-center gap-2 text-white group-hover:gap-4 transition-all">
+                  <span className="font-black tracking-wider">ПОДРОБНЕЕ</span>
+                  <Icon name="ArrowRight" size={20} />
+                </div>
+              </div>
+            </a>
+          </div>
         </div>
       </div>
     </section>
