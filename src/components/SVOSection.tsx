@@ -80,7 +80,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
                       <Icon name="Shield" size={48} className="text-accent" />
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/40"></div>
                   
                   <div className="absolute top-3 left-3">
                     <div className="bg-accent px-3 py-1.5 border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
@@ -93,7 +93,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
                 </div>
 
                 <div className="p-4 md:p-5 bg-black">
-                  <h4 className="text-white text-base md:text-lg font-bold leading-[1.3] line-clamp-3 group-hover:text-accent transition-colors">
+                  <h4 className="text-white text-lg md:text-xl font-black uppercase leading-tight tracking-tighter line-clamp-3 group-hover:text-accent transition-colors">
                     {item.title}
                   </h4>
                   {item.excerpt && (

@@ -71,7 +71,7 @@ export const ShowbizSection = () => {
                   alt={item.title}
                   className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/40"></div>
                 
                 <div className="absolute top-3 left-3">
                   <div className="bg-[#B10DC9] px-3 py-1.5 border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
@@ -84,7 +84,7 @@ export const ShowbizSection = () => {
               </div>
 
               <div className="p-4 md:p-5 bg-black">
-                <h4 className="text-white text-base md:text-lg font-bold leading-[1.3] line-clamp-3 group-hover:text-[#B10DC9] transition-colors">
+                <h4 className="text-white text-lg md:text-xl font-black uppercase leading-tight tracking-tighter line-clamp-3 group-hover:text-[#B10DC9] transition-colors">
                   {item.title}
                 </h4>
                 {item.excerpt && (
