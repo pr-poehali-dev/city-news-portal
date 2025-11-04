@@ -34,12 +34,12 @@ export const HeroSection = ({ mainNews, sideNews, onNewsClick }: HeroSectionProp
           <img
             src={mainNews.image_url || mainNews.image || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
             alt=""
-            className="w-full h-full object-cover opacity-40"
+            className="w-full h-full object-cover opacity-60"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-gray-900 via-black to-gray-900"></div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
       </div>
 
       <div className="relative z-10 px-6 lg:px-20 py-32 w-full max-w-[1800px] mx-auto">

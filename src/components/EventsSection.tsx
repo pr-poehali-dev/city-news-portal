@@ -100,25 +100,25 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
                           </div>
                           
                           <div className="p-8">
-                            <h3 className="text-2xl font-bold mb-4 line-clamp-2">
+                            <h3 className="text-3xl font-bold mb-6 line-clamp-3">
                               {event.title}
                             </h3>
                             
-                            <div className="space-y-3 text-gray-400 mb-6">
-                              <div className="flex items-center gap-2">
-                                <Icon name="MapPin" size={16} />
-                                <span className="text-sm">{event.location}</span>
+                            <div className="space-y-4 text-gray-400 mb-8">
+                              <div className="flex items-start gap-3">
+                                <Icon name="MapPin" size={20} className="flex-shrink-0 mt-1" />
+                                <span className="text-base">{event.location}</span>
                               </div>
                               {event.event_date_display && (
-                                <div className="flex items-center gap-2">
-                                  <Icon name="Clock" size={16} />
-                                  <span className="text-sm">{event.event_date_display}</span>
+                                <div className="flex items-start gap-3">
+                                  <Icon name="Clock" size={20} className="flex-shrink-0 mt-1" />
+                                  <span className="text-base">{event.event_date_display}</span>
                                 </div>
                               )}
                               {!event.is_free && event.price && (
-                                <div className="flex items-center gap-2">
-                                  <Icon name="Ticket" size={16} />
-                                  <span className="text-sm">{event.price}</span>
+                                <div className="flex items-start gap-3">
+                                  <Icon name="Ticket" size={20} className="flex-shrink-0 mt-1" />
+                                  <span className="text-base">{event.price}</span>
                                 </div>
                               )}
                             </div>

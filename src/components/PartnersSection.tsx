@@ -55,8 +55,8 @@ export const PartnersSection = () => {
         {partners.map((partner, idx) => (
           <MagneticCard key={idx} className="mb-12">
             <div className="bg-white rounded-3xl overflow-hidden shadow-2xl">
-              <div className="grid md:grid-cols-2 gap-0">
-                <div className="relative h-[400px] overflow-hidden group">
+              <div className="grid lg:grid-cols-2 gap-0">
+                <div className="relative h-[400px] lg:h-auto overflow-hidden group">
                   <img 
                     src={partner.image} 
                     alt={partner.name}
@@ -71,35 +71,37 @@ export const PartnersSection = () => {
                   </div>
                 </div>
 
-                <div className="p-12 flex flex-col justify-between">
+                <div className="p-8 lg:p-12 flex flex-col justify-between min-h-[500px]">
                   <div>
-                    <h3 className="text-4xl font-black mb-6 tracking-tight">
+                    <h3 className="text-3xl lg:text-4xl font-black mb-6 tracking-tight">
                       {partner.name}
                     </h3>
-                    <p className="text-gray-600 text-lg leading-relaxed mb-8">
+                    <p className="text-gray-600 text-base lg:text-lg leading-relaxed mb-8">
                       {partner.description}
                     </p>
                   </div>
 
                   {partner.discount && (
                     <div className="bg-gradient-to-br from-pink-100 to-purple-100 rounded-2xl p-6 mb-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center">
-                          <Icon name="Gift" size={24} className="text-white" />
+                      <div className="flex flex-col gap-4 mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+                            <Icon name="Gift" size={24} className="text-white" />
+                          </div>
+                          <p className="text-xl lg:text-2xl font-bold text-gray-900">
+                            {partner.discount}
+                          </p>
                         </div>
-                        <p className="text-2xl font-bold text-gray-900">
-                          {partner.discount}
-                        </p>
                       </div>
                       
                       {partner.promoCode && (
-                        <div className="flex items-center gap-3">
-                          <div className="flex-1 bg-white rounded-xl px-4 py-3 font-mono font-bold text-xl text-center text-pink-600 border-2 border-dashed border-pink-300">
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                          <div className="flex-1 bg-white rounded-xl px-4 py-3 font-mono font-bold text-lg lg:text-xl text-center text-pink-600 border-2 border-dashed border-pink-300">
                             {partner.promoCode}
                           </div>
                           <button
                             onClick={() => copyPromoCode(partner.promoCode!)}
-                            className="px-6 py-3 bg-black text-white font-semibold rounded-xl hover:bg-gray-800 transition-colors flex items-center gap-2"
+                            className="px-6 py-3 bg-black text-white font-semibold rounded-xl hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 whitespace-nowrap"
                           >
                             {copiedPromo === partner.promoCode ? (
                               <>
@@ -122,7 +124,7 @@ export const PartnersSection = () => {
                     href={partner.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-lg px-8 py-4 rounded-2xl hover:shadow-2xl hover:scale-105 transition-all"
+                    className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-base lg:text-lg px-8 py-4 rounded-2xl hover:shadow-2xl hover:scale-105 transition-all"
                   >
                     Перейти на сайт
                     <Icon name="ExternalLink" size={20} />
