@@ -80,7 +80,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
                       <Icon name="Shield" size={48} className="text-accent" />
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/40"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent"></div>
                   
                   <div className="absolute top-3 left-3">
                     <div className="bg-accent px-3 py-1.5 border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">

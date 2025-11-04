@@ -77,7 +77,7 @@ export function PlacesSection({
                     <Icon name="MapPin" size={64} className="text-[#0074D9]" />
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/40"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent"></div>
                 
                 <div className="absolute top-3 left-3 md:top-4 md:left-4">
                   <div 

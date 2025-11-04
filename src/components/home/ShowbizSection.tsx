@@ -71,7 +71,7 @@ export const ShowbizSection = () => {
                   alt={item.title}
                   className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/40"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent"></div>
                 
                 <div className="absolute top-3 left-3">
                   <div className="bg-[#B10DC9] px-3 py-1.5 border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">

@@ -41,28 +41,16 @@ export const PartnersSection = () => {
   };
 
   return (
-    <section className="mb-0 border-t-4 border-primary max-w-full overflow-hidden bg-gradient-to-br from-[#FF6B35]/10 via-[#FFD23F]/10 to-[#FF6B35]/5">
-      <div className="bg-gradient-to-r from-[#FF6B35] via-[#FFD23F] to-[#FF6B35] px-4 md:px-8 py-8 md:py-12 border-b-4 border-primary relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full blur-3xl"></div>
-        </div>
-        <div className="flex items-center justify-between gap-4 relative z-10">
+    <section className="mb-0 border-t-4 border-primary max-w-full overflow-hidden">
+      <div className="bg-[#FF6B35] px-4 md:px-8 py-6 md:py-8 border-b-4 border-primary">
+        <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="bg-black p-3 border-4 border-primary shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                <Icon name="Sparkles" size={32} className="text-[#FFD23F]" />
-              </div>
-              <h2 className="text-3xl md:text-4xl lg:text-6xl font-black text-black uppercase leading-[0.85] tracking-tighter [text-shadow:_3px_3px_0_rgb(255_255_255_/_50%)]">
-                ПАРТНЁРЫ
-              </h2>
-            </div>
-            <div className="h-2 w-24 md:w-40 bg-black"></div>
-            <p className="text-black font-bold text-sm md:text-base mt-2 uppercase tracking-wide">Выгодные предложения для наших читателей</p>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-2 md:mb-3">
+              ПАРТНЁРЫ
+            </h2>
+            <div className="h-1 w-16 md:w-24 bg-[#FFD23F]"></div>
           </div>
-          <div className="hidden md:block bg-black p-4 border-4 border-primary shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-            <Icon name="Gift" size={48} className="text-[#FFD23F]" />
-          </div>
+          <Icon name="Handshake" size={32} className="text-white/30 flex-shrink-0 md:w-12 md:h-12" />
         </div>
       </div>
 
@@ -98,24 +86,19 @@ export const PartnersSection = () => {
                   </div>
                 </div>
 
-                <div className="p-4 md:p-6 lg:p-8 bg-gradient-to-r from-[#FF6B35] to-[#FFD23F]">
-                  <h3 className="text-white text-lg md:text-2xl font-black uppercase leading-tight tracking-tighter mb-2 md:mb-3 [text-shadow:_2px_2px_0_rgb(0_0_0_/_40%)] line-clamp-2">
+                <div className="p-4 md:p-5 bg-black">
+                  <h3 className="text-white text-lg md:text-xl font-black uppercase leading-tight tracking-tighter mb-2 line-clamp-2 group-hover:text-[#FF6B35] transition-colors">
                     {partner.name}
                   </h3>
                   
-                  <p className="text-white/90 text-sm md:text-base line-clamp-2 mb-3 md:mb-4">
+                  <p className="text-white/60 text-xs md:text-sm line-clamp-2">
                     {partner.description}
                   </p>
-                  
-                  <div className="flex items-center gap-2 text-white font-black uppercase text-xs md:text-sm bg-black px-4 py-2 inline-flex border-2 border-white">
-                    <Icon name="ExternalLink" size={16} />
-                    Перейти на сайт
-                  </div>
                 </div>
               </div>
             </a>
 
-            <div className="p-4 md:p-6 bg-white flex flex-col justify-between border-l-4 border-[#FFD23F]">
+            <div className="p-4 md:p-6 bg-white flex flex-col justify-between">
               {partner.discount && (
                 <div className="mb-4">
                   <div className="mb-4 pb-4 border-b-4 border-[#FFD23F]">
