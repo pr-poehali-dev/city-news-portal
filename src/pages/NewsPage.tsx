@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { SiteHeader } from '@/components/SiteHeader';
 import { Footer } from '@/components/Footer';
@@ -46,12 +46,12 @@ export const NewsPage = () => {
   const [loading, setLoading] = useState(true);
   const [promoUsageCount] = useState(() => Math.floor(Math.random() * 100) + 1);
   const [displayCount, setDisplayCount] = useState(0);
-  const [adRendered, setAdRendered] = useState(false);
+  const adRenderedRef = useRef(false);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        setAdRendered(false);
+        adRenderedRef.current = false;
         const articleResponse = await fetch(`${FUNCTIONS_URL.news}?id=${id}&increment_views=true`);
         const currentArticle = await articleResponse.json();
         
@@ -110,22 +110,25 @@ export const NewsPage = () => {
   }, [loading, article, promoUsageCount]);
 
   useEffect(() => {
-    if (!loading && article && !adRendered && window.yaContextCb) {
-      const container = document.getElementById('yandex_rtb_R-A-17651616-1');
-      if (container && container.children.length === 0) {
-        window.yaContextCb.push(() => {
-          if (window.Ya?.Context?.AdvManager) {
-            window.Ya.Context.AdvManager.render({
-              blockId: "R-A-17651616-1",
-              renderTo: "yandex_rtb_R-A-17651616-1",
-              type: "feed"
-            });
-            setAdRendered(true);
-          }
-        });
-      }
+    if (!loading && article && !adRenderedRef.current) {
+      const timer = setTimeout(() => {
+        if (window.yaContextCb && !adRenderedRef.current) {
+          window.yaContextCb.push(() => {
+            if (window.Ya?.Context?.AdvManager) {
+              window.Ya.Context.AdvManager.render({
+                blockId: "R-A-17651616-1",
+                renderTo: "yandex_rtb_R-A-17651616-1",
+                type: "feed"
+              });
+              adRenderedRef.current = true;
+            }
+          });
+        }
+      }, 500);
+      
+      return () => clearTimeout(timer);
     }
-  }, [loading, article, adRendered]);
+  }, [loading, article]);
 
   const handleAddComment = async () => {
     if (commentName.trim() && commentText.trim() && id) {

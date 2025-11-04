@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { SiteHeader } from '@/components/SiteHeader';
@@ -27,12 +27,12 @@ const MemoryPage = () => {
   const [article, setArticle] = useState<MemoryArticle | null>(null);
   const [loading, setLoading] = useState(true);
   const [sections, setSections] = useState<string[]>([]);
-  const [adRendered, setAdRendered] = useState(false);
+  const adRenderedRef = useRef(false);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        setAdRendered(false);
+        adRenderedRef.current = false;
         const response = await fetch(FUNCTIONS_URL.memory);
         if (response.ok) {
           const data = await response.json();
@@ -55,22 +55,25 @@ const MemoryPage = () => {
   }, [id]);
 
   useEffect(() => {
-    if (!loading && article && !adRendered && window.yaContextCb) {
-      const container = document.getElementById('yandex_rtb_R-A-17651616-1');
-      if (container && container.children.length === 0) {
-        window.yaContextCb.push(() => {
-          if (window.Ya?.Context?.AdvManager) {
-            window.Ya.Context.AdvManager.render({
-              blockId: "R-A-17651616-1",
-              renderTo: "yandex_rtb_R-A-17651616-1",
-              type: "feed"
-            });
-            setAdRendered(true);
-          }
-        });
-      }
+    if (!loading && article && !adRenderedRef.current) {
+      const timer = setTimeout(() => {
+        if (window.yaContextCb && !adRenderedRef.current) {
+          window.yaContextCb.push(() => {
+            if (window.Ya?.Context?.AdvManager) {
+              window.Ya.Context.AdvManager.render({
+                blockId: "R-A-17651616-1",
+                renderTo: "yandex_rtb_R-A-17651616-1",
+                type: "feed"
+              });
+              adRenderedRef.current = true;
+            }
+          });
+        }
+      }, 500);
+      
+      return () => clearTimeout(timer);
     }
-  }, [loading, article, adRendered]);
+  }, [loading, article]);
 
   const handleSectionChange = (section: string) => {
     navigate('/');
