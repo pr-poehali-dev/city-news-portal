@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
-import CityMap from '@/components/CityMap';
 import { PlaceDialog } from '@/components/PlaceDialog';
 
 interface PlacesSectionProps {
@@ -25,159 +21,126 @@ export function PlacesSection({
   onShowAllToggle,
 }: PlacesSectionProps) {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedPlace, setSelectedPlace] = useState<any>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const categories = Array.from(new Set(cityPlaces.map(p => p.category)));
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
   
   const filteredByCategory = selectedCategory
     ? cityPlaces.filter(p => p.category === selectedCategory)
     : cityPlaces;
-  
-  const filteredPlaces = searchQuery
-    ? filteredByCategory.filter(p => 
-        p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : filteredByCategory;
 
-  const displayedPlaces = showAllPlaces ? filteredPlaces : filteredPlaces.slice(0, 4);
+  const displayedPlaces = filteredByCategory.slice(0, 6);
+
+  const bentoLayout = [
+    { cols: 'lg:col-span-6', rows: 'lg:row-span-2' },
+    { cols: 'lg:col-span-3', rows: 'lg:row-span-1' },
+    { cols: 'lg:col-span-3', rows: 'lg:row-span-1' },
+    { cols: 'lg:col-span-4', rows: 'lg:row-span-1' },
+    { cols: 'lg:col-span-4', rows: 'lg:row-span-1' },
+    { cols: 'lg:col-span-4', rows: 'lg:row-span-1' },
+  ];
 
   return (
-    <div className="mb-12">
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-3xl font-bold">Город говорит</h2>
-          <Button 
-            variant="outline" 
+    <section className="relative bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 py-20 lg:py-32 overflow-hidden">
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-yellow-300 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="relative z-10 max-w-[2000px] mx-auto px-6 lg:px-20">
+        <div className="flex items-end justify-between mb-16">
+          <div>
+            <h2 className="text-7xl lg:text-9xl font-black text-white mb-4">
+              Город
+            </h2>
+            <h2 className="text-7xl lg:text-9xl font-black text-white/20">
+              говорит
+            </h2>
+          </div>
+          <button
             onClick={() => navigate('/places')}
-            className="gap-2"
+            className="hidden lg:flex items-center gap-3 px-8 py-4 bg-white text-orange-600 font-bold rounded-full hover:scale-105 transition-transform"
           >
-            Все места
-            <Icon name="ArrowRight" size={16} />
-          </Button>
-        </div>
-        
-        <div className="flex flex-col md:flex-row gap-4 mb-4">
-          <div className="relative flex-1">
-            <Icon name="Search" size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Поиск по названию, адресу или описанию..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
+            ВСЕ МЕСТА
+            <Icon name="ArrowRight" size={20} />
+          </button>
         </div>
 
-        <div className="flex gap-2 flex-wrap">
-          <Button
-            variant={selectedCategory === null ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => onCategorySelect(null)}
-          >
-            Все
-          </Button>
-          {categories.map(cat => (
-            <Button
-              key={cat}
-              variant={selectedCategory === cat ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => onCategorySelect(cat)}
-              className="gap-2"
-            >
-              <div
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: categoryColors[cat as keyof typeof categoryColors] }}
-              />
-              {cat}
-            </Button>
-          ))}
-        </div>
-      </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 auto-rows-fr">
+          {displayedPlaces.map((place, index) => {
+            const layout = bentoLayout[index % bentoLayout.length];
+            const isHovered = hoveredId === place.id;
+            const isLarge = layout.cols === 'lg:col-span-6';
+            
+            return (
+              <article
+                key={place.id}
+                className={`group cursor-pointer ${layout.cols} ${layout.rows}`}
+                onClick={() => {
+                  setSelectedPlace(place);
+                  setDialogOpen(true);
+                }}
+                onMouseEnter={() => setHoveredId(place.id)}
+                onMouseLeave={() => setHoveredId(null)}
+              >
+                <div className={`relative h-full overflow-hidden rounded-3xl bg-white shadow-2xl transition-transform duration-500 ${
+                  isHovered ? 'scale-105' : 'scale-100'
+                }`}>
+                  <div className={`relative h-full ${isLarge ? 'aspect-[16/10] lg:aspect-auto' : 'aspect-square lg:aspect-auto'}`}>
+                    <img
+                      src={place.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
+                      alt={place.title}
+                      className={`w-full h-full object-cover transition-transform duration-700 ${
+                        isHovered ? 'scale-110' : 'scale-100'
+                      }`}
+                    />
+                    
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
 
-      {searchQuery && (
-        <div className="mb-4 text-sm text-muted-foreground">
-          Найдено мест: {filteredPlaces.length}
-        </div>
-      )}
+                    <div className="absolute top-6 left-6">
+                      <span 
+                        className="inline-block px-4 py-2 text-white text-xs font-bold rounded-full"
+                        style={{ 
+                          backgroundColor: categoryColors[place.category] || '#FF6B6B'
+                        }}
+                      >
+                        {place.category}
+                      </span>
+                    </div>
 
-      <div 
-        className="mb-8 relative cursor-pointer group overflow-hidden rounded-lg"
-        onClick={() => navigate('/places/map')}
-      >
-        <div className="absolute inset-0 bg-black/40 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="bg-white px-6 py-3 rounded-lg flex items-center gap-2 font-semibold">
-            <Icon name="Map" size={20} />
-            Открыть карту
-          </div>
-        </div>
-        <div className="pointer-events-none">
-          <CityMap places={filteredPlaces} onPlaceClick={() => {}} interactive={false} height="300px" />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        {displayedPlaces.map((place) => (
-          <Card 
-            key={place.id} 
-            className="overflow-hidden hover:shadow-lg transition-all cursor-pointer"
-            onClick={() => {
-              setSelectedPlace(place);
-              setDialogOpen(true);
-            }}
-          >
-            <CardContent className="p-0">
-              {place.image_url && (
-                <div className="relative h-40 md:h-48 overflow-hidden">
-                  <img
-                    src={place.image_url}
-                    alt={place.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div
-                    className="absolute top-3 right-3 w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-white shadow-lg"
-                    style={{ backgroundColor: categoryColors[place.category as keyof typeof categoryColors] }}
-                  />
+                    <div className={`absolute bottom-0 left-0 right-0 p-6 lg:p-8 ${isLarge ? 'lg:p-12' : ''}`}>
+                      <h3 className={`text-white font-black leading-tight mb-3 ${
+                        isLarge ? 'text-3xl lg:text-5xl' : 'text-2xl lg:text-3xl'
+                      }`}>
+                        {place.title}
+                      </h3>
+                      
+                      <div className="flex items-start gap-2 text-white/80 text-sm">
+                        <Icon name="MapPin" size={16} className="flex-shrink-0 mt-0.5" />
+                        <span className="line-clamp-1">{place.address}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              )}
-              <div className="p-3 md:p-4">
-                <h3 className="text-base md:text-lg font-semibold mb-1 md:mb-2 line-clamp-1">{place.title}</h3>
-                <div className="flex items-center gap-1 md:gap-2 text-xs md:text-sm text-muted-foreground mb-2">
-                  <Icon name="MapPin" size={12} className="flex-shrink-0" />
-                  <span className="truncate">{place.address}</span>
-                </div>
-                <p className="text-muted-foreground text-xs md:text-sm line-clamp-2">{place.excerpt}</p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </article>
+            );
+          })}
+        </div>
+
+        <button
+          onClick={() => navigate('/places')}
+          className="lg:hidden mt-8 w-full flex items-center justify-center gap-3 px-8 py-4 bg-white text-orange-600 font-bold rounded-full"
+        >
+          ВСЕ МЕСТА
+          <Icon name="ArrowRight" size={20} />
+        </button>
+
+        <PlaceDialog
+          place={selectedPlace}
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+        />
       </div>
-
-      {filteredPlaces.length === 0 && (
-        <div className="text-center py-12">
-          <Icon name="Search" size={48} className="mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">Ничего не найдено</p>
-          <p className="text-sm text-muted-foreground mt-2">Попробуйте изменить запрос или выбрать другую категорию</p>
-        </div>
-      )}
-
-      {filteredPlaces.length > 4 && !showAllPlaces && (
-        <div className="text-center mt-6">
-          <Button onClick={() => navigate('/places')} variant="outline">
-            Показать все ({filteredPlaces.length})
-          </Button>
-        </div>
-      )}
-
-      <PlaceDialog
-        place={selectedPlace}
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        categoryColor={selectedPlace ? categoryColors[selectedPlace.category as keyof typeof categoryColors] : undefined}
-      />
-    </div>
+    </section>
   );
 }

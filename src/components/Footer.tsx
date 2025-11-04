@@ -13,12 +13,9 @@ export const Footer = ({ sections = [], onSectionChange }: FooterProps) => {
         <div className="grid md:grid-cols-4 gap-16">
           <div>
             <div className="mb-6">
-              <div className="relative inline-block">
-                <div className="absolute -inset-2 bg-gradient-to-r from-accent via-purple-500 to-pink-500 rounded-2xl opacity-20 blur-xl"></div>
-                <h3 className="relative text-3xl font-display font-bold bg-gradient-to-r from-accent via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  Город Говорит
-                </h3>
-              </div>
+              <h3 className="text-4xl font-black text-white mb-2">
+                Город Говорит
+              </h3>
             </div>
             <p className="text-sm text-gray-400 mb-8">
               Краснодар • 2025
