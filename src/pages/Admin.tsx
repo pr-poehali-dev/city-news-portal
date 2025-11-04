@@ -2,8 +2,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LoginForm } from '@/components/admin/LoginForm';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 import { NewsManagement } from '@/components/admin/NewsManagement';
-import { EventsManagement } from '@/components/admin/EventsManagement';
-import { PlacesManagement } from '@/components/admin/PlacesManagement';
 import { MemoryManagement } from '@/components/admin/MemoryManagement';
 import { AuthorsManagement } from '@/components/admin/AuthorsManagement';
 import { SettingsManagement } from '@/components/admin/SettingsManagement';
@@ -93,11 +91,9 @@ const Admin = () => {
       <main className="container mx-auto px-3 py-4 md:px-4 md:py-8">
         <Tabs defaultValue="news" className="space-y-4 md:space-y-6">
           <div className="sticky top-[73px] md:top-[81px] z-40 bg-background pb-2 pt-1">
-            <TabsList className="grid w-full grid-cols-3 md:grid-cols-4 lg:grid-cols-9 gap-1 md:gap-2 h-auto">
+            <TabsList className="grid w-full grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-1 md:gap-2 h-auto">
               <TabsTrigger value="news" className="text-xs md:text-sm py-2">Новости</TabsTrigger>
-              <TabsTrigger value="events" className="text-xs md:text-sm py-2">События</TabsTrigger>
-              <TabsTrigger value="places" className="text-xs md:text-sm py-2">Оценил</TabsTrigger>
-              <TabsTrigger value="memory" className="text-xs md:text-sm py-2">Помнит</TabsTrigger>
+              <TabsTrigger value="memory" className="text-xs md:text-sm py-2">Память</TabsTrigger>
               <TabsTrigger value="youth" className="text-xs md:text-sm py-2">Пульс</TabsTrigger>
               <TabsTrigger value="authors" className="text-xs md:text-sm py-2">Авторы</TabsTrigger>
               <TabsTrigger value="analytics" className="text-xs md:text-sm py-2">Аналитика</TabsTrigger>
@@ -126,32 +122,6 @@ const Admin = () => {
             />
           </TabsContent>
 
-          <TabsContent value="events">
-            <EventsManagement
-              eventForm={eventForm}
-              setEventForm={setEventForm}
-              eventsList={eventsList}
-              loading={loading}
-              onEventSubmit={handleEventSubmit}
-              onDeleteEvent={handleDeleteEvent}
-            />
-          </TabsContent>
-
-          <TabsContent value="places">
-            <PlacesManagement
-              placeForm={placeForm}
-              setPlaceForm={setPlaceForm}
-              placesList={placesList}
-              loading={loading}
-              onPlaceSubmit={handlePlaceSubmit}
-              onDeletePlace={handleDeletePlace}
-              onTogglePublish={handleTogglePublishPlace}
-              onToggleFeatured={handleToggleFeaturedPlace}
-              onEditPlace={handleEditPlace}
-              onUpdatePlace={handleUpdatePlace}
-            />
-          </TabsContent>
-
           <TabsContent value="memory">
             <MemoryManagement
               memoryForm={memoryForm}
@@ -166,9 +136,7 @@ const Admin = () => {
             />
           </TabsContent>
 
-          <TabsContent value="youth">
-            <YouthNotesManagement loading={loading} />
-          </TabsContent>
+
 
           <TabsContent value="authors">
             <AuthorsManagement

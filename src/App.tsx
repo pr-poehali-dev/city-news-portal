@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { useEffect } from "react";
 import { clearCacheIfNeeded } from "@/utils/cache-manager";
+import { CityProvider } from "@/contexts/CityContext";
 
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
@@ -42,11 +43,12 @@ const App = () => {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
+        <CityProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/news/:id" element={<NewsPage />} />
@@ -64,6 +66,7 @@ const App = () => {
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
+      </CityProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   );
