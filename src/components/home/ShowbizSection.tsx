@@ -50,13 +50,19 @@ export const ShowbizSection = () => {
   const [mainNews, ...sideNews] = news;
 
   return (
-    <section className="py-12 md:py-16 bg-gradient-to-br from-background via-muted/30 to-background relative overflow-hidden border-y">
+    <section className="py-12 md:py-16 bg-gradient-to-br from-pink-50 via-purple-50 to-pink-50 relative overflow-hidden rounded-3xl mb-16 border-4 border-pink-200">
       <div className="absolute inset-0">
-        <div className="absolute top-10 right-20 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 left-20 w-72 h-72 bg-pink-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-10 right-20 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 left-20 w-72 h-72 bg-pink-500/10 rounded-full blur-3xl" />
       </div>
       
       <div className="container mx-auto px-4 relative z-10">
+        <div className="flex items-center gap-4 mb-2">
+          <div className="h-1 w-16 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full"></div>
+          <h2 className="text-4xl font-black">⭐ Звёзды и стиль</h2>
+        </div>
+        <p className="text-muted-foreground text-lg ml-20 mb-8">Шоу-бизнес, мода и культура</p>
+        
         <div className="flex items-center justify-between mb-8 md:mb-10">
           <div>
             <div className="flex items-center gap-3 mb-2">

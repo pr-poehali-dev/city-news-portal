@@ -28,7 +28,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
   const sideNews = news && news.length > 1 ? news.slice(1) : [];
 
   return (
-    <section className="mb-16 bg-gradient-to-b from-slate-900 to-slate-800 -mx-6 px-6 py-12 border-t-4 border-red-700">
+    <section className="mb-16 bg-gradient-to-b from-slate-900 to-slate-800 rounded-3xl px-6 py-12 border-4 border-red-700 shadow-2xl">
       <div className="max-w-7xl mx-auto">
         <div className="bg-gradient-to-r from-red-900/20 via-red-800/20 to-red-900/20 border border-red-700/30 rounded-lg p-4 mb-8">
           <div className="flex items-center justify-center gap-3 text-white">

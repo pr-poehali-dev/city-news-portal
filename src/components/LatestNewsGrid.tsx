@@ -1,5 +1,3 @@
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 
 interface LatestNewsGridProps {
@@ -15,7 +13,6 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 6 }: LatestNewsGridP
     if (!html) return '';
     
     let text = html;
-    
     text = text.replace(/<[^>]+>/g, '');
     text = text.replace(/&nbsp;/gi, ' ');
     text = text.replace(/&mdash;/gi, '-');
@@ -26,7 +23,6 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 6 }: LatestNewsGridP
     text = text.replace(/&ldquo;/gi, '"');
     text = text.replace(/&hellip;/gi, '...');
     text = text.replace(/&[a-z]+;/gi, ' ');
-    
     text = text.replace(/[\u00a0\u202f\u2009\u2000-\u200b]/g, ' ');
     text = text.replace(/[\u2011-\u2015]/g, '-');
     text = text.replace(/[\u2018\u2019]/g, "'");
@@ -37,15 +33,20 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 6 }: LatestNewsGridP
   };
 
   return (
-    <section className="mb-12">
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl font-bold font-serif text-foreground">Последние новости</h2>
+    <section className="mb-16">
+      <div className="mb-8">
+        <div className="flex items-center gap-4 mb-2">
+          <div className="h-1 w-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
+          <h2 className="text-4xl font-black text-foreground">Последние новости</h2>
+        </div>
+        <p className="text-muted-foreground text-lg ml-20">Самое актуальное за сегодня</p>
       </div>
+      
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {displayNews.map((item) => (
-          <Card
+          <div
             key={item.id}
-            className="group overflow-hidden cursor-pointer border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            className="group overflow-hidden cursor-pointer rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-2 border-gray-100 hover:border-orange-500 bg-white"
             onClick={() => onNewsClick(item.id)}
           >
             <div className="relative h-56 overflow-hidden">
@@ -53,38 +54,45 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 6 }: LatestNewsGridP
                 <img
                   src={item.image_url}
                   alt={item.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                  <Icon name="FileText" size={48} className="text-primary/30" />
+                <div className="w-full h-full bg-gradient-to-br from-orange-100 to-red-100 flex items-center justify-center">
+                  <Icon name="FileText" size={48} className="text-orange-300" />
                 </div>
               )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="absolute top-3 left-3">
-                <Badge className="bg-primary text-white font-bold px-3 py-1 text-xs uppercase shadow-lg">
+                <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold px-4 py-2 rounded-lg text-xs uppercase shadow-lg">
                   {item.category}
-                </Badge>
+                </div>
               </div>
             </div>
+            
             <div className="p-5">
-              <h3 className="font-bold text-lg leading-tight mb-3 line-clamp-2 group-hover:text-primary transition-colors">
+              <h3 className="font-bold text-lg leading-tight mb-3 line-clamp-3 group-hover:text-orange-600 transition-colors">
                 {item.title}
               </h3>
               <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
                 {stripHtml(item.excerpt || item.content)}
               </p>
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <div className="flex items-center gap-1.5">
-                  <Icon name="Calendar" size={14} />
-                  <span>{new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
+              <div className="flex items-center justify-between text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <Icon name="Calendar" size={16} />
+                  <span>
+                    {new Date(item.created_at).toLocaleDateString('ru-RU', {
+                      day: 'numeric',
+                      month: 'short'
+                    })}
+                  </span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Icon name="Heart" size={14} />
-                  <span>{item.likes || 0}</span>
+                <div className="flex items-center gap-2">
+                  <Icon name="Clock" size={16} />
+                  <span>{item.read_time || '5 мин'}</span>
                 </div>
               </div>
             </div>
-          </Card>
+          </div>
         ))}
       </div>
     </section>

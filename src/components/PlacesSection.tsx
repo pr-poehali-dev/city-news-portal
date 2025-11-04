@@ -45,10 +45,16 @@ export function PlacesSection({
   const displayedPlaces = showAllPlaces ? filteredPlaces : filteredPlaces.slice(0, 4);
 
   return (
-    <div className="mb-12">
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-3xl font-bold">Город говорит</h2>
+    <div className="mb-16">
+      <div className="mb-8">
+        <div className="flex items-center gap-4 mb-2">
+          <div className="h-1 w-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
+          <h2 className="text-4xl font-black">🏖️ Город говорит</h2>
+        </div>
+        <p className="text-muted-foreground text-lg ml-20 mb-6">Лучшие места для отдыха и встреч</p>
+        
+        <div className="flex items-center justify-between">
+          <div className="text-muted-foreground"></div>
           <Button 
             variant="outline" 
             onClick={() => navigate('/places')}
