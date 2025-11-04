@@ -37,12 +37,12 @@ export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSe
                 navigate('/');
               }}
             >
-              <div className="flex items-baseline gap-3">
-                <h1 className="text-6xl lg:text-8xl font-black text-white uppercase leading-[0.8] tracking-tighter group-hover:scale-105 transition-transform">
+              <div className="flex items-baseline gap-2 md:gap-3">
+                <h1 className="text-4xl md:text-6xl lg:text-8xl font-black text-white uppercase leading-[0.8] tracking-tighter group-hover:scale-105 transition-transform">
                   ГОРОД
                 </h1>
-                <div className="bg-white px-4 py-2 rotate-[-2deg] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-                  <span className="text-2xl lg:text-4xl font-black text-accent uppercase tracking-tighter">
+                <div className="bg-white px-2 py-1 md:px-4 md:py-2 rotate-[-2deg] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                  <span className="text-lg md:text-2xl lg:text-4xl font-black text-accent uppercase tracking-tighter">
                     ГОВОРИТ
                   </span>
                 </div>
@@ -106,13 +106,13 @@ export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSe
       )}
       
       {sections.length > 0 && (
-        <nav className="container mx-auto px-6">
+        <nav className="container mx-auto px-0 md:px-6">
           <div className="flex gap-0 overflow-x-auto scrollbar-hide">
             {sections.map((section) => (
               <button
                 key={section}
                 onClick={() => onSectionChange?.(section)}
-                className={`px-6 py-4 text-sm font-black whitespace-nowrap uppercase tracking-wider transition-all border-r-2 border-primary last:border-r-0 ${
+                className={`px-3 md:px-6 py-3 md:py-4 text-xs md:text-sm font-black whitespace-nowrap uppercase tracking-wider transition-all border-r-2 border-primary last:border-r-0 flex-shrink-0 ${
                   activeSection === section
                     ? 'bg-accent text-white'
                     : 'bg-white text-black hover:bg-black hover:text-white'

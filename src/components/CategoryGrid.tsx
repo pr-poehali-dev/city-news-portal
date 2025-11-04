@@ -37,7 +37,7 @@ export const CategoryGrid = ({ categories, articles, onNewsClick, onCategoryClic
   };
 
   return (
-    <section className="mb-0 border-t-4 border-primary">
+    <section className="mb-0 border-t-4 border-primary max-w-full overflow-x-hidden">
       <div className="grid md:grid-cols-2 gap-0">
         {categories.map((category, catIndex) => {
           const categoryNews = getCategoryNews(category);
@@ -55,18 +55,18 @@ export const CategoryGrid = ({ categories, articles, onNewsClick, onCategoryClic
               style={{ backgroundColor: bgColor }}
             >
               <div 
-                className="cursor-pointer px-8 py-12 hover:opacity-90 transition-opacity"
+                className="cursor-pointer px-4 md:px-8 py-8 md:py-12 hover:opacity-90 transition-opacity"
                 onClick={() => onCategoryClick(category)}
               >
-                <div className="flex items-start justify-between mb-8">
+                <div className="flex items-start justify-between mb-6 md:mb-8">
                   <div className="flex-1">
                     <div 
-                      className="inline-block px-6 py-3 mb-4 rotate-[-1deg] shadow-[6px_6px_0px_0px_rgba(255,107,53,1)]"
+                      className="inline-block px-4 md:px-6 py-2 md:py-3 mb-3 md:mb-4 rotate-[-1deg] shadow-[4px_4px_0px_0px_rgba(255,107,53,1)] md:shadow-[6px_6px_0px_0px_rgba(255,107,53,1)]"
                       style={{ backgroundColor: accentColor }}
                     >
-                      <Icon name={categoryIcons[category] || 'Sparkles'} size={32} className="text-white" />
+                      <Icon name={categoryIcons[category] || 'Sparkles'} size={24} className="text-white md:w-8 md:h-8" />
                     </div>
-                    <h2 className="text-6xl lg:text-7xl font-black text-white uppercase leading-[0.9] tracking-tighter mb-4">
+                    <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-white uppercase leading-[0.9] tracking-tighter mb-3 md:mb-4">
                       {category}
                     </h2>
                     <div className="h-2 w-24" style={{ backgroundColor: accentColor }}></div>

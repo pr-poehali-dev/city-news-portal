@@ -36,28 +36,28 @@ export function MemorySection({ articles, onArticleClick }: MemorySectionProps) 
   };
 
   return (
-    <div className="mb-20 relative">
+    <div className="mb-20 relative max-w-full overflow-x-hidden">
       <div className="absolute top-10 left-10 w-72 h-72 bg-amber-500/5 rounded-full blur-3xl"></div>
       <div className="absolute bottom-10 right-10 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl"></div>
       
       <div className="relative z-10">
-        <div className="flex items-center justify-between mb-10">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-10 gap-4">
           <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
-                <Icon name="Clock" size={24} className="text-white" />
+            <div className="flex items-center gap-2 md:gap-3 mb-2">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <Icon name="Clock" size={20} className="text-white md:w-6 md:h-6" />
               </div>
-              <h2 className="text-4xl font-bold font-serif">Город помнит</h2>
+              <h2 className="text-2xl md:text-4xl font-bold font-serif">Город помнит</h2>
             </div>
             <div className="h-1 w-24 bg-gradient-to-r from-amber-600 to-orange-600 rounded-full mb-2"></div>
             <p className="text-muted-foreground font-medium">Историческая хроника городских событий</p>
           </div>
           <Button 
-            className="gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl px-6 py-6" 
+            className="gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl px-4 md:px-6 py-4 md:py-6 text-sm md:text-base" 
             onClick={handleViewAll}
           >
             <span className="font-semibold">Все статьи</span>
-            <Icon name="ArrowRight" size={18} />
+            <Icon name="ArrowRight" size={16} className="md:w-[18px] md:h-[18px]" />
           </Button>
         </div>
 

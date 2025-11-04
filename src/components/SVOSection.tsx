@@ -28,7 +28,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
   const sideNews = news && news.length > 1 ? news.slice(1) : [];
 
   return (
-    <section className="mb-16 bg-gradient-to-b from-slate-900 to-slate-800 -mx-6 px-6 py-12 border-t-4 border-red-700">
+    <section className="mb-16 bg-gradient-to-b from-slate-900 to-slate-800 py-12 border-t-4 border-red-700 max-w-full overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="bg-gradient-to-r from-red-900/20 via-red-800/20 to-red-900/20 border border-red-700/30 rounded-lg p-4 mb-8">
           <div className="flex items-center justify-center gap-3 text-white">
@@ -38,7 +38,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-blue-900/40 to-blue-800/40 border-2 border-blue-600/50 rounded-2xl p-8 mb-8 shadow-2xl">
+        <div className="bg-gradient-to-r from-blue-900/40 to-blue-800/40 border-2 border-blue-600/50 rounded-2xl p-4 md:p-8 mb-8 shadow-2xl max-w-full">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-6">
               <img 
@@ -46,9 +46,9 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
                 alt="Фонд поддержки участников СВО"
                 className="w-20 h-20 rounded-xl border-2 border-white/30 shadow-lg"
               />
-              <div>
-                <h3 className="text-white font-bold text-2xl mb-2">Помочь нашим</h3>
-                <p className="text-gray-300 text-sm leading-relaxed max-w-xl">
+              <div className="min-w-0 flex-1">
+                <h3 className="text-white font-bold text-lg md:text-2xl mb-2">Помочь нашим</h3>
+                <p className="text-gray-300 text-xs md:text-sm leading-relaxed max-w-xl">
                   Благотворительный фонд поддержки участников СВО. Помогаем бойцам на передовой необходимым снаряжением, техникой и гуманитарной помощью.
                 </p>
               </div>
@@ -57,7 +57,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
               href="https://fond-npusvo.ru/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-lg rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 whitespace-nowrap flex items-center gap-2"
+              className="px-4 md:px-8 py-3 md:py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm md:text-lg rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 whitespace-nowrap flex items-center gap-2 flex-shrink-0"
             >
               <Icon name="Heart" size={20} />
               Помочь

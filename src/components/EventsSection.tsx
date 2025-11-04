@@ -54,17 +54,17 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
   const currentEvent = events[currentIndex];
 
   return (
-    <div className="py-20 bg-gradient-to-br from-primary/5 via-accent/5 to-background relative overflow-hidden">
+    <div className="py-12 md:py-20 bg-gradient-to-br from-primary/5 via-accent/5 to-background relative overflow-x-hidden max-w-full">
       <div className="absolute top-20 right-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-20 left-20 w-96 h-96 bg-accent/10 rounded-full blur-3xl"></div>
       
       <div className="container mx-auto relative z-10">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center shadow-lg">
-              <Icon name="Calendar" size={24} className="text-white" />
+        <div className="text-center mb-8 md:mb-12">
+          <div className="inline-flex items-center gap-2 md:gap-3 mb-4">
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center shadow-lg">
+              <Icon name="Calendar" size={20} className="text-white md:w-6 md:h-6" />
             </div>
-            <h2 className="text-4xl font-bold font-serif">Афиша Краснодара</h2>
+            <h2 className="text-2xl md:text-4xl font-bold font-serif">Афиша Краснодара</h2>
           </div>
           <div className="h-1 w-24 bg-gradient-to-r from-primary to-accent rounded-full mx-auto mb-4"></div>
           <div className="flex items-center justify-center gap-2">

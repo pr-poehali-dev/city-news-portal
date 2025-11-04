@@ -49,15 +49,15 @@ export const HeroSection = ({ mainNews, sideNews, onNewsClick }: HeroSectionProp
             </div>
           </div>
           
-          <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-12">
-            <h1 className="text-white text-4xl lg:text-7xl font-black uppercase leading-[0.85] tracking-tighter mb-6 [text-shadow:_3px_3px_0_rgb(0_0_0_/_100%)]">
+          <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 lg:p-12">
+            <h1 className="text-white text-2xl md:text-4xl lg:text-7xl font-black uppercase leading-[0.9] md:leading-[0.85] tracking-tighter mb-3 md:mb-6 [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] md:[text-shadow:_3px_3px_0_rgb(0_0_0_/_100%)]">
               {mainNews.title}
             </h1>
             
-            <div className="flex items-center gap-4 text-white text-xs uppercase tracking-widest font-bold">
+            <div className="flex items-center gap-2 md:gap-4 text-white text-[10px] md:text-xs uppercase tracking-widest font-bold flex-wrap">
               <span>{new Date(mainNews.created_at).toLocaleDateString('ru-RU')}</span>
               <span className="w-1 h-1 bg-accent rounded-full"></span>
-              <span>{mainNews.author_name}</span>
+              <span className="truncate max-w-[150px] md:max-w-none">{mainNews.author_name}</span>
             </div>
           </div>
         </div>
