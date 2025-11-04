@@ -8,52 +8,40 @@ interface FooterProps {
 
 export const Footer = ({ sections = [], onSectionChange }: FooterProps) => {
   return (
-    <footer className="bg-gradient-to-br from-card to-secondary/20 border-t border-border/50 mt-20 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 right-0 w-72 h-72 bg-accent/5 rounded-full blur-3xl"></div>
-      
-      <div className="container mx-auto px-4 py-16 relative z-10">
+    <footer className="bg-secondary border-t-4 border-primary mt-20">
+      <div className="container mx-auto px-4 py-16">
         <div className="grid md:grid-cols-4 gap-12">
           <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center shadow-lg">
-                <Icon name="Newspaper" size={24} className="text-white" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-black font-serif bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  Город говорит
-                </h3>
-                <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">
-                  Краснодар
-                </p>
-              </div>
-            </div>
-            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-              Ваш источник актуальных новостей и событий
+            <h3 className="text-4xl font-black mb-2 tracking-tight">
+              ГОРОД<br/>
+              <span className="text-accent">ГОВОРИТ</span>
+            </h3>
+            <p className="text-xs text-muted-foreground mb-6 uppercase tracking-wider font-black">
+              Краснодар
             </p>
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <a href="https://vk.com/club233389110" target="_blank" rel="noopener noreferrer" 
-                className="w-10 h-10 bg-primary/10 hover:bg-primary hover:text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110" 
+                className="w-12 h-12 bg-primary text-primary-foreground hover:bg-accent flex items-center justify-center transition-colors" 
                 title="ВКонтакте">
-                <Icon name="Users" size={20} />
+                <Icon name="Users" size={22} />
               </a>
               <a href="https://dzen.ru/govoritkrasnodar" target="_blank" rel="noopener noreferrer" 
-                className="w-10 h-10 bg-primary/10 hover:bg-primary hover:text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110" 
+                className="w-12 h-12 bg-primary text-primary-foreground hover:bg-accent flex items-center justify-center transition-colors" 
                 title="Яндекс Дзен">
-                <Icon name="BookOpen" size={20} />
+                <Icon name="BookOpen" size={22} />
               </a>
             </div>
           </div>
 
           {sections.length > 0 && (
             <div>
-              <h4 className="font-black text-foreground mb-6 uppercase text-sm tracking-wider">Разделы</h4>
+              <h4 className="font-black text-foreground mb-6 uppercase text-sm tracking-widest">РАЗДЕЛЫ</h4>
               <ul className="space-y-3 text-sm">
                 {sections.slice(0, 6).map((section) => (
                   <li key={section}>
                     <button
                       onClick={() => onSectionChange?.(section)}
-                      className="text-muted-foreground hover:text-primary transition-colors font-medium hover:translate-x-1 inline-block duration-200"
+                      className="text-muted-foreground hover:text-primary transition-colors font-black uppercase tracking-wider hover:underline"
                     >
                       {section}
                     </button>

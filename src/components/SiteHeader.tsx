@@ -26,46 +26,39 @@ export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSe
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg">
+    <header className="sticky top-0 z-50 bg-background border-b-4 border-primary">
       <div className="container mx-auto px-4 py-6">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <div 
-            className="cursor-pointer group" 
+            className="cursor-pointer" 
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               navigate('/');
             }}
           >
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-primary/30 transition-all duration-300 group-hover:scale-105">
-                <Icon name="Newspaper" size={24} className="text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-serif">
-                  Город говорит
-                </h1>
-                <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Краснодар</p>
-              </div>
-            </div>
+            <h1 className="text-4xl lg:text-5xl font-black tracking-tighter">
+              ГОРОД<br/>
+              <span className="text-accent">ГОВОРИТ</span>
+            </h1>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <Button 
               variant="ghost" 
               size="icon"
               onClick={() => setShowSearch(!showSearch)}
-              className="rounded-full hover:bg-primary/10 hover:text-primary transition-all"
+              className="hover:bg-primary hover:text-primary-foreground transition-colors"
             >
-              <Icon name="Search" size={22} />
+              <Icon name="Search" size={24} />
             </Button>
             <Button 
               variant="ghost" 
               size="icon"
               onClick={() => window.location.href = '/admin'}
               title="Админка"
-              className="rounded-full hover:bg-primary/10 hover:text-primary transition-all"
+              className="hover:bg-primary hover:text-primary-foreground transition-colors"
             >
-              <Icon name="Settings" size={22} />
+              <Icon name="Settings" size={24} />
             </Button>
           </div>
         </div>
@@ -95,15 +88,15 @@ export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSe
         )}
         
         {sections.length > 0 && (
-          <nav className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+          <nav className="flex gap-1 overflow-x-auto pb-2 scrollbar-hide border-t-2 border-border pt-4">
             {sections.map((section) => (
               <button
                 key={section}
                 onClick={() => onSectionChange?.(section)}
-                className={`px-5 py-2.5 text-sm font-bold whitespace-nowrap rounded-full transition-all duration-300 ${
+                className={`px-4 py-2 text-sm font-black whitespace-nowrap uppercase tracking-wider transition-colors ${
                   activeSection === section
-                    ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/30'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
                 }`}
               >
                 {section}
