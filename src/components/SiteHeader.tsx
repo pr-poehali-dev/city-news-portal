@@ -31,9 +31,12 @@ export const SiteHeader = ({ onSearch }: SiteHeaderProps) => {
             className="cursor-pointer group" 
             onClick={() => navigate('/')}
           >
-            <h1 className="text-3xl lg:text-4xl font-black tracking-tight hover:text-gray-600 transition-colors">
-              Город Говорит
-            </h1>
+            <div className="flex items-baseline gap-3">
+              <span className="text-lg lg:text-xl font-medium text-gray-500">Краснодар</span>
+              <h1 className="text-3xl lg:text-4xl font-black tracking-tight hover:text-gray-600 transition-colors">
+                Город Говорит
+              </h1>
+            </div>
           </div>
 
           <div className="flex items-center gap-3">

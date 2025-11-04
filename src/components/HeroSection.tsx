@@ -30,11 +30,15 @@ export const HeroSection = ({ mainNews, sideNews, onNewsClick }: HeroSectionProp
         className="absolute inset-0"
         style={{ transform: `translateY(${scrollY * 0.5}px)` }}
       >
-        <img
-          src={mainNews.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
-          alt=""
-          className="w-full h-full object-cover opacity-40"
-        />
+        {(mainNews.image_url || mainNews.image) ? (
+          <img
+            src={mainNews.image_url || mainNews.image || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
+            alt=""
+            className="w-full h-full object-cover opacity-40"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-gray-900 via-black to-gray-900"></div>
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
       </div>
 

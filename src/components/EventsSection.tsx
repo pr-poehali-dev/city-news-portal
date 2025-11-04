@@ -67,16 +67,14 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
               <Icon name="ChevronLeft" size={24} />
             </button>
 
-            <div className="flex items-center gap-6 overflow-hidden">
+            <div className="w-full max-w-4xl">
               {visibleEvents.map((event, idx) => {
                 const isActive = idx === 1;
+                if (!isActive) return null;
                 return (
                   <div
                     key={event.id}
-                    className={`transition-all duration-500 ${
-                      isActive ? 'scale-100 opacity-100' : 'scale-75 opacity-30'
-                    }`}
-                    style={{ width: isActive ? '600px' : '400px' }}
+                    className="w-full"
                   >
                     <MagneticCard>
                       <a

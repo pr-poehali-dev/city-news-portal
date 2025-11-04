@@ -51,27 +51,26 @@ export const ShowbizSection = () => {
   return (
     <section className="py-32 px-6 lg:px-20 bg-gradient-to-br from-purple-50 to-pink-50">
       <div className="max-w-[1800px] mx-auto">
-        <div className="flex items-center justify-between mb-20">
-          <div>
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+        <div className="mb-20">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-4">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center flex-shrink-0">
                 <Icon name="Star" size={32} className="text-white" />
               </div>
-              <h2 className="text-6xl lg:text-8xl font-black tracking-tight">
+              <h2 className="text-5xl lg:text-8xl font-black tracking-tight">
                 Шоу-бизнес
               </h2>
             </div>
-            <p className="text-gray-500 text-2xl font-light">
-              Звёзды и светская жизнь глазами Краснодара
-            </p>
+            <Link to="/showbiz" className="hidden lg:block flex-shrink-0">
+              <button className="px-8 py-4 bg-black text-white font-bold rounded-2xl hover:bg-gray-800 transition-colors flex items-center gap-3 whitespace-nowrap">
+                Все новости
+                <Icon name="ArrowRight" size={20} />
+              </button>
+            </Link>
           </div>
-          
-          <Link to="/showbiz">
-            <button className="px-8 py-4 bg-black text-white font-bold rounded-2xl hover:bg-gray-800 transition-colors flex items-center gap-3">
-              Все новости
-              <Icon name="ArrowRight" size={20} />
-            </button>
-          </Link>
+          <p className="text-gray-500 text-xl lg:text-2xl font-light">
+            Звёзды и светская жизнь глазами Краснодара
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
