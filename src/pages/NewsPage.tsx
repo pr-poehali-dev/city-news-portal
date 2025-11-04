@@ -186,7 +186,7 @@ export const NewsPage = () => {
   const pageKeywords = article?.keywords || `новости Краснодара, ${article?.section || 'события'}, ${article?.title?.substring(0, 50) || ''}`;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
@@ -233,7 +233,7 @@ export const NewsPage = () => {
                 </span>
               </div>
 
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-black uppercase leading-tight tracking-tighter text-black">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-black uppercase leading-[1.1] tracking-tight text-black break-words">
                 {article.title}
               </h1>
 
