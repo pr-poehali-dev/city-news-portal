@@ -84,7 +84,7 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
                         className="block"
                       >
                         <div className="bg-zinc-900 rounded-3xl overflow-hidden">
-                          <div className="relative h-96">
+                          <div className="relative h-[600px]">
                             <img
                               src={event.image_url}
                               alt={event.title}
@@ -99,35 +99,35 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
                             )}
                           </div>
                           
-                          <div className="p-8">
-                            <h3 className="text-3xl font-bold mb-6 line-clamp-3">
+                          <div className="p-10">
+                            <h3 className="text-5xl font-bold mb-8 line-clamp-2">
                               {event.title}
                             </h3>
                             
-                            <div className="space-y-4 text-gray-400 mb-8">
-                              <div className="flex items-start gap-3">
-                                <Icon name="MapPin" size={20} className="flex-shrink-0 mt-1" />
-                                <span className="text-base">{event.location}</span>
+                            <div className="space-y-5 text-gray-300 mb-10">
+                              <div className="flex items-start gap-4">
+                                <Icon name="MapPin" size={28} className="flex-shrink-0 mt-1" />
+                                <span className="text-xl font-medium">{event.location}</span>
                               </div>
                               {event.event_date_display && (
-                                <div className="flex items-start gap-3">
-                                  <Icon name="Clock" size={20} className="flex-shrink-0 mt-1" />
-                                  <span className="text-base">{event.event_date_display}</span>
+                                <div className="flex items-start gap-4">
+                                  <Icon name="Clock" size={28} className="flex-shrink-0 mt-1" />
+                                  <span className="text-xl font-medium">{event.event_date_display}</span>
                                 </div>
                               )}
                               {!event.is_free && event.price && (
-                                <div className="flex items-start gap-3">
-                                  <Icon name="Ticket" size={20} className="flex-shrink-0 mt-1" />
-                                  <span className="text-base">{event.price}</span>
+                                <div className="flex items-start gap-4">
+                                  <Icon name="Ticket" size={28} className="flex-shrink-0 mt-1" />
+                                  <span className="text-xl font-medium">{event.price}</span>
                                 </div>
                               )}
                             </div>
                             
                             <div className="flex items-center justify-between">
-                              <span className="text-sm text-gray-500">{event.age_restriction}</span>
-                              <div className="flex items-center gap-2 text-cyan-400">
-                                <span className="font-semibold">Подробнее</span>
-                                <Icon name="ArrowRight" size={20} />
+                              <span className="text-lg text-gray-400 font-medium">{event.age_restriction}</span>
+                              <div className="flex items-center gap-3 text-cyan-400">
+                                <span className="text-lg font-bold">Подробнее</span>
+                                <Icon name="ArrowRight" size={24} />
                               </div>
                             </div>
                           </div>

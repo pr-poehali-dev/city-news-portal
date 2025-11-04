@@ -104,14 +104,10 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 8 }: LatestNewsGridP
                     {stripHtml(item.excerpt || item.content)}
                   </p>
                   
-                  <div className="flex items-center justify-between text-xs text-gray-500 font-semibold">
+                  <div className="flex items-center text-xs text-gray-500 font-semibold">
                     <div className="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1.5">
                       <Icon name="Calendar" size={12} />
                       <span>{new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
-                    </div>
-                    <div className="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1.5">
-                      <Icon name="Eye" size={12} />
-                      <span>{item.views || 0}</span>
                     </div>
                   </div>
                 </div>
