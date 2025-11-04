@@ -49,18 +49,21 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 9 }: LatestNewsGridP
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
         {displayNews.map((item, index) => {
+          const isLarge = index === 0;
           const accentColors = ['#FF4136', '#2ECC40', '#B10DC9', '#FF851B', '#0074D9'];
           const itemAccent = accentColors[index % accentColors.length];
           
           return (
             <article
               key={item.id}
-              className="group cursor-pointer overflow-hidden bg-white border-b-4 border-r-4 border-primary transition-all hover:z-10 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+              className={`group relative cursor-pointer overflow-hidden bg-white border-b-4 border-primary transition-all hover:z-10 ${
+                isLarge ? 'md:col-span-3 md:row-span-1' : 'md:border-r-4 last:border-r-0'
+              }`}
               onClick={() => onNewsClick(item.id)}
             >
-              <div className="aspect-[4/3] relative overflow-hidden bg-black">
+              <div className={`${isLarge ? 'aspect-[16/9] md:aspect-[21/9]' : 'aspect-[4/3]'} relative overflow-hidden bg-black`}>
                 {item.image_url ? (
                   <img
                     src={item.image_url}
@@ -69,33 +72,41 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 9 }: LatestNewsGridP
                   />
                 ) : (
                   <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <Icon name="FileText" size={48} className="text-gray-400" />
+                    <Icon name="FileText" size={64} className="text-gray-400" />
                   </div>
                 )}
+                
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
               </div>
               
-              <div className="p-4 h-[180px] flex flex-col">
+              <div className="absolute top-3 left-3 md:top-6 md:left-6">
                 <div 
-                  className="inline-block px-2 py-1 mb-2 w-fit rotate-[-1deg] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                  className="px-4 py-2 rotate-[-2deg] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                   style={{ backgroundColor: itemAccent }}
                 >
-                  <span className="text-white font-black text-[10px] uppercase tracking-wider">
+                  <span className="text-white font-black text-xs uppercase tracking-[0.2em]">
                     {item.category}
                   </span>
                 </div>
-                
-                <h3 className="text-foreground font-bold leading-tight mb-2 text-base line-clamp-2 group-hover:text-accent transition-colors">
+              </div>
+              
+              <div className={`absolute bottom-0 left-0 right-0 p-3 md:p-6 ${isLarge ? 'lg:p-12' : ''}`}>
+                <h3 className={`text-white font-black uppercase leading-tight tracking-tighter mb-2 md:mb-3 group-hover:text-accent transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] ${
+                  isLarge ? 'text-sm md:text-base line-clamp-2' : 'text-sm md:text-base line-clamp-2'
+                }`}>
                   {item.title}
                 </h3>
                 
-                <p className="text-muted-foreground text-xs mb-auto line-clamp-2">
-                  {stripHtml(item.excerpt || item.content)}
-                </p>
+                {isLarge && (
+                  <p className="text-white/80 text-sm md:text-lg mb-3 md:mb-4 line-clamp-2 max-w-4xl hidden md:block">
+                    {stripHtml(item.excerpt || item.content)}
+                  </p>
+                )}
                 
-                <div className="flex items-center gap-2 text-muted-foreground text-[10px] font-bold mt-2">
+                <div className="flex items-center gap-2 md:gap-4 text-white/60 text-[10px] md:text-xs uppercase tracking-wider font-bold flex-wrap">
                   <span>{new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
                   <span className="w-1 h-1 bg-accent rounded-full"></span>
-                  <span className="truncate">{item.author_name || 'Редакция'}</span>
+                  <span className="truncate max-w-[120px] md:max-w-none">{item.author_name || 'Редакция'}</span>
                 </div>
               </div>
             </article>
