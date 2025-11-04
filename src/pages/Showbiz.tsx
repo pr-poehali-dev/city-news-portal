@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { useNavigate } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { SiteHeader } from '@/components/SiteHeader';
 import { Footer } from '@/components/Footer';
-import { Button } from '@/components/ui/button';
 
 interface News {
   id: number;
@@ -70,123 +67,126 @@ const Showbiz = () => {
     loadNews(nextPage);
   };
 
+  const featuredNews = news[0];
+  const gridNews = news.slice(1);
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white">
       <SiteHeader
         sections={sections}
         activeSection="Главная"
         onSectionChange={handleSectionChange}
       />
       
-      <main className="flex-1 pt-24 pb-16">
-        <div className="relative bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 text-white py-16 mb-12">
-          <div className="absolute inset-0 bg-[url('/images/stars-pattern.svg')] opacity-10" />
-          <div className="container mx-auto px-4 relative z-10">
-            <div className="flex items-center gap-4 mb-4">
-              <Icon name="Star" size={48} className="text-yellow-300" />
-              <h1 className="text-4xl md:text-5xl font-bold">
-                Город говорит о шоубизе
-              </h1>
+      <main className="flex-1 pt-24">
+        <div className="px-4 lg:px-20 py-20 bg-gradient-to-br from-purple-50 to-pink-50">
+          <div className="max-w-[1600px] mx-auto">
+            <div className="mb-12">
+              <div className="inline-flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                  <Icon name="Star" size={24} className="text-white" />
+                </div>
+                <h1 className="text-4xl lg:text-5xl font-bold tracking-tight">
+                  Шоу-бизнес
+                </h1>
+              </div>
+              <p className="text-gray-600 text-lg">
+                Звёзды, премьеры и светская жизнь глазами Краснодара
+              </p>
             </div>
-            <p className="text-xl text-white/90 max-w-2xl">
-              Звёзды, премьеры, скандалы и светская жизнь — всё самое яркое из мира шоу-бизнеса глазами Краснодара
-            </p>
-            <div className="flex gap-4 mt-6">
-              <Badge className="bg-white/20 hover:bg-white/30 text-white text-sm px-4 py-2">
-                <Icon name="Sparkles" size={14} className="mr-2" />
-                Эксклюзив
-              </Badge>
-              <Badge className="bg-white/20 hover:bg-white/30 text-white text-sm px-4 py-2">
-                <Icon name="Camera" size={14} className="mr-2" />
-                Фото
-              </Badge>
-              <Badge className="bg-white/20 hover:bg-white/30 text-white text-sm px-4 py-2">
-                <Icon name="Mic" size={14} className="mr-2" />
-                Интервью
-              </Badge>
-            </div>
-          </div>
-        </div>
 
-        <div className="container mx-auto px-4">
-          {loading && page === 1 ? (
-            <div className="text-center py-12">
-              <Icon name="Loader" size={32} className="animate-spin mx-auto text-purple-600" />
-              <p className="mt-4 text-muted-foreground">Загружаем звёздные новости...</p>
-            </div>
-          ) : news.length === 0 ? (
-            <div className="text-center py-12">
-              <Icon name="Star" size={48} className="mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Пока нет новостей</h3>
-              <p className="text-muted-foreground">Звёздные истории скоро появятся здесь</p>
-            </div>
-          ) : (
-            <>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                {news.map((item) => (
-                  <Link key={item.id} to={`/news/${item.id}`} className="group">
-                    <Card className="overflow-hidden h-full hover:shadow-xl transition-all duration-300 border-purple-100 hover:border-purple-400">
-                      <div className="relative h-56">
+            {loading && news.length === 0 ? (
+              <div className="text-center py-20">
+                <div className="animate-spin w-12 h-12 border-4 border-gray-200 border-t-black rounded-full mx-auto"></div>
+              </div>
+            ) : news.length === 0 ? (
+              <div className="text-center py-20">
+                <Icon name="Star" size={48} className="text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 text-lg">Публикаций пока нет</p>
+              </div>
+            ) : (
+              <>
+                {featuredNews && (
+                  <div 
+                    className="group cursor-pointer mb-12"
+                    onClick={() => navigate(`/news/${featuredNews.id}`)}
+                  >
+                    <div className="relative overflow-hidden rounded-3xl">
+                      <div className="aspect-[21/9] relative">
+                        <img
+                          src={featuredNews.image_url}
+                          alt={featuredNews.title}
+                          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+                      </div>
+                    </div>
+                    
+                    <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-16">
+                      <div className="max-w-3xl">
+                        <span className="inline-block text-xs font-semibold text-white/80 uppercase tracking-wider mb-4">
+                          Главная новость
+                        </span>
+                        
+                        <h2 className="text-white text-3xl lg:text-5xl font-bold mb-4 leading-tight">
+                          {featuredNews.title}
+                        </h2>
+                        
+                        <div className="flex items-center gap-6 text-white/60 text-sm">
+                          <span>{new Date(featuredNews.published_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {gridNews.map((item) => (
+                    <div
+                      key={item.id}
+                      className="group cursor-pointer"
+                      onClick={() => navigate(`/news/${item.id}`)}
+                    >
+                      <div className="relative overflow-hidden rounded-2xl mb-4 aspect-[16/10]">
                         <img
                           src={item.image_url}
                           alt={item.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                        <Badge className="absolute top-3 right-3 bg-purple-600 hover:bg-purple-700 text-white">
-                          <Icon name="Star" size={12} className="mr-1" />
-                          {item.category}
-                        </Badge>
-                        <div className="absolute bottom-3 left-3 right-3">
-                          <div className="flex items-center gap-3 text-white/80 text-xs">
-                            <div className="flex items-center gap-1">
-                              <Icon name="Eye" size={12} />
-                              <span>{item.views || 0}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Icon name="Clock" size={12} />
-                              <span>{item.read_time}</span>
-                            </div>
-                          </div>
-                        </div>
                       </div>
-                      <div className="p-5">
-                        <h3 className="font-bold text-lg mb-2 line-clamp-2 group-hover:text-purple-700 transition-colors">
+                      
+                      <div className="space-y-3">
+                        <h3 className="text-xl font-bold leading-tight group-hover:text-gray-600 transition-colors line-clamp-2">
                           {item.title}
                         </h3>
-                        <p className="text-muted-foreground text-sm line-clamp-3">
-                          {item.excerpt}
+                        
+                        <p className="text-sm text-gray-500">
+                          {new Date(item.published_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}
                         </p>
                       </div>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-
-              {hasMore && (
-                <div className="text-center">
-                  <Button
-                    onClick={handleLoadMore}
-                    disabled={loading}
-                    size="lg"
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                  >
-                    {loading ? (
-                      <>
-                        <Icon name="Loader" size={16} className="animate-spin mr-2" />
-                        Загрузка...
-                      </>
-                    ) : (
-                      <>
-                        Загрузить ещё
-                        <Icon name="ChevronDown" size={16} className="ml-2" />
-                      </>
-                    )}
-                  </Button>
+                    </div>
+                  ))}
                 </div>
-              )}
-            </>
-          )}
+
+                {hasMore && !loading && (
+                  <div className="text-center mt-12">
+                    <button
+                      onClick={handleLoadMore}
+                      className="px-8 py-4 bg-black text-white font-semibold rounded-xl hover:bg-gray-800 transition-colors"
+                    >
+                      Загрузить ещё
+                    </button>
+                  </div>
+                )}
+
+                {loading && news.length > 0 && (
+                  <div className="text-center mt-12">
+                    <div className="animate-spin w-8 h-8 border-4 border-gray-200 border-t-black rounded-full mx-auto"></div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </main>
 

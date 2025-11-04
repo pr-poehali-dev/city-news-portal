@@ -1,5 +1,5 @@
 import Icon from '@/components/ui/icon';
-import { Badge } from '@/components/ui/badge';
+import { useEffect, useRef } from 'react';
 
 interface CategoryGridProps {
   categories: string[];
@@ -10,112 +10,155 @@ interface CategoryGridProps {
 
 export const CategoryGrid = ({ categories, articles, onNewsClick, onCategoryClick }: CategoryGridProps) => {
   const getCategoryNews = (category: string) => {
-    return articles.filter(a => a.category === category).slice(0, 3);
+    return articles.filter(a => a.category === category).slice(0, 4);
   };
 
   const categoryIcons: { [key: string]: string } = {
-    'Политика': 'Flag',
+    'Политика': 'Landmark',
     'Экономика': 'TrendingUp',
     'Культура': 'Palette',
     'Спорт': 'Trophy',
     'События': 'Zap',
   };
 
-  const categoryGradients: { [key: string]: string } = {
-    'Политика': 'from-red-600 via-red-500 to-pink-500',
-    'Экономика': 'from-green-600 via-emerald-500 to-teal-500',
-    'Культура': 'from-purple-600 via-violet-500 to-indigo-500',
-    'Спорт': 'from-orange-600 via-orange-500 to-amber-500',
-    'События': 'from-blue-600 via-blue-500 to-cyan-500',
-  };
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const categoryBg: { [key: string]: string } = {
-    'Политика': 'bg-red-50',
-    'Экономика': 'bg-green-50',
-    'Культура': 'bg-purple-50',
-    'Спорт': 'bg-orange-50',
-    'События': 'bg-blue-50',
-  };
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    let isDown = false;
+    let startX: number;
+    let scrollLeft: number;
+
+    const handleMouseDown = (e: MouseEvent) => {
+      isDown = true;
+      container.style.cursor = 'grabbing';
+      startX = e.pageX - container.offsetLeft;
+      scrollLeft = container.scrollLeft;
+    };
+
+    const handleMouseLeave = () => {
+      isDown = false;
+      container.style.cursor = 'grab';
+    };
+
+    const handleMouseUp = () => {
+      isDown = false;
+      container.style.cursor = 'grab';
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - container.offsetLeft;
+      const walk = (x - startX) * 2;
+      container.scrollLeft = scrollLeft - walk;
+    };
+
+    container.addEventListener('mousedown', handleMouseDown);
+    container.addEventListener('mouseleave', handleMouseLeave);
+    container.addEventListener('mouseup', handleMouseUp);
+    container.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      container.removeEventListener('mousedown', handleMouseDown);
+      container.removeEventListener('mouseleave', handleMouseLeave);
+      container.removeEventListener('mouseup', handleMouseUp);
+      container.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
 
   return (
-    <section className="mb-16 px-6">
-      <div className="mb-12 text-center">
-        <div className="inline-flex items-center gap-4 mb-4">
-          <div className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-accent to-orange-500 flex items-center justify-center shadow-2xl rotate-12 hover:rotate-0 transition-transform">
-            <Icon name="Grid3x3" size={28} className="text-white" />
-          </div>
-          <h2 className="text-5xl lg:text-6xl font-display font-black bg-gradient-to-r from-accent via-orange-500 to-yellow-500 bg-clip-text text-transparent">
+    <section className="py-20 px-4 lg:px-20">
+      <div className="max-w-[1600px] mx-auto">
+        <div className="mb-12">
+          <h2 className="text-4xl lg:text-5xl font-bold mb-3 tracking-tight">
             Рубрики
           </h2>
+          <p className="text-gray-500 text-lg">
+            Листайте горизонтально →
+          </p>
         </div>
-        <p className="text-gray-600 text-lg">Выберите интересующую тему</p>
-      </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {categories.map((category) => {
-          const categoryNews = getCategoryNews(category);
-          if (categoryNews.length === 0) return null;
+        <div 
+          ref={scrollContainerRef}
+          className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide cursor-grab select-none"
+          style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          }}
+        >
+          {categories.map((category) => {
+            const categoryNews = getCategoryNews(category);
+            
+            if (categoryNews.length === 0) return null;
 
-          const gradient = categoryGradients[category] || 'from-primary to-accent';
-          const bgColor = categoryBg[category] || 'bg-gray-50';
-
-          return (
-            <div 
-              key={category} 
-              className={`group relative overflow-hidden rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-500 ${bgColor}`}
-            >
-              <div className={`absolute -inset-0.5 bg-gradient-to-br ${gradient} rounded-[2rem] opacity-50 blur-xl group-hover:opacity-100 transition-opacity`}></div>
+            return (
               <div 
-                className={`relative cursor-pointer p-8 bg-gradient-to-br ${gradient} hover:scale-[1.02] transition-all duration-500 rounded-t-[2rem]`}
-                onClick={() => onCategoryClick(category)}
+                key={category}
+                className="flex-none w-[85vw] lg:w-[500px] snap-start"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-[1.5rem] flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-                    <Icon name={categoryIcons[category] || 'Sparkles'} size={32} className="text-white" />
+                <div className="bg-white border border-gray-200 rounded-2xl p-8 h-full hover:shadow-xl transition-shadow">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-black flex items-center justify-center">
+                        <Icon name={categoryIcons[category] || 'Sparkles'} size={24} className="text-white" />
+                      </div>
+                      <h3 className="text-2xl font-bold">
+                        {category}
+                      </h3>
+                    </div>
+                    <button
+                      onClick={() => onCategoryClick(category)}
+                      className="text-sm font-semibold text-gray-400 hover:text-black transition-colors flex items-center gap-1"
+                    >
+                      Все
+                      <Icon name="ArrowRight" size={16} />
+                    </button>
                   </div>
-                  <Icon name="ArrowUpRight" size={28} className="text-white/60 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform" />
-                </div>
-                <h3 className="text-4xl font-display font-black text-white mb-2">
-                  {category}
-                </h3>
-                <div className="h-1 w-20 bg-white/40 rounded-full"></div>
-              </div>
 
-              <div className="relative bg-white p-6 space-y-4 rounded-b-[2rem]">
-                {categoryNews.map((news, idx) => (
-                  <div
-                    key={news.id}
-                    className={`group/item cursor-pointer pb-4 ${idx !== categoryNews.length - 1 ? 'border-b-2 border-gray-100' : ''}`}
-                    onClick={() => onNewsClick(news.id)}
-                  >
-                    <div className="flex gap-4">
-                      {news.image_url && (
-                        <div className="relative w-24 h-24 flex-shrink-0 overflow-hidden rounded-2xl shadow-lg">
-                          <div className={`absolute -inset-0.5 bg-gradient-to-br ${gradient} rounded-2xl opacity-0 group-hover/item:opacity-75 blur transition-opacity`}></div>
-                          <img
-                            src={news.image_url}
-                            alt={news.title}
-                            className="relative w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-500"
-                          />
-                        </div>
-                      )}
-                      <div className="flex-1">
-                        <h4 className="font-bold text-base leading-snug line-clamp-2 group-hover/item:text-accent transition-colors mb-2">
-                          {news.title}
-                        </h4>
-                        <div className="flex items-center gap-2 text-xs text-gray-500 font-semibold">
-                          <Icon name="Clock" size={12} />
-                          <span>{new Date(news.created_at).toLocaleDateString('ru-RU')}</span>
+                  <div className="space-y-5">
+                    {categoryNews.map((item) => (
+                      <div
+                        key={item.id}
+                        className="group cursor-pointer pb-5 border-b border-gray-100 last:border-0 last:pb-0"
+                        onClick={() => onNewsClick(item.id)}
+                      >
+                        <div className="flex gap-4">
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-base leading-tight mb-2 group-hover:text-gray-600 transition-colors line-clamp-2">
+                              {item.title}
+                            </h4>
+                            <p className="text-xs text-gray-400">
+                              {new Date(item.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}
+                            </p>
+                          </div>
+                          {item.image_url && (
+                            <div className="w-20 h-20 flex-shrink-0 overflow-hidden rounded-xl">
+                              <img
+                                src={item.image_url}
+                                alt={item.title}
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                              />
+                            </div>
+                          )}
                         </div>
                       </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
+
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </section>
   );
 };
