@@ -107,6 +107,20 @@ export const NewsPage = () => {
     }
   }, [loading, article, promoUsageCount]);
 
+  useEffect(() => {
+    if (!loading && article && window.yaContextCb) {
+      window.yaContextCb.push(() => {
+        if (window.Ya?.Context?.AdvManager) {
+          window.Ya.Context.AdvManager.render({
+            blockId: "R-A-17651616-1",
+            renderTo: "yandex_rtb_R-A-17651616-1",
+            type: "feed"
+          });
+        }
+      });
+    }
+  }, [loading, article]);
+
   const handleAddComment = async () => {
     if (commentName.trim() && commentText.trim() && id) {
       try {
@@ -310,6 +324,10 @@ export const NewsPage = () => {
                   WhatsApp
                 </Button>
               </div>
+            </div>
+
+            <div className="mb-12">
+              <div id="yandex_rtb_R-A-17651616-1"></div>
             </div>
 
             <div className="border-t border-border pt-6 pb-8 mb-8">

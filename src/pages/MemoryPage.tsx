@@ -52,6 +52,20 @@ const MemoryPage = () => {
     loadData();
   }, [id]);
 
+  useEffect(() => {
+    if (!loading && article && window.yaContextCb) {
+      window.yaContextCb.push(() => {
+        if (window.Ya?.Context?.AdvManager) {
+          window.Ya.Context.AdvManager.render({
+            blockId: "R-A-17651616-1",
+            renderTo: "yandex_rtb_R-A-17651616-1",
+            type: "feed"
+          });
+        }
+      });
+    }
+  }, [loading, article]);
+
   const handleSectionChange = (section: string) => {
     navigate('/');
   };
@@ -201,6 +215,34 @@ const MemoryPage = () => {
             </div>
 
             <Separator className="my-8" />
+
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold mb-4">Поделиться:</h3>
+              <div className="flex flex-wrap gap-3">
+                <Button variant="outline" onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                }}>
+                  <Icon name="Link" size={16} className="mr-2" />
+                  Копировать ссылку
+                </Button>
+                <Button variant="outline" onClick={() => {
+                  window.open(`https://vk.com/share.php?url=${encodeURIComponent(window.location.href)}`, '_blank');
+                }}>
+                  <Icon name="Share2" size={16} className="mr-2" />
+                  ВКонтакте
+                </Button>
+                <Button variant="outline" onClick={() => {
+                  window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
+                }}>
+                  <Icon name="Send" size={16} className="mr-2" />
+                  Telegram
+                </Button>
+              </div>
+            </div>
+
+            <div className="mb-8">
+              <div id="yandex_rtb_R-A-17651616-1"></div>
+            </div>
 
             <div className="flex items-center justify-between">
               <Button 
