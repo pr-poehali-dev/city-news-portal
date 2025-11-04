@@ -12,35 +12,44 @@ interface LoginFormProps {
 
 export const LoginForm = ({ loginForm, loading, onLoginChange, onSubmit }: LoginFormProps) => {
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl font-serif text-center">
-            Вход в админ-панель
+    <div className="min-h-screen bg-accent flex items-center justify-center p-4">
+      <Card className="w-full max-w-md border-4 border-primary rounded-none shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+        <CardHeader className="bg-primary border-b-4 border-primary">
+          <CardTitle className="text-3xl md:text-4xl font-black text-white uppercase text-center tracking-tight">
+            ВХОД
           </CardTitle>
+          <p className="text-white/70 text-sm uppercase font-bold tracking-wider text-center mt-2">
+            Город говорит
+          </p>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={onSubmit} className="space-y-4">
+        <CardContent className="p-6 md:p-8">
+          <form onSubmit={onSubmit} className="space-y-6">
             <div>
               <Input
                 type="text"
-                placeholder="Логин"
+                placeholder="ЛОГИН"
                 value={loginForm.login}
                 onChange={(e) => onLoginChange('login', e.target.value)}
                 required
+                className="border-2 border-primary rounded-none h-12 text-base font-bold uppercase placeholder:text-muted-foreground/50"
               />
             </div>
             <div>
               <Input
                 type="password"
-                placeholder="Пароль"
+                placeholder="ПАРОЛЬ"
                 value={loginForm.password}
                 onChange={(e) => onLoginChange('password', e.target.value)}
                 required
+                className="border-2 border-primary rounded-none h-12 text-base font-bold uppercase placeholder:text-muted-foreground/50"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              <Icon name="LogIn" size={16} className="mr-2" />
+            <Button 
+              type="submit" 
+              className="w-full h-12 bg-primary hover:bg-accent text-white font-black uppercase text-base tracking-wider rounded-none border-4 border-primary transition-all hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]" 
+              disabled={loading}
+            >
+              <Icon name="LogIn" size={20} className="mr-2" />
               Войти
             </Button>
           </form>

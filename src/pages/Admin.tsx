@@ -27,14 +27,8 @@ const Admin = () => {
     setEditDialogOpen,
     newsForm,
     setNewsForm,
-    eventForm,
-    setEventForm,
-    placeForm,
-    setPlaceForm,
     newsList,
     draftsList,
-    eventsList,
-    placesList,
     authorsList,
     authorForm,
     setAuthorForm,
@@ -48,14 +42,6 @@ const Admin = () => {
     handleDeleteNews,
     handlePublishDraft,
     handleSetFeatured,
-    handleEventSubmit,
-    handleDeleteEvent,
-    handlePlaceSubmit,
-    handleDeletePlace,
-    handleTogglePublishPlace,
-    handleToggleFeaturedPlace,
-    handleEditPlace,
-    handleUpdatePlace,
     memoryForm,
     setMemoryForm,
     memoryList,
@@ -85,20 +71,20 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-safe">
+    <div className="min-h-screen bg-white pb-safe">
       <AdminHeader onLogout={handleLogout} />
 
-      <main className="container mx-auto px-3 py-4 md:px-4 md:py-8">
-        <Tabs defaultValue="news" className="space-y-4 md:space-y-6">
-          <div className="sticky top-[73px] md:top-[81px] z-40 bg-background pb-2 pt-1">
-            <TabsList className="grid w-full grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-1 md:gap-2 h-auto">
-              <TabsTrigger value="news" className="text-xs md:text-sm py-2">Новости</TabsTrigger>
-              <TabsTrigger value="memory" className="text-xs md:text-sm py-2">Память</TabsTrigger>
-              <TabsTrigger value="youth" className="text-xs md:text-sm py-2">Пульс</TabsTrigger>
-              <TabsTrigger value="authors" className="text-xs md:text-sm py-2">Авторы</TabsTrigger>
-              <TabsTrigger value="analytics" className="text-xs md:text-sm py-2">Аналитика</TabsTrigger>
-              <TabsTrigger value="indexation" className="text-xs md:text-sm py-2">Индексация</TabsTrigger>
-              <TabsTrigger value="settings" className="text-xs md:text-sm py-2">Настройки</TabsTrigger>
+      <main className="container mx-auto px-4 py-6 md:px-8 md:py-12">
+        <Tabs defaultValue="news" className="space-y-6 md:space-y-10">
+          <div className="sticky top-[97px] md:top-[113px] z-40 bg-white border-b-4 border-primary pb-0">
+            <TabsList className="grid w-full grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-0 h-auto bg-transparent rounded-none p-0">
+              <TabsTrigger value="news" className="text-xs md:text-sm py-3 md:py-4 font-black uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-white bg-white text-black hover:bg-black hover:text-white border-r-2 border-primary rounded-none">Новости</TabsTrigger>
+              <TabsTrigger value="memory" className="text-xs md:text-sm py-3 md:py-4 font-black uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-white bg-white text-black hover:bg-black hover:text-white border-r-2 border-primary rounded-none">Память</TabsTrigger>
+              <TabsTrigger value="youth" className="text-xs md:text-sm py-3 md:py-4 font-black uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-white bg-white text-black hover:bg-black hover:text-white border-r-2 border-primary rounded-none">Пульс</TabsTrigger>
+              <TabsTrigger value="authors" className="text-xs md:text-sm py-3 md:py-4 font-black uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-white bg-white text-black hover:bg-black hover:text-white border-r-2 border-primary rounded-none">Авторы</TabsTrigger>
+              <TabsTrigger value="analytics" className="text-xs md:text-sm py-3 md:py-4 font-black uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-white bg-white text-black hover:bg-black hover:text-white border-r-2 border-primary rounded-none">Статистика</TabsTrigger>
+              <TabsTrigger value="indexation" className="text-xs md:text-sm py-3 md:py-4 font-black uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-white bg-white text-black hover:bg-black hover:text-white border-r-2 border-primary rounded-none">Индекс</TabsTrigger>
+              <TabsTrigger value="settings" className="text-xs md:text-sm py-3 md:py-4 font-black uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-white bg-white text-black hover:bg-black hover:text-white rounded-none">Настройки</TabsTrigger>
             </TabsList>
           </div>
 

@@ -3,13 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { useNavigate } from 'react-router-dom';
-import { useCity } from '@/contexts/CityContext';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 
 interface SiteHeaderProps {
   sections?: string[];
@@ -20,7 +13,6 @@ interface SiteHeaderProps {
 
 export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSearch }: SiteHeaderProps) => {
   const navigate = useNavigate();
-  const { city, setCity } = useCity();
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -46,28 +38,9 @@ export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSe
               }}
             >
               <div className="flex flex-col gap-1">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="text-white text-xs md:text-sm font-bold uppercase tracking-widest mb-1 hover:text-white/80 transition-colors flex items-center gap-1">
-                      {city}
-                      <Icon name="ChevronDown" size={14} />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="border-2 border-primary rounded-none">
-                    <DropdownMenuItem 
-                      onClick={() => setCity('Краснодар')}
-                      className="font-bold uppercase cursor-pointer"
-                    >
-                      Краснодар
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => setCity('Москва')}
-                      className="font-bold uppercase cursor-pointer"
-                    >
-                      Москва
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="text-white text-xs md:text-sm font-bold uppercase tracking-widest mb-1">
+                  Краснодар
+                </div>
                 <div className="flex items-baseline gap-2 md:gap-3">
                   <h1 className="text-4xl md:text-6xl lg:text-8xl font-black text-white uppercase leading-[0.8] tracking-tighter group-hover:scale-105 transition-transform">
                     ГОРОД
