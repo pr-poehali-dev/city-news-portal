@@ -25,75 +25,70 @@ export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSe
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-lg border-b-4 border-accent">
-      <div className="bg-gradient-to-r from-accent via-orange-500 to-yellow-500 py-2">
-        <div className="container mx-auto px-6 flex items-center justify-between text-white text-sm">
-          <div className="flex items-center gap-4">
-            <Icon name="Sun" size={16} className="animate-pulse" />
-            <span className="font-semibold">Краснодар • Южная столица</span>
-          </div>
-          <div className="flex items-center gap-2 text-xs">
-            <Icon name="CloudSun" size={14} />
-            <span>+25°C</span>
+    <header className="sticky top-0 z-50 bg-white border-b-4 border-primary shadow-[0_4px_0px_0px_rgba(0,0,0,0.1)]">
+      <div className="border-b-4 border-primary bg-accent">
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex items-center justify-between">
+            <div 
+              className="cursor-pointer group" 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                navigate('/');
+              }}
+            >
+              <div className="flex items-baseline gap-3">
+                <h1 className="text-6xl lg:text-8xl font-black text-white uppercase leading-[0.8] tracking-tighter group-hover:scale-105 transition-transform">
+                  ГОРОД
+                </h1>
+                <div className="bg-white px-4 py-2 rotate-[-2deg] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                  <span className="text-2xl lg:text-4xl font-black text-accent uppercase tracking-tighter">
+                    ГОВОРИТ
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setShowSearch(!showSearch)}
+                className="hover:bg-white hover:text-accent transition-all w-12 h-12 rounded-none border-2 border-white hover:scale-110"
+              >
+                <Icon name="Search" size={24} className="text-white hover:text-accent" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => window.location.href = '/admin'}
+                title="Админка"
+                className="hover:bg-white hover:text-accent transition-all w-12 h-12 rounded-none border-2 border-white hover:scale-110"
+              >
+                <Icon name="Settings" size={24} className="text-white hover:text-accent" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex items-center justify-between mb-6">
-          <div 
-            className="cursor-pointer group" 
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              navigate('/');
-            }}
-          >
-            <div className="relative">
-              <h1 className="text-4xl lg:text-5xl font-display font-black bg-gradient-to-r from-primary via-accent to-orange-500 bg-clip-text text-transparent tracking-tight">
-                Город Говорит
-              </h1>
-              <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-primary via-accent to-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => setShowSearch(!showSearch)}
-              className="rounded-2xl hover:bg-primary/10 hover:scale-110 transition-all duration-300"
-            >
-              <Icon name="Search" size={20} className="text-primary" />
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => window.location.href = '/admin'}
-              title="Админка"
-              className="rounded-2xl hover:bg-accent/10 hover:scale-110 transition-all duration-300"
-            >
-              <Icon name="Settings" size={20} className="text-accent" />
-            </Button>
-          </div>
-        </div>
-
-        {showSearch && (
-          <div className="mb-4 flex gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
+      {showSearch && (
+        <div className="container mx-auto px-6 py-4 bg-black border-b-4 border-primary">
+          <div className="flex gap-3">
             <Input
               type="text"
-              placeholder="Поиск по новостям..."
+              placeholder="ПОИСК ПО НОВОСТЯМ..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="flex-1 rounded-3xl border-2 border-primary/20 focus:border-primary transition-colors"
+              className="flex-1 text-lg font-bold uppercase border-4 border-white bg-black text-white placeholder:text-white/50 focus:border-accent rounded-none"
               autoFocus
             />
             <Button 
               onClick={handleSearch} 
               disabled={!searchQuery.trim()}
-              className="rounded-3xl bg-gradient-to-r from-primary to-accent hover:shadow-lg hover:shadow-primary/50 transition-all duration-300"
+              className="bg-accent hover:bg-accent/90 text-white font-black uppercase px-8 rounded-none border-4 border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:shadow-none transition-all"
             >
-              <Icon name="Search" size={16} className="mr-2" />
+              <Icon name="Search" size={20} className="mr-2" />
               Найти
             </Button>
             <Button 
@@ -102,31 +97,33 @@ export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSe
                 setShowSearch(false);
                 setSearchQuery('');
               }}
-              className="rounded-3xl hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+              className="bg-white hover:bg-black hover:text-white border-4 border-white font-black rounded-none"
             >
-              <Icon name="X" size={16} />
+              <Icon name="X" size={20} />
             </Button>
           </div>
-        )}
-        
-        {sections.length > 0 && (
-          <nav className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+        </div>
+      )}
+      
+      {sections.length > 0 && (
+        <nav className="container mx-auto px-6">
+          <div className="flex gap-0 overflow-x-auto scrollbar-hide">
             {sections.map((section) => (
               <button
                 key={section}
                 onClick={() => onSectionChange?.(section)}
-                className={`px-6 py-3 text-sm font-bold whitespace-nowrap rounded-3xl transition-all duration-300 border-2 ${
+                className={`px-6 py-4 text-sm font-black whitespace-nowrap uppercase tracking-wider transition-all border-r-2 border-primary last:border-r-0 ${
                   activeSection === section
-                    ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/30 border-transparent scale-105'
-                    : 'bg-white text-gray-700 border-gray-200 hover:border-primary hover:scale-105 hover:shadow-md'
+                    ? 'bg-accent text-white'
+                    : 'bg-white text-black hover:bg-black hover:text-white'
                 }`}
               >
                 {section}
               </button>
             ))}
-          </nav>
-        )}
-      </div>
+          </div>
+        </nav>
+      )}
     </header>
   );
 };

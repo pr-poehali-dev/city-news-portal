@@ -7,7 +7,7 @@ interface LatestNewsGridProps {
   limit?: number;
 }
 
-export const LatestNewsGrid = ({ news, onNewsClick, limit = 8 }: LatestNewsGridProps) => {
+export const LatestNewsGrid = ({ news, onNewsClick, limit = 9 }: LatestNewsGridProps) => {
   const displayNews = news.slice(0, limit);
 
   const stripHtml = (html: string) => {
@@ -35,85 +35,78 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 8 }: LatestNewsGridP
     return text.trim();
   };
 
-  const patterns = [
-    { gradient: 'from-red-500 to-pink-500', icon: 'Flame' },
-    { gradient: 'from-blue-500 to-cyan-500', icon: 'Waves' },
-    { gradient: 'from-green-500 to-emerald-500', icon: 'Leaf' },
-    { gradient: 'from-purple-500 to-indigo-500', icon: 'Sparkles' },
-    { gradient: 'from-orange-500 to-yellow-500', icon: 'Sun' },
-    { gradient: 'from-pink-500 to-rose-500', icon: 'Heart' },
-    { gradient: 'from-cyan-500 to-blue-500', icon: 'Droplets' },
-    { gradient: 'from-amber-500 to-orange-500', icon: 'Zap' },
-  ];
-
   return (
-    <section className="mb-16 px-6">
-      <div className="mb-12 text-center">
-        <div className="inline-flex items-center gap-4 mb-4">
-          <div className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-2xl animate-pulse">
-            <Icon name="Newspaper" size={28} className="text-white" />
+    <section className="mb-0 border-t-4 border-primary">
+      <div className="bg-accent px-8 py-12 border-b-4 border-primary">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-6xl lg:text-8xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-4">
+              СЕЙЧАС
+            </h2>
+            <div className="h-2 w-32 bg-white"></div>
           </div>
-          <h2 className="text-5xl lg:text-6xl font-display font-black bg-gradient-to-r from-primary via-accent to-orange-500 bg-clip-text text-transparent">
-            Сейчас читают
-          </h2>
+          <Icon name="Zap" size={64} className="text-white/30" />
         </div>
-        <p className="text-gray-600 text-lg">Самые обсуждаемые новости дня</p>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
         {displayNews.map((item, index) => {
-          const pattern = patterns[index % patterns.length];
+          const isLarge = index === 0;
+          const accentColors = ['#FF4136', '#2ECC40', '#B10DC9', '#FF851B', '#0074D9'];
+          const itemAccent = accentColors[index % accentColors.length];
           
           return (
             <article
               key={item.id}
-              className="group relative cursor-pointer overflow-hidden rounded-[2rem] bg-white shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3"
+              className={`group relative cursor-pointer overflow-hidden bg-white border-b-4 border-primary transition-all hover:z-10 ${
+                isLarge ? 'md:col-span-3 md:row-span-1' : 'md:border-r-4 last:border-r-0'
+              }`}
               onClick={() => onNewsClick(item.id)}
             >
-              <div className={`absolute -inset-0.5 bg-gradient-to-br ${pattern.gradient} rounded-[2rem] opacity-0 group-hover:opacity-75 blur transition-opacity duration-500`}></div>
-              
-              <div className="relative">
-                <div className="aspect-[4/3] relative overflow-hidden">
-                  {item.image_url ? (
-                    <img
-                      src={item.image_url}
-                      alt={item.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-2"
-                    />
-                  ) : (
-                    <div className={`w-full h-full bg-gradient-to-br ${pattern.gradient} flex items-center justify-center`}>
-                      <Icon name={pattern.icon as any} size={64} className="text-white/40" />
-                    </div>
-                  )}
-                  
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  
-                  <div className="absolute top-4 right-4 z-10">
-                    <Badge className={`bg-gradient-to-r ${pattern.gradient} text-white font-bold px-3 py-2 text-xs rounded-full shadow-xl border-0`}>
-                      {item.category}
-                    </Badge>
+              <div className={`${isLarge ? 'aspect-[21/9]' : 'aspect-[4/3]'} relative overflow-hidden bg-black`}>
+                {item.image_url ? (
+                  <img
+                    src={item.image_url}
+                    alt={item.title}
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                    <Icon name="FileText" size={64} className="text-gray-400" />
                   </div>
-                </div>
+                )}
                 
-                <div className="p-6 bg-white relative z-10">
-                  <h3 className="font-display font-bold text-xl mb-3 leading-tight line-clamp-2 group-hover:text-accent transition-colors">
-                    {item.title}
-                  </h3>
-                  
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+              </div>
+              
+              <div className="absolute top-6 left-6">
+                <div 
+                  className="px-4 py-2 rotate-[-2deg] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                  style={{ backgroundColor: itemAccent }}
+                >
+                  <span className="text-white font-black text-xs uppercase tracking-[0.2em]">
+                    {item.category}
+                  </span>
+                </div>
+              </div>
+              
+              <div className={`absolute bottom-0 left-0 right-0 p-6 ${isLarge ? 'lg:p-12' : ''}`}>
+                <h3 className={`text-white font-black uppercase leading-tight tracking-tighter mb-3 group-hover:text-accent transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] ${
+                  isLarge ? 'text-4xl lg:text-5xl line-clamp-2' : 'text-2xl line-clamp-3'
+                }`}>
+                  {item.title}
+                </h3>
+                
+                {isLarge && (
+                  <p className="text-white/80 text-lg mb-4 line-clamp-2 max-w-4xl">
                     {stripHtml(item.excerpt || item.content)}
                   </p>
-                  
-                  <div className="flex items-center justify-between text-xs text-gray-500 font-semibold">
-                    <div className="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1.5">
-                      <Icon name="Calendar" size={12} />
-                      <span>{new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
-                    </div>
-                    <div className="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1.5">
-                      <Icon name="Eye" size={12} />
-                      <span>{item.views || 0}</span>
-                    </div>
-                  </div>
+                )}
+                
+                <div className="flex items-center gap-4 text-white/60 text-xs uppercase tracking-wider font-bold">
+                  <span>{new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
+                  <span className="w-1 h-1 bg-accent rounded-full"></span>
+                  <span>{item.author_name || 'Редакция'}</span>
                 </div>
               </div>
             </article>

@@ -69,8 +69,7 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				sans: ['Inter', 'sans-serif'],
-				display: ['Space Grotesk', 'sans-serif'],
+				sans: ['Open Sans', 'sans-serif'],
 				serif: ['Playfair Display', 'serif']
 			},
 			keyframes: {
