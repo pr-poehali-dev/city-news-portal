@@ -194,6 +194,7 @@ export function MemorySection({ articles, onArticleClick }: MemorySectionProps) 
           ))}
         </div>
       </div>
+      </div>
     </div>
   );
 }
