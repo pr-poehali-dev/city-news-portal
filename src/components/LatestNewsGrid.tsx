@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 
 interface LatestNewsGridProps {
@@ -7,102 +7,118 @@ interface LatestNewsGridProps {
   limit?: number;
 }
 
-export const LatestNewsGrid = ({ news, onNewsClick, limit = 9 }: LatestNewsGridProps) => {
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
+export const LatestNewsGrid = ({ news, onNewsClick, limit = 8 }: LatestNewsGridProps) => {
   const displayNews = news.slice(0, limit);
 
   const stripHtml = (html: string) => {
     if (!html) return '';
     
     let text = html;
+    
     text = text.replace(/<[^>]+>/g, '');
     text = text.replace(/&nbsp;/gi, ' ');
     text = text.replace(/&mdash;/gi, '-');
+    text = text.replace(/&ndash;/gi, '-');
+    text = text.replace(/&rsquo;/gi, "'");
+    text = text.replace(/&lsquo;/gi, "'");
+    text = text.replace(/&rdquo;/gi, '"');
+    text = text.replace(/&ldquo;/gi, '"');
+    text = text.replace(/&hellip;/gi, '...');
     text = text.replace(/&[a-z]+;/gi, ' ');
+    
+    text = text.replace(/[\u00a0\u202f\u2009\u2000-\u200b]/g, ' ');
+    text = text.replace(/[\u2011-\u2015]/g, '-');
+    text = text.replace(/[\u2018\u2019]/g, "'");
+    text = text.replace(/[\u201c\u201d]/g, '"');
     text = text.replace(/\s+/g, ' ');
     
     return text.trim();
   };
 
+  const patterns = [
+    { gradient: 'from-red-500 to-pink-500', icon: 'Flame' },
+    { gradient: 'from-blue-500 to-cyan-500', icon: 'Waves' },
+    { gradient: 'from-green-500 to-emerald-500', icon: 'Leaf' },
+    { gradient: 'from-purple-500 to-indigo-500', icon: 'Sparkles' },
+    { gradient: 'from-orange-500 to-yellow-500', icon: 'Sun' },
+    { gradient: 'from-pink-500 to-rose-500', icon: 'Heart' },
+    { gradient: 'from-cyan-500 to-blue-500', icon: 'Droplets' },
+    { gradient: 'from-amber-500 to-orange-500', icon: 'Zap' },
+  ];
+
   return (
-    <section className="bg-white">
-      <div className="max-w-[1800px] mx-auto px-6 lg:px-20 py-16 lg:py-24">
-        <div className="mb-12 lg:mb-16">
-          <h2 className="text-4xl lg:text-6xl font-black tracking-tight mb-4">
-            Актуальное
+    <section className="mb-16 px-6">
+      <div className="mb-12 text-center">
+        <div className="inline-flex items-center gap-4 mb-4">
+          <div className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-2xl animate-pulse">
+            <Icon name="Newspaper" size={28} className="text-white" />
+          </div>
+          <h2 className="text-5xl lg:text-6xl font-display font-black bg-gradient-to-r from-primary via-accent to-orange-500 bg-clip-text text-transparent">
+            Сейчас читают
           </h2>
-          <div className="w-20 h-1 bg-black"></div>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {displayNews.map((item, index) => {
-            const isLarge = index % 5 === 0;
-            const isHovered = hoveredId === item.id;
-            
-            return (
-              <article
-                key={item.id}
-                className={`group relative cursor-pointer overflow-hidden ${
-                  isLarge ? 'md:col-span-2 md:row-span-2' : ''
-                }`}
-                onClick={() => onNewsClick(item.id)}
-                onMouseEnter={() => setHoveredId(item.id)}
-                onMouseLeave={() => setHoveredId(null)}
-              >
-                <div className={`relative overflow-hidden ${
-                  isLarge ? 'aspect-[16/10]' : 'aspect-[4/5]'
-                }`}>
-                  <img
-                    src={item.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
-                    alt={item.title}
-                    className={`w-full h-full object-cover transition-all duration-[1500ms] ${
-                      isHovered ? 'scale-110 brightness-90' : 'scale-100 brightness-100'
-                    }`}
-                  />
+        <p className="text-gray-600 text-lg">Самые обсуждаемые новости дня</p>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {displayNews.map((item, index) => {
+          const pattern = patterns[index % patterns.length];
+          
+          return (
+            <article
+              key={item.id}
+              className="group relative cursor-pointer overflow-hidden rounded-[2rem] bg-white shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3"
+              onClick={() => onNewsClick(item.id)}
+            >
+              <div className={`absolute -inset-0.5 bg-gradient-to-br ${pattern.gradient} rounded-[2rem] opacity-0 group-hover:opacity-75 blur transition-opacity duration-500`}></div>
+              
+              <div className="relative">
+                <div className="aspect-[4/3] relative overflow-hidden">
+                  {item.image_url ? (
+                    <img
+                      src={item.image_url}
+                      alt={item.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-2"
+                    />
+                  ) : (
+                    <div className={`w-full h-full bg-gradient-to-br ${pattern.gradient} flex items-center justify-center`}>
+                      <Icon name={pattern.icon as any} size={64} className="text-white/40" />
+                    </div>
+                  )}
                   
-                  <div className={`absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent transition-opacity duration-500 ${
-                    isHovered ? 'opacity-100' : 'opacity-80'
-                  }`}></div>
-
-                  <div className="absolute top-6 left-6 z-10">
-                    <span className={`inline-block px-4 py-2 bg-white/10 backdrop-blur-md text-white text-xs font-bold uppercase tracking-widest transition-all duration-300 ${
-                      isHovered ? 'bg-red-600 backdrop-blur-none' : ''
-                    }`}>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  
+                  <div className="absolute top-4 right-4 z-10">
+                    <Badge className={`bg-gradient-to-r ${pattern.gradient} text-white font-bold px-3 py-2 text-xs rounded-full shadow-xl border-0`}>
                       {item.category}
-                    </span>
+                    </Badge>
                   </div>
-
-                  <div className={`absolute bottom-0 left-0 right-0 p-6 lg:p-8 transition-all duration-500 ${
-                    isLarge ? 'lg:p-12' : ''
-                  } ${
-                    isHovered ? 'translate-y-0' : 'translate-y-2'
-                  }`}>
-                    <h3 className={`text-white font-black leading-tight mb-4 transition-all duration-300 ${
-                      isLarge ? 'text-2xl lg:text-4xl' : 'text-xl lg:text-2xl'
-                    }`}>
-                      {item.title}
-                    </h3>
-                    
-                    {isLarge && (
-                      <p className={`text-gray-300 text-base lg:text-lg mb-6 leading-relaxed line-clamp-2 transition-opacity duration-500 ${
-                        isHovered ? 'opacity-100' : 'opacity-0'
-                      }`}>
-                        {stripHtml(item.excerpt || item.content)}
-                      </p>
-                    )}
-                    
-                    <div className={`flex items-center gap-3 text-gray-400 text-sm transition-all duration-300 ${
-                      isHovered ? 'opacity-100' : 'opacity-70'
-                    }`}>
-                      <Icon name="Calendar" size={14} />
-                      <span>{new Date(item.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}</span>
+                </div>
+                
+                <div className="p-6 bg-white relative z-10">
+                  <h3 className="font-display font-bold text-xl mb-3 leading-tight line-clamp-2 group-hover:text-accent transition-colors">
+                    {item.title}
+                  </h3>
+                  
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">
+                    {stripHtml(item.excerpt || item.content)}
+                  </p>
+                  
+                  <div className="flex items-center justify-between text-xs text-gray-500 font-semibold">
+                    <div className="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1.5">
+                      <Icon name="Calendar" size={12} />
+                      <span>{new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1.5">
+                      <Icon name="Eye" size={12} />
+                      <span>{item.views || 0}</span>
                     </div>
                   </div>
                 </div>
-              </article>
-            );
-          })}
-        </div>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );

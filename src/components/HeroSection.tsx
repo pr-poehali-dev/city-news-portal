@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
+import { MagneticCard } from './MagneticCard';
 
 interface HeroSectionProps {
   mainNews: any;
@@ -8,7 +9,13 @@ interface HeroSectionProps {
 }
 
 export const HeroSection = ({ mainNews, sideNews, onNewsClick }: HeroSectionProps) => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   if (!mainNews) return null;
 
@@ -18,127 +25,116 @@ export const HeroSection = ({ mainNews, sideNews, onNewsClick }: HeroSectionProp
   };
 
   return (
-    <section className="relative min-h-screen bg-black">
-      <div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-3">
-        <div 
-          className="relative group cursor-pointer overflow-hidden lg:col-span-2"
-          onClick={() => onNewsClick(mainNews.id)}
-        >
-          <img
-            src={mainNews.image_url || mainNews.image || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
-            alt={mainNews.title}
-            className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
-          
-          <div className="absolute top-8 left-8 lg:top-16 lg:left-16 z-10">
-            <div className="inline-flex items-center gap-3 bg-red-600 px-5 py-2.5 text-white font-bold text-xs uppercase tracking-widest">
-              <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-              Главная новость
-            </div>
-          </div>
-
-          <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-16 z-10">
-            <span className="inline-block text-xs text-red-500 font-bold uppercase tracking-widest mb-4">
-              {mainNews.category}
-            </span>
-            
-            <h1 className="text-4xl md:text-5xl lg:text-7xl font-black leading-[1.1] text-white mb-6 lg:mb-8 tracking-tight">
-              {mainNews.title}
-            </h1>
-            
-            <p className="text-lg lg:text-2xl text-gray-300 mb-6 lg:mb-8 max-w-4xl leading-relaxed line-clamp-2 lg:line-clamp-3">
-              {stripHtml(mainNews.excerpt || mainNews.content)}
-            </p>
-
-            <div className="flex items-center gap-6 text-gray-400 text-sm">
-              <div className="flex items-center gap-2">
-                <Icon name="User" size={16} />
-                <span>{mainNews.author_name}</span>
-              </div>
-              <div className="w-1 h-1 rounded-full bg-gray-600"></div>
-              <div className="flex items-center gap-2">
-                <Icon name="Calendar" size={16} />
-                <span>
-                  {new Date(mainNews.created_at).toLocaleDateString('ru-RU', { 
-                    day: 'numeric', 
-                    month: 'long'
-                  })}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="hidden lg:flex flex-col">
-          {sideNews.slice(0, 3).map((news, index) => (
-            <div
-              key={news.id}
-              className="relative flex-1 group cursor-pointer overflow-hidden border-b border-black last:border-0"
-              onClick={() => onNewsClick(news.id)}
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              <img
-                src={news.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
-                alt={news.title}
-                className={`w-full h-full object-cover transition-all duration-[1500ms] ${
-                  hoveredIndex === index ? 'scale-110 brightness-110' : 'scale-100 brightness-75'
-                }`}
-              />
-              <div className={`absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent transition-opacity duration-500 ${
-                hoveredIndex === index ? 'opacity-90' : 'opacity-100'
-              }`}></div>
-              
-              <div className="absolute inset-0 p-8 flex flex-col justify-end">
-                <span className="text-xs text-red-500 font-bold uppercase tracking-widest mb-3">
-                  {news.category}
-                </span>
-                <h3 className={`text-xl font-bold text-white leading-tight transition-all duration-300 ${
-                  hoveredIndex === index ? 'text-2xl mb-4' : 'mb-3'
-                }`}>
-                  {news.title}
-                </h3>
-                
-                <div className={`flex items-center gap-2 text-gray-400 text-xs transition-opacity duration-300 ${
-                  hoveredIndex === index ? 'opacity-100' : 'opacity-70'
-                }`}>
-                  <Icon name="Calendar" size={12} />
-                  <span>{new Date(news.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
+      <div 
+        className="absolute inset-0"
+        style={{ transform: `translateY(${scrollY * 0.5}px)` }}
+      >
+        <img
+          src={mainNews.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
+          alt=""
+          className="w-full h-full object-cover opacity-40"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
       </div>
 
-      <div className="lg:hidden relative z-10 pt-[100vh] bg-black">
-        <div className="px-6 py-12 space-y-6">
-          {sideNews.slice(0, 3).map((news) => (
-            <div
-              key={news.id}
-              className="relative group cursor-pointer overflow-hidden rounded-2xl"
-              onClick={() => onNewsClick(news.id)}
-            >
-              <div className="aspect-[16/9] relative">
-                <img
-                  src={news.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
-                  alt={news.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-                
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <span className="text-xs text-red-500 font-bold uppercase tracking-widest mb-2 block">
-                    {news.category}
-                  </span>
-                  <h3 className="text-xl font-bold text-white leading-tight">
-                    {news.title}
-                  </h3>
-                </div>
-              </div>
+      <div className="relative z-10 px-6 lg:px-20 py-32 w-full max-w-[1800px] mx-auto">
+        <div 
+          className="mb-12"
+          style={{ transform: `translateY(${scrollY * 0.2}px)` }}
+        >
+          <div className="inline-flex items-center gap-3 bg-red-600 px-6 py-3 rounded-full mb-8">
+            <div className="w-3 h-3 rounded-full bg-white animate-pulse"></div>
+            <span className="text-white font-bold text-sm uppercase tracking-wider">
+              Сейчас читают
+            </span>
+          </div>
+
+          <h1 
+            className="text-5xl md:text-7xl lg:text-9xl font-black text-white leading-[0.9] mb-8 tracking-tight cursor-pointer group"
+            onClick={() => onNewsClick(mainNews.id)}
+          >
+            {mainNews.title.split(' ').map((word: string, i: number) => (
+              <span 
+                key={i}
+                className="inline-block transition-all duration-300 hover:text-red-500 hover:scale-110 mr-4"
+                style={{ 
+                  transitionDelay: `${i * 50}ms`,
+                }}
+              >
+                {word}
+              </span>
+            ))}
+          </h1>
+
+          <p className="text-white/70 text-xl lg:text-3xl font-light max-w-4xl mb-12 leading-relaxed">
+            {stripHtml(mainNews.excerpt || mainNews.content).slice(0, 200)}...
+          </p>
+
+          <div className="flex items-center gap-8 text-white/60">
+            <div className="flex items-center gap-3">
+              <Icon name="User" size={20} />
+              <span className="text-lg">{mainNews.author_name}</span>
             </div>
-          ))}
+            <div className="w-1 h-1 rounded-full bg-white/40"></div>
+            <div className="flex items-center gap-3">
+              <Icon name="Clock" size={20} />
+              <span className="text-lg">
+                {new Date(mainNews.created_at).toLocaleDateString('ru-RU', { 
+                  day: 'numeric', 
+                  month: 'long',
+                  year: 'numeric'
+                })}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {sideNews.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {sideNews.slice(0, 3).map((news, index) => (
+              <MagneticCard
+                key={news.id}
+                onClick={() => onNewsClick(news.id)}
+                className="cursor-pointer"
+              >
+                <div 
+                  className="bg-zinc-900/80 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden group"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  {news.image_url && (
+                    <div className="relative h-64 overflow-hidden">
+                      <img
+                        src={news.image_url}
+                        alt={news.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent"></div>
+                    </div>
+                  )}
+                  
+                  <div className="p-8">
+                    <span className="text-xs font-bold text-red-500 uppercase tracking-wider mb-4 block">
+                      {news.category}
+                    </span>
+                    
+                    <h3 className="text-white text-2xl font-bold leading-tight mb-4 line-clamp-2">
+                      {news.title}
+                    </h3>
+                    
+                    <div className="flex items-center gap-3 text-white/40 text-sm">
+                      <Icon name="Calendar" size={14} />
+                      <span>{new Date(news.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</span>
+                    </div>
+                  </div>
+                </div>
+              </MagneticCard>
+            ))}
+          </div>
+        )}
+
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce">
+          <Icon name="ChevronDown" size={48} className="text-white/40" />
         </div>
       </div>
     </section>

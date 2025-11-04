@@ -272,7 +272,7 @@ export const NewsPage = () => {
         <article>
           <div className="relative h-[60vh] min-h-[500px] mb-12">
             <img 
-              src={article.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"} 
+              src={article.image_url} 
               alt={article.title}
               className="w-full h-full object-cover"
             />
@@ -281,11 +281,11 @@ export const NewsPage = () => {
             <div className="absolute bottom-0 left-0 right-0 px-4 lg:px-20 pb-16">
               <div className="max-w-4xl mx-auto">
                 <button
-                  onClick={() => navigate('/')}
+                  onClick={() => navigate(-1)}
                   className="mb-8 text-white/80 hover:text-white transition-colors flex items-center gap-2"
                 >
                   <Icon name="ArrowLeft" size={20} />
-                  <span>На главную</span>
+                  <span>Назад</span>
                 </button>
                 
                 <span className="inline-block text-xs font-semibold text-white/80 uppercase tracking-wider mb-4">
