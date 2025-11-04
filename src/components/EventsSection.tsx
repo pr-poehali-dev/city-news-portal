@@ -35,111 +35,137 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
   };
 
   return (
-    <section className="bg-black text-white">
-      <div className="max-w-[1800px] mx-auto px-6 lg:px-20 py-20 lg:py-32">
-        <div className="mb-16 lg:mb-24">
-          <h2 className="text-5xl lg:text-8xl font-black tracking-tight mb-4">
+    <section className="relative min-h-screen bg-black overflow-hidden">
+      <div className="absolute inset-0">
+        <img
+          key={currentEvent.id}
+          src={currentEvent.image_url}
+          alt={currentEvent.title}
+          className="w-full h-full object-cover transition-all duration-1000 ease-in-out"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30"></div>
+      </div>
+
+      <div className="relative z-10 min-h-screen flex flex-col">
+        <div className="px-6 lg:px-20 py-12 lg:py-16">
+          <h2 className="text-4xl lg:text-6xl font-black text-white tracking-tight mb-2">
             Афиша
           </h2>
-          <div className="w-24 h-1 bg-white"></div>
+          <div className="w-20 h-1 bg-white"></div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
-          <div className="lg:col-span-7">
-            <a
-              href={currentEvent.kudago_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block group"
-            >
-              <div className="relative aspect-[4/3] lg:aspect-[16/10] overflow-hidden mb-8">
-                <img
-                  src={currentEvent.image_url}
-                  alt={currentEvent.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                
-                {currentEvent.is_free && (
-                  <div className="absolute top-6 right-6 bg-green-500 text-black px-6 py-2 font-black text-sm tracking-wider">
-                    БЕСПЛАТНО
+        <div className="flex-1 flex items-end pb-12 lg:pb-20">
+          <div className="w-full px-6 lg:px-20">
+            <div className="max-w-5xl">
+              {currentEvent.is_free && (
+                <div className="inline-flex items-center gap-2 bg-green-500 text-black px-6 py-3 font-black text-sm uppercase tracking-wider mb-6">
+                  <Icon name="Ticket" size={16} />
+                  Бесплатно
+                </div>
+              )}
+
+              <a
+                href={currentEvent.kudago_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block"
+              >
+                <h3 className="text-4xl md:text-5xl lg:text-7xl font-black text-white leading-[1.1] mb-8 lg:mb-12 group-hover:text-gray-300 transition-colors">
+                  {currentEvent.title}
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-10 lg:mb-16">
+                  <div className="flex gap-4 items-start">
+                    <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center flex-shrink-0">
+                      <Icon name="MapPin" size={20} className="text-white" />
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">Место</div>
+                      <div className="text-lg lg:text-xl text-white font-medium">
+                        {currentEvent.location}
+                      </div>
+                    </div>
                   </div>
-                )}
-              </div>
-            </a>
 
-            <div className="flex items-center gap-4 mb-8">
-              <button
-                onClick={handlePrev}
-                className="w-12 h-12 border border-white/20 hover:bg-white hover:text-black transition-colors flex items-center justify-center"
-              >
-                <Icon name="ChevronLeft" size={20} />
-              </button>
-              
-              <div className="flex-1 h-px bg-white/10"></div>
-              
-              <span className="text-sm font-mono text-gray-500">
-                {String(currentIndex + 1).padStart(2, '0')} / {String(events.length).padStart(2, '0')}
-              </span>
-              
-              <div className="flex-1 h-px bg-white/10"></div>
+                  {currentEvent.event_date_display && (
+                    <div className="flex gap-4 items-start">
+                      <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center flex-shrink-0">
+                        <Icon name="Clock" size={20} className="text-white" />
+                      </div>
+                      <div>
+                        <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">Дата</div>
+                        <div className="text-lg lg:text-xl text-white font-medium">
+                          {currentEvent.event_date_display}
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
-              <button
-                onClick={handleNext}
-                className="w-12 h-12 border border-white/20 hover:bg-white hover:text-black transition-colors flex items-center justify-center"
-              >
-                <Icon name="ChevronRight" size={20} />
-              </button>
-            </div>
-          </div>
+                  {!currentEvent.is_free && currentEvent.price && (
+                    <div className="flex gap-4 items-start">
+                      <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center flex-shrink-0">
+                        <Icon name="Ticket" size={20} className="text-white" />
+                      </div>
+                      <div>
+                        <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">Цена</div>
+                        <div className="text-lg lg:text-xl text-white font-medium">
+                          {currentEvent.price}
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
-          <div className="lg:col-span-5">
-            <a
-              href={currentEvent.kudago_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block group"
-            >
-              <h3 className="text-3xl lg:text-5xl font-black leading-tight mb-8 lg:mb-12 group-hover:text-gray-300 transition-colors">
-                {currentEvent.title}
-              </h3>
-
-              <div className="space-y-6 lg:space-y-8 mb-12">
-                <div className="flex gap-4">
-                  <Icon name="MapPin" size={24} className="flex-shrink-0 text-gray-500" />
-                  <span className="text-lg lg:text-xl text-gray-300">
-                    {currentEvent.location}
-                  </span>
+                  <div className="flex gap-4 items-start">
+                    <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center flex-shrink-0">
+                      <Icon name="Info" size={20} className="text-white" />
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">Возраст</div>
+                      <div className="text-lg lg:text-xl text-white font-medium">
+                        {currentEvent.age_restriction}
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                {currentEvent.event_date_display && (
-                  <div className="flex gap-4">
-                    <Icon name="Clock" size={24} className="flex-shrink-0 text-gray-500" />
-                    <span className="text-lg lg:text-xl text-gray-300">
-                      {currentEvent.event_date_display}
-                    </span>
-                  </div>
-                )}
-
-                {!currentEvent.is_free && currentEvent.price && (
-                  <div className="flex gap-4">
-                    <Icon name="Ticket" size={24} className="flex-shrink-0 text-gray-500" />
-                    <span className="text-lg lg:text-xl text-gray-300">
-                      {currentEvent.price}
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex items-center justify-between pt-8 border-t border-white/10">
-                <span className="text-sm font-mono text-gray-500">
-                  {currentEvent.age_restriction}
-                </span>
-                <div className="flex items-center gap-2 text-white group-hover:gap-4 transition-all">
-                  <span className="font-black tracking-wider">ПОДРОБНЕЕ</span>
+                <div className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-black uppercase tracking-wider group-hover:bg-gray-200 transition-colors">
+                  Подробнее
                   <Icon name="ArrowRight" size={20} />
                 </div>
-              </div>
-            </a>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="px-6 lg:px-20 pb-12 lg:pb-16">
+          <div className="flex items-center gap-6">
+            <button
+              onClick={handlePrev}
+              className="w-14 h-14 rounded-full border-2 border-white/20 hover:bg-white hover:text-black transition-all flex items-center justify-center backdrop-blur-md"
+            >
+              <Icon name="ChevronLeft" size={24} />
+            </button>
+
+            <div className="flex gap-3">
+              {events.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`transition-all ${
+                    index === currentIndex
+                      ? 'w-12 h-2 bg-white'
+                      : 'w-2 h-2 bg-white/30 hover:bg-white/50'
+                  }`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={handleNext}
+              className="w-14 h-14 rounded-full border-2 border-white/20 hover:bg-white hover:text-black transition-all flex items-center justify-center backdrop-blur-md"
+            >
+              <Icon name="ChevronRight" size={24} />
+            </button>
           </div>
         </div>
       </div>
