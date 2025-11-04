@@ -107,13 +107,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'isBase64Encoded': False
                         }
                     
+                    news_dict = dict(news)
+                    if 'published_at' in news_dict:
+                        news_dict['date'] = news_dict['published_at']
+                    if 'author_name' in news_dict:
+                        news_dict['author'] = news_dict['author_name']
+                    if 'category' in news_dict:
+                        news_dict['section'] = news_dict['category']
+                    
                     return {
                         'statusCode': 200,
                         'headers': {
                             'Content-Type': 'application/json',
                             'Access-Control-Allow-Origin': '*'
                         },
-                        'body': json.dumps(dict(news), default=str),
+                        'body': json.dumps(news_dict, default=str),
                         'isBase64Encoded': False
                     }
                 
@@ -162,13 +170,24 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 news_list = cur.fetchall()
                 
+                formatted_news = []
+                for n in news_list:
+                    news_dict = dict(n)
+                    if 'published_at' in news_dict:
+                        news_dict['date'] = news_dict['published_at']
+                    if 'author_name' in news_dict:
+                        news_dict['author'] = news_dict['author_name']
+                    if 'category' in news_dict:
+                        news_dict['section'] = news_dict['category']
+                    formatted_news.append(news_dict)
+                
                 return {
                     'statusCode': 200,
                     'headers': {
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*'
                     },
-                    'body': json.dumps([dict(n) for n in news_list], default=str),
+                    'body': json.dumps(formatted_news, default=str),
                     'isBase64Encoded': False
                 }
         
