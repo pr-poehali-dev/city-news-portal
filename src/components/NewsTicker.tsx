@@ -8,17 +8,17 @@ export const NewsTicker = ({ latestNews }: NewsTickerProps) => {
   if (latestNews.length === 0) return null;
 
   return (
-    <div className="bg-black text-white overflow-hidden border-y-4 border-primary">
+    <div className="relative overflow-hidden bg-gradient-to-r from-accent via-purple-600 to-pink-600 py-3">
       <div className="flex items-center">
-        <div className="bg-accent px-6 py-4 flex items-center gap-3 flex-shrink-0 border-r-4 border-primary">
-          <Icon name="Zap" size={20} className="text-white" />
-          <span className="font-black uppercase tracking-widest text-sm">СРОЧНО</span>
+        <div className="bg-white/20 backdrop-blur-sm px-5 py-2 rounded-full flex items-center gap-2 flex-shrink-0 ml-4 mr-6">
+          <Icon name="Zap" size={16} className="text-white" />
+          <span className="font-bold text-white text-sm">Срочно</span>
         </div>
-        <div className="animate-marquee whitespace-nowrap py-4">
+        <div className="animate-marquee whitespace-nowrap">
           {latestNews.map((news, i) => (
-            <span key={news.id} className="inline-flex items-center mx-8">
-              <span className="font-black uppercase tracking-wider text-base">{news.title}</span>
-              {i < latestNews.length - 1 && <span className="mx-8 text-accent">●</span>}
+            <span key={news.id} className="inline-flex items-center mx-6">
+              <span className="font-semibold text-white text-sm">{news.title}</span>
+              {i < latestNews.length - 1 && <span className="mx-6 text-white/60">•</span>}
             </span>
           ))}
         </div>

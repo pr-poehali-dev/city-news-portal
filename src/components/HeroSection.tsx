@@ -25,76 +25,81 @@ export const HeroSection = ({ mainNews, sideNews, onNewsClick }: HeroSectionProp
   };
 
   return (
-    <section className="mb-0">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
-        {/* Main news - Full width on mobile, 2 cols on desktop */}
+    <section className="mb-16">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div 
-          className="lg:col-span-2 relative group cursor-pointer overflow-hidden bg-black border-b-4 lg:border-b-0 lg:border-r-4 border-primary"
+          className="lg:col-span-8 group cursor-pointer relative overflow-hidden rounded-3xl"
           onClick={() => onNewsClick(mainNews.id)}
         >
-          <div className="h-[60vh] lg:h-[85vh] relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
+          
+          <div className="aspect-[16/9] lg:aspect-[16/10] relative overflow-hidden">
             <img
               src={mainNews.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
               alt={mainNews.title}
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
           </div>
           
-          <div className="absolute top-0 left-0 right-0 p-6 lg:p-12">
-            <div className="inline-block bg-accent px-6 py-3 rotate-[-2deg] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              <span className="text-white font-black text-sm uppercase tracking-[0.3em]">
-                {mainNews.category}
-              </span>
-            </div>
+          <div className="absolute top-6 left-6 z-20">
+            <Badge className="bg-gradient-to-r from-accent to-purple-600 text-white font-semibold px-4 py-2 text-xs rounded-full shadow-lg shadow-accent/50 border-0">
+              {mainNews.category}
+            </Badge>
           </div>
           
-          <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-12">
-            <h1 className="text-white text-4xl lg:text-7xl font-black uppercase leading-[0.85] tracking-tighter mb-6 [text-shadow:_3px_3px_0_rgb(0_0_0_/_100%)]">
+          <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10 z-20">
+            <h1 className="text-white text-3xl lg:text-5xl font-display font-bold mb-4 leading-tight">
               {mainNews.title}
             </h1>
             
-            <div className="flex items-center gap-4 text-white text-xs uppercase tracking-widest font-bold">
-              <span>{new Date(mainNews.created_at).toLocaleDateString('ru-RU')}</span>
-              <span className="w-1 h-1 bg-accent rounded-full"></span>
-              <span>{mainNews.author_name}</span>
+            <p className="text-white/80 text-base lg:text-lg mb-6 line-clamp-2 max-w-3xl leading-relaxed">
+              {stripHtml(mainNews.excerpt || mainNews.content)}
+            </p>
+            
+            <div className="flex items-center gap-6 text-white/60 text-sm font-medium">
+              <div className="flex items-center gap-2">
+                <Icon name="Calendar" size={16} />
+                <span>{new Date(mainNews.created_at).toLocaleDateString('ru-RU')}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Icon name="User" size={16} />
+                <span>{mainNews.author_name}</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Side news stack */}
-        <div className="lg:col-span-1 flex flex-col">
+        <div className="lg:col-span-4 flex flex-col gap-6">
           {sideNews.slice(0, 2).map((news, index) => (
             <div
               key={news.id}
-              className={`group relative cursor-pointer overflow-hidden bg-black ${
-                index === 0 ? 'border-b-4 border-primary' : ''
-              }`}
+              className="group relative cursor-pointer overflow-hidden rounded-3xl flex-1"
               onClick={() => onNewsClick(news.id)}
             >
-              <div className="h-[40vh] lg:h-[42.5vh] relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
+              
+              <div className="h-full relative overflow-hidden">
                 {news.image_url ? (
                   <img
                     src={news.image_url}
                     alt={news.title}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                 ) : (
-                  <div className="w-full h-full bg-accent/20 flex items-center justify-center">
-                    <Icon name="Newspaper" size={64} className="text-accent" />
+                  <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                    <Icon name="Newspaper" size={48} className="text-gray-400" />
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
               </div>
               
-              <div className="absolute inset-0 p-6 flex flex-col justify-end">
-                <div className="inline-block bg-white px-4 py-2 mb-4 w-fit">
-                  <span className="text-black font-black text-xs uppercase tracking-[0.2em]">
-                    {news.category}
-                  </span>
-                </div>
+              <div className="absolute inset-0 p-6 flex flex-col justify-end z-20">
+                <Badge className="bg-gradient-to-r from-accent to-purple-600 text-white font-semibold px-3 py-1.5 text-xs rounded-full shadow-lg shadow-accent/50 border-0 mb-3 w-fit">
+                  {news.category}
+                </Badge>
                 
-                <h3 className="text-white text-2xl lg:text-3xl font-black uppercase leading-tight line-clamp-3 tracking-tight [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)]">
+                <h3 className="text-white text-xl lg:text-2xl font-display font-bold leading-tight line-clamp-3">
                   {news.title}
                 </h3>
               </div>

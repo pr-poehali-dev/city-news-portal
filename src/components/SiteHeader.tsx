@@ -25,70 +25,62 @@ export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSe
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b-4 border-primary shadow-[0_4px_0px_0px_rgba(0,0,0,0.1)]">
-      <div className="border-b-4 border-primary bg-accent">
-        <div className="container mx-auto px-6 py-8">
-          <div className="flex items-center justify-between">
-            <div 
-              className="cursor-pointer group" 
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                navigate('/');
-              }}
-            >
-              <div className="flex items-baseline gap-3">
-                <h1 className="text-6xl lg:text-8xl font-black text-white uppercase leading-[0.8] tracking-tighter group-hover:scale-105 transition-transform">
-                  ГОРОД
-                </h1>
-                <div className="bg-white px-4 py-2 rotate-[-2deg] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-                  <span className="text-2xl lg:text-4xl font-black text-accent uppercase tracking-tighter">
-                    ГОВОРИТ
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={() => setShowSearch(!showSearch)}
-                className="hover:bg-white hover:text-accent transition-all w-12 h-12 rounded-none border-2 border-white hover:scale-110"
-              >
-                <Icon name="Search" size={24} className="text-white hover:text-accent" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={() => window.location.href = '/admin'}
-                title="Админка"
-                className="hover:bg-white hover:text-accent transition-all w-12 h-12 rounded-none border-2 border-white hover:scale-110"
-              >
-                <Icon name="Settings" size={24} className="text-white hover:text-accent" />
-              </Button>
+    <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-gray-200 shadow-sm">
+      <div className="container mx-auto px-6 py-4">
+        <div className="flex items-center justify-between mb-6">
+          <div 
+            className="cursor-pointer group" 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              navigate('/');
+            }}
+          >
+            <div className="relative">
+              <div className="absolute -inset-2 bg-gradient-to-r from-accent via-purple-500 to-pink-500 rounded-2xl opacity-20 blur-xl group-hover:opacity-30 transition-opacity"></div>
+              <h1 className="relative text-4xl lg:text-5xl font-display font-bold bg-gradient-to-r from-accent via-purple-600 to-pink-600 bg-clip-text text-transparent tracking-tight">
+                Город Говорит
+              </h1>
             </div>
           </div>
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => setShowSearch(!showSearch)}
+              className="rounded-2xl hover:bg-gradient-to-br hover:from-accent/10 hover:to-purple-500/10 hover:scale-110 transition-all duration-300"
+            >
+              <Icon name="Search" size={20} />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => window.location.href = '/admin'}
+              title="Админка"
+              className="rounded-2xl hover:bg-gradient-to-br hover:from-accent/10 hover:to-purple-500/10 hover:scale-110 transition-all duration-300"
+            >
+              <Icon name="Settings" size={20} />
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {showSearch && (
-        <div className="container mx-auto px-6 py-4 bg-black border-b-4 border-primary">
-          <div className="flex gap-3">
+        {showSearch && (
+          <div className="mb-4 flex gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
             <Input
               type="text"
-              placeholder="ПОИСК ПО НОВОСТЯМ..."
+              placeholder="Поиск по новостям..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="flex-1 text-lg font-bold uppercase border-4 border-white bg-black text-white placeholder:text-white/50 focus:border-accent rounded-none"
+              className="flex-1 rounded-2xl border-2 border-gray-200 focus:border-accent transition-colors"
               autoFocus
             />
             <Button 
               onClick={handleSearch} 
               disabled={!searchQuery.trim()}
-              className="bg-accent hover:bg-accent/90 text-white font-black uppercase px-8 rounded-none border-4 border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:shadow-none transition-all"
+              className="rounded-2xl bg-gradient-to-r from-accent to-purple-600 hover:shadow-lg hover:shadow-accent/50 transition-all duration-300"
             >
-              <Icon name="Search" size={20} className="mr-2" />
+              <Icon name="Search" size={16} className="mr-2" />
               Найти
             </Button>
             <Button 
@@ -97,33 +89,31 @@ export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSe
                 setShowSearch(false);
                 setSearchQuery('');
               }}
-              className="bg-white hover:bg-black hover:text-white border-4 border-white font-black rounded-none"
+              className="rounded-2xl hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
             >
-              <Icon name="X" size={20} />
+              <Icon name="X" size={16} />
             </Button>
           </div>
-        </div>
-      )}
-      
-      {sections.length > 0 && (
-        <nav className="container mx-auto px-6">
-          <div className="flex gap-0 overflow-x-auto scrollbar-hide">
+        )}
+        
+        {sections.length > 0 && (
+          <nav className="flex gap-2 overflow-x-auto scrollbar-hide">
             {sections.map((section) => (
               <button
                 key={section}
                 onClick={() => onSectionChange?.(section)}
-                className={`px-6 py-4 text-sm font-black whitespace-nowrap uppercase tracking-wider transition-all border-r-2 border-primary last:border-r-0 ${
+                className={`px-5 py-2.5 text-sm font-semibold whitespace-nowrap rounded-full transition-all duration-300 ${
                   activeSection === section
-                    ? 'bg-accent text-white'
-                    : 'bg-white text-black hover:bg-black hover:text-white'
+                    ? 'bg-gradient-to-r from-accent to-purple-600 text-white shadow-lg shadow-accent/30'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105'
                 }`}
               >
                 {section}
               </button>
             ))}
-          </div>
-        </nav>
-      )}
+          </nav>
+        )}
+      </div>
     </header>
   );
 };

@@ -7,7 +7,7 @@ interface LatestNewsGridProps {
   limit?: number;
 }
 
-export const LatestNewsGrid = ({ news, onNewsClick, limit = 9 }: LatestNewsGridProps) => {
+export const LatestNewsGrid = ({ news, onNewsClick, limit = 8 }: LatestNewsGridProps) => {
   const displayNews = news.slice(0, limit);
 
   const stripHtml = (html: string) => {
@@ -35,83 +35,79 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 9 }: LatestNewsGridP
     return text.trim();
   };
 
+  const gradients = [
+    'from-purple-500 to-pink-500',
+    'from-blue-500 to-cyan-500',
+    'from-green-500 to-emerald-500',
+    'from-orange-500 to-red-500',
+    'from-indigo-500 to-purple-500',
+    'from-pink-500 to-rose-500',
+    'from-cyan-500 to-blue-500',
+    'from-emerald-500 to-green-500',
+  ];
+
   return (
-    <section className="mb-0 border-t-4 border-primary">
-      <div className="bg-accent px-8 py-12 border-b-4 border-primary">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-6xl lg:text-8xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-4">
-              СЕЙЧАС
-            </h2>
-            <div className="h-2 w-32 bg-white"></div>
-          </div>
-          <Icon name="Zap" size={64} className="text-white/30" />
+    <section className="mb-16">
+      <div className="mb-10">
+        <div className="relative inline-block">
+          <div className="absolute -inset-2 bg-gradient-to-r from-accent via-purple-500 to-pink-500 rounded-2xl opacity-20 blur-xl"></div>
+          <h2 className="relative text-4xl lg:text-5xl font-display font-bold bg-gradient-to-r from-accent via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Последние новости
+          </h2>
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
-        {displayNews.map((item, index) => {
-          const isLarge = index === 0;
-          const accentColors = ['#FF4136', '#2ECC40', '#B10DC9', '#FF851B', '#0074D9'];
-          const itemAccent = accentColors[index % accentColors.length];
-          
-          return (
-            <article
-              key={item.id}
-              className={`group relative cursor-pointer overflow-hidden bg-white border-b-4 border-primary transition-all hover:z-10 ${
-                isLarge ? 'md:col-span-3 md:row-span-1' : 'md:border-r-4 last:border-r-0'
-              }`}
-              onClick={() => onNewsClick(item.id)}
-            >
-              <div className={`${isLarge ? 'aspect-[21/9]' : 'aspect-[4/3]'} relative overflow-hidden bg-black`}>
-                {item.image_url ? (
-                  <img
-                    src={item.image_url}
-                    alt={item.title}
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <Icon name="FileText" size={64} className="text-gray-400" />
-                  </div>
-                )}
-                
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
-              </div>
-              
-              <div className="absolute top-6 left-6">
-                <div 
-                  className="px-4 py-2 rotate-[-2deg] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                  style={{ backgroundColor: itemAccent }}
-                >
-                  <span className="text-white font-black text-xs uppercase tracking-[0.2em]">
-                    {item.category}
-                  </span>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {displayNews.map((item, index) => (
+          <article
+            key={item.id}
+            className="group relative cursor-pointer overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+            onClick={() => onNewsClick(item.id)}
+          >
+            <div className={`absolute inset-0 bg-gradient-to-br ${gradients[index % gradients.length]} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
+            
+            <div className="aspect-[4/3] relative overflow-hidden">
+              {item.image_url ? (
+                <img
+                  src={item.image_url}
+                  alt={item.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+              ) : (
+                <div className={`w-full h-full bg-gradient-to-br ${gradients[index % gradients.length]} flex items-center justify-center`}>
+                  <Icon name="FileText" size={48} className="text-white/60" />
                 </div>
-              </div>
+              )}
               
-              <div className={`absolute bottom-0 left-0 right-0 p-6 ${isLarge ? 'lg:p-12' : ''}`}>
-                <h3 className={`text-white font-black uppercase leading-tight tracking-tighter mb-3 group-hover:text-accent transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] ${
-                  isLarge ? 'text-4xl lg:text-5xl line-clamp-2' : 'text-2xl line-clamp-3'
-                }`}>
-                  {item.title}
-                </h3>
-                
-                {isLarge && (
-                  <p className="text-white/80 text-lg mb-4 line-clamp-2 max-w-4xl">
-                    {stripHtml(item.excerpt || item.content)}
-                  </p>
-                )}
-                
-                <div className="flex items-center gap-4 text-white/60 text-xs uppercase tracking-wider font-bold">
+              <div className="absolute top-4 left-4 z-10">
+                <Badge className={`bg-gradient-to-r ${gradients[index % gradients.length]} text-white font-semibold px-3 py-1.5 text-xs rounded-full shadow-lg border-0`}>
+                  {item.category}
+                </Badge>
+              </div>
+            </div>
+            
+            <div className="p-6">
+              <h3 className="font-display font-bold text-lg mb-3 leading-tight line-clamp-2 group-hover:text-accent transition-colors">
+                {item.title}
+              </h3>
+              
+              <p className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">
+                {stripHtml(item.excerpt || item.content)}
+              </p>
+              
+              <div className="flex items-center justify-between text-xs text-gray-500 font-medium">
+                <div className="flex items-center gap-1.5">
+                  <Icon name="Calendar" size={14} />
                   <span>{new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
-                  <span className="w-1 h-1 bg-accent rounded-full"></span>
-                  <span>{item.author_name || 'Редакция'}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Icon name="Eye" size={14} />
+                  <span>{item.views || 0}</span>
                 </div>
               </div>
-            </article>
-          );
-        })}
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   );

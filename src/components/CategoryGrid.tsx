@@ -1,4 +1,5 @@
 import Icon from '@/components/ui/icon';
+import { Badge } from '@/components/ui/badge';
 
 interface CategoryGridProps {
   categories: string[];
@@ -20,92 +21,82 @@ export const CategoryGrid = ({ categories, articles, onNewsClick, onCategoryClic
     'События': 'Zap',
   };
 
-  const categoryColors: { [key: string]: string } = {
-    'Политика': '#000000',
-    'Экономика': '#000000',
-    'Культура': '#000000',
-    'Спорт': '#000000',
-    'События': '#000000',
-  };
-
-  const categoryAccents: { [key: string]: string } = {
-    'Политика': '#FF4136',
-    'Экономика': '#2ECC40',
-    'Культура': '#B10DC9',
-    'Спорт': '#FF851B',
-    'События': '#0074D9',
+  const categoryGradients: { [key: string]: string } = {
+    'Политика': 'from-red-500 to-pink-600',
+    'Экономика': 'from-green-500 to-emerald-600',
+    'Культура': 'from-purple-500 to-indigo-600',
+    'Спорт': 'from-orange-500 to-amber-600',
+    'События': 'from-blue-500 to-cyan-600',
   };
 
   return (
-    <section className="mb-0 border-t-4 border-primary">
-      <div className="grid md:grid-cols-2 gap-0">
-        {categories.map((category, catIndex) => {
+    <section className="mb-16">
+      <div className="mb-10">
+        <div className="relative inline-block">
+          <div className="absolute -inset-2 bg-gradient-to-r from-accent via-purple-500 to-pink-500 rounded-2xl opacity-20 blur-xl"></div>
+          <h2 className="relative text-4xl lg:text-5xl font-display font-bold bg-gradient-to-r from-accent via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Рубрики
+          </h2>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {categories.map((category) => {
           const categoryNews = getCategoryNews(category);
           if (categoryNews.length === 0) return null;
 
-          const bgColor = categoryColors[category] || '#000000';
-          const accentColor = categoryAccents[category] || '#FF6B35';
+          const gradient = categoryGradients[category] || 'from-accent to-purple-600';
 
           return (
             <div 
               key={category} 
-              className={`relative border-b-4 border-primary ${
-                catIndex % 2 === 0 ? 'md:border-r-4' : ''
-              }`}
-              style={{ backgroundColor: bgColor }}
+              className="group relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500"
             >
               <div 
-                className="cursor-pointer px-8 py-12 hover:opacity-90 transition-opacity"
+                className={`cursor-pointer p-8 bg-gradient-to-br ${gradient} hover:scale-[1.02] transition-transform duration-500`}
                 onClick={() => onCategoryClick(category)}
               >
-                <div className="flex items-start justify-between mb-8">
-                  <div className="flex-1">
-                    <div 
-                      className="inline-block px-6 py-3 mb-4 rotate-[-1deg] shadow-[6px_6px_0px_0px_rgba(255,107,53,1)]"
-                      style={{ backgroundColor: accentColor }}
-                    >
-                      <Icon name={categoryIcons[category] || 'Sparkles'} size={32} className="text-white" />
+                <div className="flex items-start justify-between mb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                      <Icon name={categoryIcons[category] || 'Sparkles'} size={28} className="text-white" />
                     </div>
-                    <h2 className="text-6xl lg:text-7xl font-black text-white uppercase leading-[0.9] tracking-tighter mb-4">
+                    <h3 className="text-3xl font-display font-bold text-white">
                       {category}
-                    </h2>
-                    <div className="h-2 w-24" style={{ backgroundColor: accentColor }}></div>
+                    </h3>
                   </div>
-                  <Icon name="ArrowUpRight" size={40} className="text-white/60 mt-2" />
+                  <Icon name="ArrowUpRight" size={24} className="text-white/60 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                 </div>
+              </div>
 
-                <div className="space-y-6">
-                  {categoryNews.map((news, idx) => (
-                    <div
-                      key={news.id}
-                      className="group/item cursor-pointer border-l-4 border-white/20 pl-4 hover:border-white transition-all"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onNewsClick(news.id);
-                      }}
-                    >
-                      <div className="flex gap-4">
-                        {news.image_url && (
-                          <div className="w-20 h-20 flex-shrink-0 overflow-hidden bg-white/10">
-                            <img
-                              src={news.image_url}
-                              alt={news.title}
-                              className="w-full h-full object-cover grayscale group-hover/item:grayscale-0 transition-all duration-500"
-                            />
-                          </div>
-                        )}
-                        <div className="flex-1">
-                          <h4 className="text-white font-black text-lg leading-tight line-clamp-2 uppercase tracking-tight group-hover/item:text-accent transition-colors">
-                            {news.title}
-                          </h4>
-                          <p className="text-white/50 text-xs uppercase tracking-wider font-bold mt-2">
-                            {new Date(news.created_at).toLocaleDateString('ru-RU')}
-                          </p>
+              <div className="p-6 space-y-4">
+                {categoryNews.map((news, idx) => (
+                  <div
+                    key={news.id}
+                    className={`group/item cursor-pointer pb-4 ${idx !== categoryNews.length - 1 ? 'border-b border-gray-200' : ''}`}
+                    onClick={() => onNewsClick(news.id)}
+                  >
+                    <div className="flex gap-4">
+                      {news.image_url && (
+                        <div className="w-20 h-20 flex-shrink-0 overflow-hidden rounded-2xl">
+                          <img
+                            src={news.image_url}
+                            alt={news.title}
+                            className="w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-500"
+                          />
                         </div>
+                      )}
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-sm leading-snug line-clamp-2 group-hover/item:text-accent transition-colors mb-2">
+                          {news.title}
+                        </h4>
+                        <p className="text-xs text-gray-500 font-medium">
+                          {new Date(news.created_at).toLocaleDateString('ru-RU')}
+                        </p>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
           );
