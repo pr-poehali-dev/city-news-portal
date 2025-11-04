@@ -438,6 +438,13 @@ const Index = () => {
                   onNewsClick={handleArticleClick}
                 />
 
+                <CategoryGrid
+                  categories={newsCategories}
+                  articles={articles}
+                  onNewsClick={handleArticleClick}
+                  onCategoryClick={(cat) => setActiveSection(cat)}
+                />
+
                 <LatestNewsGrid
                   news={articles.slice(3, 15)}
                   onNewsClick={handleArticleClick}

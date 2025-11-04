@@ -90,7 +90,7 @@ export function YouthNotesSection({ notes }: YouthNotesSectionProps) {
           <div className="flex items-center gap-3">
             <div className="text-3xl">📱</div>
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              <h2 className="text-2xl font-bold font-sans text-gray-900 dark:text-white tracking-tight">
                 Пульс города
               </h2>
               <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1.5 mt-0.5">
