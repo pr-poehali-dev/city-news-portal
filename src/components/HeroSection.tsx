@@ -72,5 +72,5 @@ export const HeroSection = ({ mainNews, sideNews, onNewsClick }: HeroSectionProp
         ))}
       </div>
     </section>
-  );}
+  );
 };
