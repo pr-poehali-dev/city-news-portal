@@ -61,9 +61,9 @@ export const ShowbizSection = () => {
                 Шоу-бизнес
               </h2>
             </div>
-            <Link to="/showbiz" className="hidden lg:block flex-shrink-0">
+            <Link to="/showbiz" className="flex-shrink-0">
               <button className="px-8 py-4 bg-black text-white font-bold rounded-2xl hover:bg-gray-800 transition-colors flex items-center gap-3 whitespace-nowrap">
-                Все новости
+                Все статьи
                 <Icon name="ArrowRight" size={20} />
               </button>
             </Link>

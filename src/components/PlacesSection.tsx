@@ -45,79 +45,84 @@ export function PlacesSection({
   const displayedPlaces = showAllPlaces ? filteredPlaces : filteredPlaces.slice(0, 4);
 
   return (
-    <div className="mb-12">
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-3xl font-bold">Город говорит</h2>
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/places')}
-            className="gap-2"
-          >
-            Все места
-            <Icon name="ArrowRight" size={16} />
-          </Button>
-        </div>
-        
-        <div className="flex flex-col md:flex-row gap-4 mb-4">
-          <div className="relative flex-1">
-            <Icon name="Search" size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Поиск по названию, адресу или описанию..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
+    <section className="py-32 px-6 lg:px-20 bg-gradient-to-br from-amber-50 to-orange-50">
+      <div className="max-w-[1800px] mx-auto">
+        <div className="mb-20">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-4">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-600 to-orange-600 flex items-center justify-center flex-shrink-0">
+                <Icon name="MapPin" size={32} className="text-white" />
+              </div>
+              <h2 className="text-5xl lg:text-8xl font-black tracking-tight">
+                Город говорит
+              </h2>
+            </div>
+            <Button 
+              onClick={() => navigate('/places')}
+              className="px-8 py-4 bg-black text-white font-bold rounded-2xl hover:bg-gray-800 transition-colors gap-3 flex-shrink-0"
+            >
+              Все места
+              <Icon name="ArrowRight" size={20} />
+            </Button>
           </div>
+          <p className="text-gray-600 text-xl lg:text-2xl font-light">
+            Лучшие заведения и места Краснодара
+          </p>
         </div>
 
-        <div className="flex gap-2 flex-wrap">
-          <Button
-            variant={selectedCategory === null ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => onCategorySelect(null)}
-          >
-            Все
-          </Button>
-          {categories.map(cat => (
-            <Button
-              key={cat}
-              variant={selectedCategory === cat ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => onCategorySelect(cat)}
-              className="gap-2"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {displayedPlaces.slice(0, 6).map((place) => (
+            <MagneticCard
+              key={place.id}
+              onClick={() => {
+                setSelectedPlace(place);
+                setDialogOpen(true);
+              }}
+              className="cursor-pointer"
             >
-              <div
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: categoryColors[cat as keyof typeof categoryColors] }}
-              />
-              {cat}
-            </Button>
+              <div className="bg-white rounded-3xl overflow-hidden h-full shadow-lg hover:shadow-xl transition-all duration-500">
+                <div className="relative h-64 overflow-hidden">
+                  <img
+                    src={place.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
+                    alt={place.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div
+                    className="absolute top-4 right-4 w-4 h-4 rounded-full shadow-lg"
+                    style={{ backgroundColor: categoryColors[place.category as keyof typeof categoryColors] || '#FF6B6B' }}
+                  ></div>
+                </div>
+                
+                <div className="p-6">
+                  <span className="inline-block text-xs font-bold uppercase tracking-wider mb-3" style={{ color: categoryColors[place.category as keyof typeof categoryColors] || '#FF6B6B' }}>
+                    {place.category}
+                  </span>
+                  
+                  <h3 className="text-xl font-bold mb-3 line-clamp-2 leading-tight">
+                    {place.title}
+                  </h3>
+                  
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    {place.excerpt}
+                  </p>
+                  
+                  <div className="flex items-start gap-2 text-gray-400 text-xs">
+                    <Icon name="MapPin" size={14} className="flex-shrink-0 mt-0.5" />
+                    <span className="line-clamp-1">{place.address}</span>
+                  </div>
+                </div>
+              </div>
+            </MagneticCard>
           ))}
         </div>
-      </div>
 
-      {searchQuery && (
-        <div className="mb-4 text-sm text-muted-foreground">
-          Найдено мест: {filteredPlaces.length}
-        </div>
-      )}
-
-      <div 
-        className="mb-8 relative cursor-pointer group overflow-hidden rounded-lg"
-        onClick={() => navigate('/places/map')}
-      >
-        <div className="absolute inset-0 bg-black/40 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="bg-white px-6 py-3 rounded-lg flex items-center gap-2 font-semibold">
-            <Icon name="Map" size={20} />
-            Открыть карту
-          </div>
-        </div>
-        <div className="pointer-events-none">
-          <CityMap places={filteredPlaces} onPlaceClick={() => {}} interactive={false} height="300px" />
-        </div>
+        <PlaceDialog
+          place={selectedPlace}
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+        />
       </div>
+    </section>
 
       <div className="grid grid-cols-2 gap-4">
         {displayedPlaces.map((place) => (

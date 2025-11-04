@@ -9,14 +9,6 @@ interface HeroSectionProps {
 }
 
 export const HeroSection = ({ mainNews, sideNews, onNewsClick }: HeroSectionProps) => {
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   if (!mainNews) return null;
 
   const stripHtml = (html: string) => {
@@ -25,107 +17,133 @@ export const HeroSection = ({ mainNews, sideNews, onNewsClick }: HeroSectionProp
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
-      <div 
-        className="absolute inset-0"
-        style={{ transform: `translateY(${scrollY * 0.5}px)` }}
-      >
-        {(mainNews.image_url || mainNews.image) ? (
-          <img
-            src={mainNews.image_url || mainNews.image || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
-            alt=""
-            className="w-full h-full object-cover opacity-60"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-gray-900 via-black to-gray-900"></div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
-      </div>
-
-      <div className="relative z-10 px-6 lg:px-20 py-32 w-full max-w-[1800px] mx-auto">
-        <div 
-          className="mb-12"
-          style={{ transform: `translateY(${scrollY * 0.2}px)` }}
-        >
-          <div className="inline-flex items-center gap-3 bg-red-600 px-6 py-3 rounded-full mb-8">
+    <section className="py-12 lg:py-20 px-6 lg:px-20 bg-white">
+      <div className="max-w-[1800px] mx-auto">
+        <div className="mb-8 lg:mb-12">
+          <div className="inline-flex items-center gap-3 bg-red-600 px-6 py-3 rounded-full mb-6">
             <div className="w-3 h-3 rounded-full bg-white animate-pulse"></div>
             <span className="text-white font-bold text-sm uppercase tracking-wider">
               Сейчас читают
             </span>
           </div>
-
-          <h1 
-            className="text-5xl md:text-7xl lg:text-9xl font-black text-white leading-[0.9] mb-8 tracking-tight cursor-pointer group"
-            onClick={() => onNewsClick(mainNews.id)}
-          >
-            {mainNews.title.split(' ').map((word: string, i: number) => (
-              <span 
-                key={i}
-                className="inline-block transition-all duration-300 hover:text-red-500 hover:scale-110 mr-4"
-                style={{ 
-                  transitionDelay: `${i * 50}ms`,
-                }}
-              >
-                {word}
-              </span>
-            ))}
-          </h1>
-
-          <p className="text-white/70 text-xl lg:text-3xl font-light max-w-4xl mb-12 leading-relaxed">
-            {stripHtml(mainNews.excerpt || mainNews.content).slice(0, 200)}...
-          </p>
-
-          <div className="flex items-center gap-8 text-white/60">
-            <div className="flex items-center gap-3">
-              <Icon name="User" size={20} />
-              <span className="text-lg">{mainNews.author_name}</span>
-            </div>
-            <div className="w-1 h-1 rounded-full bg-white/40"></div>
-            <div className="flex items-center gap-3">
-              <Icon name="Clock" size={20} />
-              <span className="text-lg">
-                {new Date(mainNews.created_at).toLocaleDateString('ru-RU', { 
-                  day: 'numeric', 
-                  month: 'long',
-                  year: 'numeric'
-                })}
-              </span>
-            </div>
-          </div>
         </div>
 
-        {sideNews.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {sideNews.slice(0, 3).map((news, index) => (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-8 lg:mb-16">
+          <MagneticCard
+            onClick={() => onNewsClick(mainNews.id)}
+            className="cursor-pointer"
+          >
+            <div className="group bg-white rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 border border-gray-100">
+              <div className="relative h-[400px] lg:h-[600px] overflow-hidden">
+                <img
+                  src={mainNews.image_url || mainNews.image || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
+                  alt={mainNews.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+                
+                <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-12">
+                  <span className="inline-block text-xs font-bold text-red-500 uppercase tracking-wider mb-4 bg-white px-4 py-2 rounded-full">
+                    {mainNews.category}
+                  </span>
+                  
+                  <h2 className="text-white text-3xl lg:text-5xl font-black leading-tight mb-4">
+                    {mainNews.title}
+                  </h2>
+                  
+                  <p className="text-white/80 text-base lg:text-xl mb-6 line-clamp-2">
+                    {stripHtml(mainNews.excerpt || mainNews.content).slice(0, 150)}...
+                  </p>
+                  
+                  <div className="flex items-center gap-6 text-white/60 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Icon name="User" size={16} />
+                      <span>{mainNews.author_name}</span>
+                    </div>
+                    <div className="w-1 h-1 rounded-full bg-white/40"></div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="Calendar" size={16} />
+                      <span>
+                        {new Date(mainNews.created_at).toLocaleDateString('ru-RU', { 
+                          day: 'numeric', 
+                          month: 'long'
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </MagneticCard>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
+            {sideNews.slice(0, 2).map((news) => (
               <MagneticCard
                 key={news.id}
                 onClick={() => onNewsClick(news.id)}
                 className="cursor-pointer"
               >
-                <div 
-                  className="bg-zinc-900/80 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden group"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <div className="relative h-64 overflow-hidden">
+                <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 border border-gray-100 h-full">
+                  <div className="flex flex-col sm:flex-row lg:flex-row h-full">
+                    <div className="relative w-full sm:w-1/2 lg:w-2/5 h-48 sm:h-auto overflow-hidden flex-shrink-0">
+                      <img
+                        src={news.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
+                        alt={news.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                    </div>
+                    
+                    <div className="p-6 flex flex-col justify-between flex-1">
+                      <div>
+                        <span className="text-xs font-bold text-red-500 uppercase tracking-wider mb-3 block">
+                          {news.category}
+                        </span>
+                        
+                        <h3 className="text-gray-900 text-lg lg:text-xl font-bold leading-tight mb-3 line-clamp-3">
+                          {news.title}
+                        </h3>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 text-gray-400 text-xs">
+                        <Icon name="Calendar" size={12} />
+                        <span>{new Date(news.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </MagneticCard>
+            ))}
+          </div>
+        </div>
+
+        {sideNews.length > 2 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sideNews.slice(2, 5).map((news) => (
+              <MagneticCard
+                key={news.id}
+                onClick={() => onNewsClick(news.id)}
+                className="cursor-pointer"
+              >
+                <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 border border-gray-100 group h-full">
+                  <div className="relative h-56 overflow-hidden">
                     <img
                       src={news.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
                       alt={news.title}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent"></div>
                   </div>
                   
-                  <div className="p-8">
-                    <span className="text-xs font-bold text-red-500 uppercase tracking-wider mb-4 block">
+                  <div className="p-6">
+                    <span className="text-xs font-bold text-red-500 uppercase tracking-wider mb-3 block">
                       {news.category}
                     </span>
                     
-                    <h3 className="text-white text-2xl font-bold leading-tight mb-4 line-clamp-2">
+                    <h3 className="text-gray-900 text-lg font-bold leading-tight mb-3 line-clamp-2">
                       {news.title}
                     </h3>
                     
-                    <div className="flex items-center gap-3 text-white/40 text-sm">
-                      <Icon name="Calendar" size={14} />
+                    <div className="flex items-center gap-2 text-gray-400 text-xs">
+                      <Icon name="Calendar" size={12} />
                       <span>{new Date(news.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</span>
                     </div>
                   </div>
@@ -134,10 +152,6 @@ export const HeroSection = ({ mainNews, sideNews, onNewsClick }: HeroSectionProp
             ))}
           </div>
         )}
-
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce">
-          <Icon name="ChevronDown" size={48} className="text-white/40" />
-        </div>
       </div>
     </section>
   );
