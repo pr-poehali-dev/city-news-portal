@@ -1,6 +1,9 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 interface News {
   id: number;
@@ -13,16 +16,13 @@ interface News {
 }
 
 export const ShowbizSection = () => {
-  const navigate = useNavigate();
-  const scrollRef = useRef<HTMLDivElement>(null);
   const [news, setNews] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchShowbizNews = async () => {
       try {
-        const response = await fetch('https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe?is_showbiz=true&limit=8');
+        const response = await fetch('https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe?is_showbiz=true&limit=3');
         const data = await response.json();
         setNews(Array.isArray(data) ? data : []);
       } catch (error) {
@@ -35,110 +35,113 @@ export const ShowbizSection = () => {
     fetchShowbizNews();
   }, []);
 
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollRef.current) {
-      const scrollAmount = 400;
-      scrollRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      });
-    }
-  };
+  if (loading) {
+    return (
+      <section className="py-12 bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center">Загрузка...</div>
+        </div>
+      </section>
+    );
+  }
 
-  if (loading || news.length === 0) return null;
+  if (news.length === 0) return null;
+
+  const [mainNews, ...sideNews] = news;
 
   return (
-    <section className="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 py-12 lg:py-20">
-      <div className="max-w-[1400px] mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl lg:text-5xl font-black text-gray-900 border-l-4 border-pink-600 pl-4">
-            ⭐ Звёзды и стиль
-          </h2>
-          
-          <div className="hidden lg:flex gap-2">
-            <button
-              onClick={() => scroll('left')}
-              className="w-10 h-10 flex items-center justify-center bg-white text-gray-700 rounded-full hover:bg-pink-600 hover:text-white transition-all shadow-md"
-            >
-              <Icon name="ChevronLeft" size={24} />
-            </button>
-            <button
-              onClick={() => scroll('right')}
-              className="w-10 h-10 flex items-center justify-center bg-white text-gray-700 rounded-full hover:bg-pink-600 hover:text-white transition-all shadow-md"
-            >
-              <Icon name="ChevronRight" size={24} />
-            </button>
-            <Link
-              to="/showbiz"
-              className="ml-2 px-4 py-2 bg-pink-600 text-white text-sm font-bold rounded-full hover:bg-pink-700 transition-colors flex items-center gap-2"
-            >
-              ВСЕ СТАТЬИ
+    <section className="py-12 md:py-16 bg-gradient-to-br from-background via-muted/30 to-background relative overflow-hidden border-y">
+      <div className="absolute inset-0">
+        <div className="absolute top-10 right-20 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 left-20 w-72 h-72 bg-pink-500/5 rounded-full blur-3xl" />
+      </div>
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="flex items-center justify-between mb-8 md:mb-10">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg shadow-lg">
+                <Icon name="Sparkles" size={20} className="text-white" />
+              </div>
+              <h2 className="text-2xl md:text-4xl font-bold">
+                Город говорит о шоубизе
+              </h2>
+            </div>
+            <p className="text-muted-foreground text-sm md:text-base ml-14">
+              Звёзды, премьеры и светская жизнь глазами Краснодара
+            </p>
+          </div>
+          <Link to="/showbiz" className="hidden md:block">
+            <Button variant="outline" className="gap-2">
+              Все новости
               <Icon name="ArrowRight" size={16} />
+            </Button>
+          </Link>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          {mainNews && (
+            <Link to={`/news/${mainNews.id}`} className="md:col-span-2 lg:col-span-2 group">
+              <Card className="overflow-hidden h-full hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-purple-500/20">
+                <div className="relative h-[300px] md:h-[420px]">
+                  <img
+                    src={mainNews.image_url}
+                    alt={mainNews.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                  <Badge className="absolute top-4 left-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 px-3 py-1.5 shadow-lg">
+                    <Icon name="Star" size={12} className="mr-1.5" />
+                    {mainNews.category}
+                  </Badge>
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <h3 className="text-white text-xl md:text-3xl font-bold mb-2 group-hover:text-purple-300 transition-colors">
+                      {mainNews.title}
+                    </h3>
+                    <p className="text-white/90 text-sm md:text-base line-clamp-2">
+                      {mainNews.excerpt}
+                    </p>
+                  </div>
+                </div>
+              </Card>
             </Link>
+          )}
+
+          <div className="space-y-4 md:space-y-6">
+            {sideNews.slice(0, 2).map((item, idx) => (
+              <Link key={item.id} to={`/news/${item.id}`} className="group block">
+                <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 border hover:border-purple-500/30">
+                  <div className="relative h-40 md:h-48 overflow-hidden">
+                    <img
+                      src={item.image_url}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                    <Badge className="absolute top-3 right-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 text-xs shadow-md">
+                      <Icon name="Sparkles" size={10} className="mr-1" />
+                      {item.category}
+                    </Badge>
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <h4 className="font-bold text-white text-base md:text-lg line-clamp-2 group-hover:text-purple-300 transition-colors">
+                        {item.title}
+                      </h4>
+                    </div>
+                  </div>
+                </Card>
+              </Link>
+            ))}
           </div>
         </div>
 
-        <div 
-          ref={scrollRef}
-          className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {news.map((item) => {
-            const isHovered = hoveredId === item.id;
-            
-            return (
-              <article
-                key={item.id}
-                className="flex-shrink-0 w-[280px] group cursor-pointer"
-                onClick={() => navigate(`/news/${item.id}`)}
-                onMouseEnter={() => setHoveredId(item.id)}
-                onMouseLeave={() => setHoveredId(null)}
-              >
-                <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
-                  <div className="relative h-56 overflow-hidden">
-                    <img
-                      src={item.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
-                      alt={item.title}
-                      className={`w-full h-full object-cover transition-transform duration-500 ${
-                        isHovered ? 'scale-110' : 'scale-100'
-                      }`}
-                    />
-                    
-                    <div className="absolute top-3 left-3">
-                      <span className="inline-block px-3 py-1 bg-pink-600 text-white text-xs font-bold rounded">
-                        {item.category}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-4">
-                    <h3 className="text-gray-900 font-bold text-base leading-tight mb-3 line-clamp-3 group-hover:text-pink-600 transition-colors">
-                      {item.title}
-                    </h3>
-                    
-                    <div className="flex items-center gap-2 text-gray-500 text-xs">
-                      <Icon name="Calendar" size={14} />
-                      <span>
-                        {new Date(item.published_at).toLocaleDateString('ru-RU', { 
-                          day: 'numeric', 
-                          month: 'short' 
-                        })}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
+        <div className="text-center mt-8 md:hidden">
+          <Link to="/showbiz">
+            <Button variant="outline" className="gap-2 w-full">
+              Все новости шоубизнеса
+              <Icon name="ArrowRight" size={16} />
+            </Button>
+          </Link>
         </div>
-
-        <Link
-          to="/showbiz"
-          className="lg:hidden mt-6 w-full px-4 py-3 bg-pink-600 text-white font-bold rounded-lg hover:bg-pink-700 transition-colors flex items-center justify-center gap-2"
-        >
-          ВСЕ СТАТЬИ
-          <Icon name="ArrowRight" size={20} />
-        </Link>
       </div>
     </section>
   );

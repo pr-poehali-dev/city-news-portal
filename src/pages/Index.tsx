@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { NewsTicker } from '@/components/NewsTicker';
 import { SEO } from '@/components/SEO';
 import { SiteHeader } from '@/components/SiteHeader';
-import { HeroMain } from '@/components/HeroMain';
+import { HeroSection } from '@/components/HeroSection';
+import { CategoryGrid } from '@/components/CategoryGrid';
 import { LatestNewsGrid } from '@/components/LatestNewsGrid';
 import { EventsSection } from '@/components/EventsSection';
-import { PlacesSection } from '@/components/PlacesSection';
-import { ShowbizSection } from '@/components/home/ShowbizSection';
-import { YouthNotesSection } from '@/components/YouthNotesSection';
-import { MemorySection } from '@/components/MemorySection';
-import { SVOSection } from '@/components/SVOSection';
-import { PartnersSection } from '@/components/PartnersSection';
+import { SocialSubscribe } from '@/components/SocialSubscribe';
 import { Footer } from '@/components/Footer';
+import { PlacesSection } from '@/components/PlacesSection';
+import { MemorySection } from '@/components/MemorySection';
+import { PartnersSection } from '@/components/PartnersSection';
+import { SVOSection } from '@/components/SVOSection';
+import { YouthNotesSection } from '@/components/YouthNotesSection';
+import { ShowbizSection } from '@/components/home/ShowbizSection';
 
 
 const FUNCTIONS_URL = {
@@ -27,40 +30,138 @@ const FUNCTIONS_URL = {
   youthNotes: 'https://functions.poehali.dev/97a5ec9d-d662-4652-be23-350205ec6759'
 };
 
+const categoryColors = {
+  'Город завтракает': '#FF6B6B',
+  'Город и кофе': '#8B4513',
+  'Город поет': '#9B59B6',
+  'Город танцует': '#3498DB',
+};
+
 const Index = () => {
   const navigate = useNavigate();
   const [articles, setArticles] = useState<any[]>([]);
+  const [featuredNews, setFeaturedNews] = useState<any>(null);
+  const [latestNews, setLatestNews] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [cityPlaces, setCityPlaces] = useState<any[]>([]);
-  const [youthNotes, setYouthNotes] = useState<any[]>([]);
   const [memoryArticles, setMemoryArticles] = useState<any[]>([]);
-  const [svoNews, setSvoNews] = useState<any[]>([]);
+  const [youthNotes, setYouthNotes] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showAllPlaces, setShowAllPlaces] = useState(false);
+  const [activeSection, setActiveSection] = useState('Главная');
+  const [likedArticles, setLikedArticles] = useState<Set<number>>(new Set());
+  const [topThreeNews, setTopThreeNews] = useState<any[]>([]);
+  const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
+  const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+  const [availableCategories, setAvailableCategories] = useState<string[]>([]);
+  const [svoNews, setSvoNews] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  
+  const newsCategories = ['Политика', 'Экономика', 'Культура', 'Спорт', 'События'];
+
+  const sections = [
+    'Главная',
+    'СВО',
+    'Политика',
+    'Экономика',
+    'Культура',
+    'Спорт',
+    'События',
+    'О портале',
+    'Контакты'
+  ];
+
+  const handleSectionChange = (section: string) => {
+    if (section === 'О портале') {
+      navigate('/about');
+    } else if (section === 'Контакты') {
+      navigate('/contacts');
+    } else {
+      setActiveSection(section);
+    }
+  };
 
   useEffect(() => {
     loadNews();
-    loadEvents();
-    loadCityPlaces();
-    loadYouthNotes();
-    loadMemoryArticles();
     loadSVONews();
+    syncKudagoEvents();
+    loadEvents();
+    loadLatestForTicker();
+    loadCityPlaces();
+    loadMemoryArticles();
+    loadYouthNotes();
+    
+    const savedLikes = localStorage.getItem('likedArticles');
+    if (savedLikes) {
+      setLikedArticles(new Set(JSON.parse(savedLikes)));
+    }
+    
+    const tickerInterval = setInterval(() => {
+      loadLatestForTicker();
+    }, 5 * 60 * 1000);
+
+    return () => {
+      clearInterval(tickerInterval);
+    };
   }, []);
 
-  const categoryColors = {
-    'Город завтракает': '#FF6B6B',
-    'Город и кофе': '#8B4513',
-    'Город поет': '#9B59B6',
-    'Город танцует': '#3498DB',
+  useEffect(() => {
+    if (activeSection === 'СВО') {
+      loadSVONews();
+    } else if (activeSection !== 'Главная') {
+      loadNews(activeSection);
+    } else {
+      loadNews();
+    }
+  }, [activeSection]);
+
+  useEffect(() => {
+    const categoriesWithNews = newsCategories.filter(cat => 
+      articles.some(a => a.category === cat)
+    );
+    setAvailableCategories(categoriesWithNews);
+    if (categoriesWithNews.length > 0 && currentCategoryIndex >= categoriesWithNews.length) {
+      setCurrentCategoryIndex(0);
+    }
+  }, [articles]);
+
+  useEffect(() => {
+    if (topThreeNews.length === 0) return;
+
+    const interval = setInterval(() => {
+      setCurrentFeaturedIndex((prev) => {
+        const nextIndex = (prev + 1) % topThreeNews.length;
+        setFeaturedNews(topThreeNews[nextIndex]);
+        return nextIndex;
+      });
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, [topThreeNews]);
+
+  const syncKudagoEvents = async () => {
+    try {
+      await fetch(FUNCTIONS_URL.syncKudago);
+    } catch (error) {
+      console.error('Failed to sync KudaGo events:', error);
+    }
   };
 
-  const loadNews = async () => {
+  const loadNews = async (category?: string) => {
     try {
-      const response = await fetch(FUNCTIONS_URL.news);
-      if (!response.ok) return;
+      const url = category ? `${FUNCTIONS_URL.news}?category=${encodeURIComponent(category)}` : FUNCTIONS_URL.news;
+      const response = await fetch(url);
+      if (!response.ok) {
+        console.error('Failed to fetch news:', response.status);
+        return;
+      }
       const data = await response.json();
       
-      if (!Array.isArray(data)) return;
+      if (!Array.isArray(data)) {
+        console.error('Invalid news data format');
+        return;
+      }
       
       const filteredData = data.filter((article: any) => {
         const isSVO = article.tags && Array.isArray(article.tags) && article.tags.includes('СВО');
@@ -72,24 +173,53 @@ const Index = () => {
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
       
+      const top3 = sortedData.slice(0, 3);
+      setTopThreeNews(top3);
+      setFeaturedNews(top3[0]);
       setArticles(sortedData);
     } catch (error) {
       console.error('Failed to load news:', error);
       setArticles([]);
+      setTopThreeNews([]);
     }
   };
 
-  const loadEvents = async () => {
+  const loadSVONews = async () => {
     try {
-      const response = await fetch(FUNCTIONS_URL.kudagoEvents);
+      const response = await fetch(FUNCTIONS_URL.news);
+      if (!response.ok) {
+        console.error('Failed to fetch news for SVO:', response.status);
+        setSvoNews([]);
+        return;
+      }
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        const svoFiltered = data.filter((article: any) => 
+          article.tags && Array.isArray(article.tags) && article.tags.includes('СВО')
+        );
+        const sortedData = svoFiltered.sort((a: any, b: any) => 
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        setSvoNews(sortedData);
+        console.log('SVO news loaded:', sortedData.length, 'items');
+      }
+    } catch (error) {
+      console.error('Failed to load SVO news:', error);
+      setSvoNews([]);
+    }
+  };
+
+  const loadLatestForTicker = async () => {
+    try {
+      const response = await fetch(FUNCTIONS_URL.news);
       if (!response.ok) return;
       const data = await response.json();
       if (Array.isArray(data)) {
-        setEvents(data);
+        setLatestNews(data.slice(0, 5));
       }
     } catch (error) {
-      console.error('Failed to load events:', error);
-      setEvents([]);
+      console.error('Failed to load latest news:', error);
+      setLatestNews([]);
     }
   };
 
@@ -107,27 +237,13 @@ const Index = () => {
     }
   };
 
-  const loadYouthNotes = async () => {
-    try {
-      const response = await fetch(FUNCTIONS_URL.youthNotes);
-      if (!response.ok) return;
-      const data = await response.json();
-      if (Array.isArray(data)) {
-        setYouthNotes(data.filter((note: any) => note.is_published));
-      }
-    } catch (error) {
-      console.error('Failed to load youth notes:', error);
-      setYouthNotes([]);
-    }
-  };
-
   const loadMemoryArticles = async () => {
     try {
       const response = await fetch(FUNCTIONS_URL.memory);
       if (!response.ok) return;
       const data = await response.json();
       if (Array.isArray(data)) {
-        setMemoryArticles(data.filter((m: any) => m.is_published));
+        setMemoryArticles(data);
       }
     } catch (error) {
       console.error('Failed to load memory articles:', error);
@@ -135,82 +251,263 @@ const Index = () => {
     }
   };
 
-  const loadSVONews = async () => {
+  const loadYouthNotes = async () => {
     try {
-      const response = await fetch(FUNCTIONS_URL.news);
+      const response = await fetch(FUNCTIONS_URL.youthNotes);
       if (!response.ok) return;
       const data = await response.json();
       if (Array.isArray(data)) {
-        const svoFiltered = data.filter((article: any) => 
-          article.tags && Array.isArray(article.tags) && article.tags.includes('СВО')
-        );
-        const sortedData = svoFiltered.sort((a: any, b: any) => 
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
-        setSvoNews(sortedData);
+        setYouthNotes(data);
       }
     } catch (error) {
-      console.error('Failed to load SVO news:', error);
-      setSvoNews([]);
+      console.error('Failed to load youth notes:', error);
+      setYouthNotes([]);
     }
   };
 
-  const handleNewsClick = (newsId: number) => {
+  const loadEvents = async () => {
+    try {
+      const response = await fetch(FUNCTIONS_URL.kudagoEvents);
+      if (!response.ok) return;
+      const data = await response.json();
+      setEvents(data?.events || []);
+    } catch (error) {
+      console.error('Failed to load events:', error);
+      setEvents([]);
+    }
+  };
+
+
+
+  const handleArticleClick = (newsId: number) => {
     navigate(`/news/${newsId}`);
   };
 
-  return (
-    <>
-      <SEO />
-      <Helmet>
-        <title>Город сегодня | Главная</title>
-      </Helmet>
+  const handleLike = async (newsId: number) => {
+    if (likedArticles.has(newsId)) return;
+
+    try {
+      await fetch(`${FUNCTIONS_URL.news}?id=${newsId}&increment_likes=true`);
+      const newLikedArticles = new Set(likedArticles).add(newsId);
+      setLikedArticles(newLikedArticles);
+      localStorage.setItem('likedArticles', JSON.stringify([...newLikedArticles]));
       
-      <div className="min-h-screen bg-white">
-        <SiteHeader onSectionChange={() => {}} activeSection="Главная" />
-        
-        <HeroMain 
-          news={articles.slice(0, 3)} 
-          onNewsClick={handleNewsClick}
-        />
-        
-        <LatestNewsGrid 
-          news={articles.slice(3, 12)} 
-          onNewsClick={handleNewsClick}
-          limit={9}
-        />
-        
-        <EventsSection events={events} />
-        
-        <PlacesSection 
-          cityPlaces={cityPlaces}
-          selectedCategory={selectedCategory}
-          showAllPlaces={showAllPlaces}
-          categoryColors={categoryColors}
-          onCategorySelect={setSelectedCategory}
-          onShowAllToggle={() => setShowAllPlaces(!showAllPlaces)}
-        />
-        
-        <ShowbizSection />
-        
-        <SVOSection 
-          svoNews={svoNews}
-          onNewsClick={handleNewsClick}
-        />
-        
-        <YouthNotesSection 
-          youthNotes={youthNotes}
-        />
-        
-        <MemorySection 
-          memoryArticles={memoryArticles}
-        />
-        
-        <PartnersSection />
-        
-        <Footer />
-      </div>
-    </>
+      setArticles(prev => prev.map(article => 
+        article.id === newsId 
+          ? { ...article, likes: (article.likes || 0) + 1 }
+          : article
+      ));
+      
+      setTopThreeNews(prev => prev.map(article => 
+        article.id === newsId 
+          ? { ...article, likes: (article.likes || 0) + 1 }
+          : article
+      ));
+      
+      if (featuredNews?.id === newsId) {
+        setFeaturedNews((prev: any) => ({ ...prev, likes: (prev.likes || 0) + 1 }));
+      }
+    } catch (error) {
+      console.error('Failed to like article:', error);
+    }
+  };
+
+  const handleCategoryChange = (direction: 'prev' | 'next') => {
+    setCurrentCategoryIndex(prev => {
+      if (direction === 'next') {
+        return (prev + 1) % availableCategories.length;
+      } else {
+        return prev === 0 ? availableCategories.length - 1 : prev - 1;
+      }
+    });
+  };
+
+  const handleSearch = (query: string) => {
+    setIsSearching(true);
+    const lowerQuery = query.toLowerCase();
+    const results = articles.filter(article => 
+      article.title.toLowerCase().includes(lowerQuery) ||
+      article.content?.toLowerCase().includes(lowerQuery) ||
+      article.excerpt?.toLowerCase().includes(lowerQuery)
+    );
+    setSearchResults(results);
+    setActiveSection('Поиск');
+  };
+
+  const getSectionSEO = () => {
+    const baseUrl = 'https://ggkrasnodar.ru/';
+    
+    switch (activeSection) {
+      case 'СВО':
+        return {
+          title: 'СВО: последние новости специальной военной операции в Краснодаре',
+          description: 'Актуальные новости СВО, помощь участникам специальной военной операции, благотворительный фонд поддержки. Мы поддерживаем наших.',
+          url: `${baseUrl}#svo`
+        };
+      case 'Политика':
+        return {
+          title: 'Политика Краснодара — последние новости',
+          description: 'Все о политической жизни Краснодара: решения властей, городские инициативы, общественная деятельность.',
+          url: `${baseUrl}#politika`
+        };
+      case 'Экономика':
+        return {
+          title: 'Экономика Краснодара — бизнес и финансы',
+          description: 'Экономические новости Краснодара: бизнес, инвестиции, развитие города, финансовые показатели.',
+          url: `${baseUrl}#ekonomika`
+        };
+      case 'Культура':
+        return {
+          title: 'Культура Краснодара — события и новости',
+          description: 'Культурная жизнь Краснодара: выставки, концерты, театральные премьеры, фестивали и городские события.',
+          url: `${baseUrl}#kultura`
+        };
+      case 'Спорт':
+        return {
+          title: 'Спорт в Краснодаре — новости и события',
+          description: 'Спортивные новости Краснодара: ФК Краснодар, городские соревнования, достижения спортсменов.',
+          url: `${baseUrl}#sport`
+        };
+      case 'События':
+        return {
+          title: 'События в Краснодаре — куда сходить сегодня',
+          description: 'Афиша Краснодара: концерты, выставки, фестивали, спектакли. Все городские события и мероприятия.',
+          url: `${baseUrl}#sobytiya`
+        };
+      default:
+        return {
+          title: 'Город говорит — новостной портал Краснодара',
+          description: 'Актуальные новости Краснодара: политика, экономика, культура, спорт, СВО. Читайте последние события города каждый день.',
+          url: baseUrl
+        };
+    }
+  };
+
+  const seoData = getSectionSEO();
+
+  return (
+    <div className="min-h-screen bg-background">
+      <SEO 
+        title={seoData.title}
+        description={seoData.description}
+        url={seoData.url}
+      />
+      <Helmet>
+        <link rel="canonical" href={seoData.url} />
+      </Helmet>
+
+      <SiteHeader 
+        sections={sections}
+        activeSection={activeSection === 'Поиск' ? 'Главная' : activeSection}
+        onSectionChange={handleSectionChange}
+        onSearch={handleSearch}
+      />
+
+      <NewsTicker latestNews={latestNews} />
+
+      <main className="container mx-auto px-4 py-8">
+        {articles.length === 0 && !topThreeNews[0] ? (
+          <div className="text-center py-20">
+            <p className="text-muted-foreground">Загрузка новостей...</p>
+          </div>
+        ) : (
+          <>
+            {activeSection === 'Поиск' ? (
+              <div className="mb-8">
+                <h2 className="text-3xl font-bold font-serif mb-8 text-foreground">
+                  Результаты поиска ({searchResults.length})
+                </h2>
+                {searchResults.length > 0 ? (
+                  <LatestNewsGrid
+                    news={searchResults}
+                    onNewsClick={handleArticleClick}
+                    limit={24}
+                  />
+                ) : (
+                  <div className="text-center py-12">
+                    <p className="text-muted-foreground text-lg">Ничего не найдено</p>
+                    <p className="text-muted-foreground text-sm mt-2">Попробуйте изменить запрос</p>
+                  </div>
+                )}
+              </div>
+            ) : activeSection === 'Главная' ? (
+              <>
+                <HeroSection
+                  mainNews={topThreeNews[0]}
+                  sideNews={topThreeNews.slice(1)}
+                  onNewsClick={handleArticleClick}
+                />
+
+                <CategoryGrid
+                  categories={newsCategories}
+                  articles={articles}
+                  onNewsClick={handleArticleClick}
+                  onCategoryClick={(cat) => setActiveSection(cat)}
+                />
+
+                <LatestNewsGrid
+                  news={articles.slice(3, 15)}
+                  onNewsClick={handleArticleClick}
+                  limit={12}
+                />
+              </>
+            ) : activeSection === 'СВО' ? (
+              <SVOSection
+                news={svoNews}
+                onNewsClick={handleArticleClick}
+              />
+            ) : (
+              <div className="mb-8">
+                <h2 className="text-3xl font-bold font-serif mb-8 text-foreground">{activeSection}</h2>
+                <LatestNewsGrid
+                  news={articles}
+                  onNewsClick={handleArticleClick}
+                  limit={24}
+                />
+              </div>
+            )}
+
+            {activeSection === 'Главная' && (
+              <>
+                <SVOSection
+                  news={svoNews}
+                  onNewsClick={handleArticleClick}
+                />
+
+                <ShowbizSection />
+
+                <PlacesSection
+                  cityPlaces={cityPlaces}
+                  selectedCategory={selectedCategory}
+                  showAllPlaces={showAllPlaces}
+                  categoryColors={categoryColors}
+                  onCategorySelect={setSelectedCategory}
+                  onShowAllToggle={() => setShowAllPlaces(!showAllPlaces)}
+                />
+
+                <YouthNotesSection notes={youthNotes} />
+
+                <MemorySection
+                  articles={memoryArticles}
+                  onArticleClick={(id) => navigate(`/memory/${id}`)}
+                />
+
+                <EventsSection events={events} />
+
+                <PartnersSection />
+              </>
+            )}
+          </>
+        )}
+      </main>
+
+      {activeSection === 'Главная' && <SocialSubscribe />}
+
+      <Footer 
+        sections={sections} 
+        onSectionChange={handleSectionChange} 
+      />
+    </div>
   );
 };
 

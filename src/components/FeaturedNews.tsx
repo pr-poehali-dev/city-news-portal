@@ -86,23 +86,20 @@ export const FeaturedNews = ({
                 <Icon name="FileText" size={64} className="text-primary/40" />
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
             <div className="absolute top-3 left-3">
-              <Badge className="bg-red-600 text-white font-bold px-4 py-2 text-sm shadow-lg animate-pulse">
-                <Icon name="Zap" size={14} className="mr-1.5 inline" />
-                СЕЙЧАС ЧИТАЮТ
+              <Badge className="bg-orange-500 text-white font-bold px-3 py-1 text-xs shadow-lg">
+                <Icon name="Pin" size={12} className="mr-1 inline" />
+                ГЛАВНАЯ
               </Badge>
-            </div>
-            <div className="absolute bottom-0 left-0 right-0 p-6">
-              <Badge className="w-fit mb-3 bg-orange-500 text-white text-sm font-bold">
-                {news.category}
-              </Badge>
-              <h2 className="text-3xl md:text-4xl font-serif font-bold text-white leading-tight drop-shadow-2xl">
-                {news.title}
-              </h2>
             </div>
           </div>
           <div className="p-6">
+            <Badge className="w-fit mb-2 bg-orange-500 text-white text-sm">
+              {news.category}
+            </Badge>
+            <h2 className="text-2xl font-serif font-bold mb-3 text-foreground leading-tight">
+              {news.title}
+            </h2>
             <div className="text-muted-foreground text-sm leading-relaxed mb-4">
               <p className="line-clamp-3">
                 {stripHtml(news.excerpt || news.content || '')}
@@ -146,31 +143,29 @@ export const FeaturedNews = ({
           {otherNews.map((item, idx) => (
             <Card 
               key={item.id}
-              className="overflow-hidden cursor-pointer hover:shadow-md transition-all border-0 shadow-sm hover:bg-muted/30"
+              className="overflow-hidden cursor-pointer hover:shadow-lg transition-all border-2 hover:border-primary/40"
               onClick={() => onNewsClick?.(item.id)}
             >
-              <div className="flex gap-3 p-3">
-                <div className="relative overflow-hidden group flex-shrink-0">
-                  {item.image_url ? (
-                    <img
-                      src={item.image_url}
-                      alt={item.title}
-                      className="w-24 h-24 object-cover rounded-sm transition-transform group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="w-24 h-24 bg-muted rounded-sm flex items-center justify-center">
-                      <Icon name="FileText" size={28} className="text-muted-foreground/30" />
-                    </div>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <Badge variant="outline" className="mb-1.5 text-xs font-semibold uppercase tracking-wide">
-                    {item.category}
-                  </Badge>
-                  <h3 className="text-sm font-serif font-bold leading-tight line-clamp-3">
-                    {item.title}
-                  </h3>
-                </div>
+              <div className="relative overflow-hidden group">
+                {item.image_url ? (
+                  <img
+                    src={item.image_url}
+                    alt={item.title}
+                    className="w-full h-[150px] object-cover transition-transform group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="w-full h-[150px] bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center">
+                    <Icon name="FileText" size={32} className="text-primary/30" />
+                  </div>
+                )}
+              </div>
+              <div className="p-3">
+                <Badge className="w-fit mb-1.5 text-xs">
+                  {item.category}
+                </Badge>
+                <h3 className="text-sm font-semibold leading-tight line-clamp-2">
+                  {item.title}
+                </h3>
               </div>
             </Card>
           ))}

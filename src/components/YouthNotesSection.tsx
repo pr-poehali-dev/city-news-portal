@@ -1,133 +1,176 @@
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
 import Icon from '@/components/ui/icon';
-import { useRef } from 'react';
+import { formatDistanceToNow } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
 interface YouthNote {
   id: number;
   title: string;
-  description?: string;
-  content?: string;
-  emoji?: string;
-  color?: string;
+  content: string;
+  emoji: string;
+  color: string;
   created_at: string;
   is_published: boolean;
   image_url?: string;
 }
 
 interface YouthNotesSectionProps {
-  youthNotes: YouthNote[];
+  notes: YouthNote[];
 }
 
-export function YouthNotesSection({ youthNotes }: YouthNotesSectionProps) {
-  const navigate = useNavigate();
-  const scrollRef = useRef<HTMLDivElement>(null);
+export function YouthNotesSection({ notes }: YouthNotesSectionProps) {
+  const [displayedNotes, setDisplayedNotes] = useState<YouthNote[]>([]);
+  const [animatingOut, setAnimatingOut] = useState<number | null>(null);
+  const usedIndicesRef = useRef<Set<number>>(new Set());
+  const currentRotationRef = useRef(0);
+  
+  const publishedNotes = notes.filter(n => n.is_published);
+  
+  useEffect(() => {
+    if (publishedNotes.length === 0) return;
+    
+    const initialNotes = publishedNotes.slice(0, Math.min(4, publishedNotes.length));
+    setDisplayedNotes(initialNotes);
+    
+    initialNotes.forEach((_, idx) => usedIndicesRef.current.add(idx));
+    currentRotationRef.current = initialNotes.length;
+    
+    if (publishedNotes.length <= 4) return;
+    
+    const interval = setInterval(() => {
+      if (usedIndicesRef.current.size >= publishedNotes.length) {
+        usedIndicesRef.current.clear();
+        currentRotationRef.current = 0;
+      }
+      
+      let nextIndex = currentRotationRef.current % publishedNotes.length;
+      while (usedIndicesRef.current.has(nextIndex)) {
+        nextIndex = (nextIndex + 1) % publishedNotes.length;
+      }
+      
+      usedIndicesRef.current.add(nextIndex);
+      currentRotationRef.current = nextIndex + 1;
+      
+      setAnimatingOut(0);
+      
+      setTimeout(() => {
+        setDisplayedNotes(prevDisplayed => {
+          const newNotes = [...prevDisplayed];
+          const removedNote = newNotes.shift();
+          if (removedNote) {
+            const removedIdx = publishedNotes.findIndex(n => n.id === removedNote.id);
+            if (removedIdx !== -1) {
+              usedIndicesRef.current.delete(removedIdx);
+            }
+          }
+          newNotes.push(publishedNotes[nextIndex]);
+          return newNotes;
+        });
+        setAnimatingOut(null);
+      }, 500);
+    }, 10000);
+    
+    return () => clearInterval(interval);
+  }, [publishedNotes.length]);
+  
+  if (publishedNotes.length === 0) return null;
 
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollRef.current) {
-      const scrollAmount = 400;
-      scrollRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      });
+  const getTimeAgo = (date: string) => {
+    try {
+      return formatDistanceToNow(new Date(date), { addSuffix: true, locale: ru });
+    } catch {
+      return '';
     }
   };
 
-  if (youthNotes.length === 0) return null;
-
   return (
-    <section className="bg-gradient-to-br from-green-50 via-teal-50 to-blue-50 py-12 lg:py-20">
-      <div className="max-w-[1400px] mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl lg:text-5xl font-black text-gray-900 border-l-4 border-green-600 pl-4">
-            💬 Молодёжные заметки
-          </h2>
-          
-          <div className="hidden lg:flex gap-2">
-            <button
-              onClick={() => scroll('left')}
-              className="w-10 h-10 flex items-center justify-center bg-white text-gray-700 rounded-full hover:bg-green-600 hover:text-white transition-all shadow-md"
-            >
-              <Icon name="ChevronLeft" size={24} />
-            </button>
-            <button
-              onClick={() => scroll('right')}
-              className="w-10 h-10 flex items-center justify-center bg-white text-gray-700 rounded-full hover:bg-green-600 hover:text-white transition-all shadow-md"
-            >
-              <Icon name="ChevronRight" size={24} />
-            </button>
-            <button
-              onClick={() => navigate('/youth-notes')}
-              className="ml-2 px-4 py-2 bg-green-600 text-white text-sm font-bold rounded-full hover:bg-green-700 transition-colors flex items-center gap-2"
-            >
-              ВСЕ ЗАМЕТКИ
-              <Icon name="ArrowRight" size={16} />
-            </button>
+    <div className="mb-12">
+      <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-gray-800 rounded-3xl p-6 md:p-8 shadow-xl border border-purple-100 dark:border-purple-900/30">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="text-3xl">📱</div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Пульс города
+              </h2>
+              <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1.5 mt-0.5">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+                </span>
+                В эфире сейчас
+              </p>
+            </div>
           </div>
         </div>
 
-        <div 
-          ref={scrollRef}
-          className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {youthNotes.slice(0, 12).map((note) => (
-            <article
-              key={note.id}
-              className="flex-shrink-0 w-[280px] group cursor-pointer"
-              onClick={() => navigate('/youth-notes')}
-            >
-              <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 h-full">
-                {note.image_url && (
-                  <div className="relative h-56 overflow-hidden">
-                    <img
-                      src={note.image_url}
-                      alt={note.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
+        <div className="space-y-3">
+          {displayedNotes.map((note, index) => {
+            const hasImage = !!note.image_url;
+            const isLongText = note.content.length > 100;
+            
+            return (
+              <div
+                key={`${note.id}-${index}`}
+                className={`transform transition-all duration-500 ${
+                  animatingOut === index
+                    ? 'translate-x-full opacity-0'
+                    : 'translate-x-0 opacity-100'
+                }`}
+              >
+                <div className="flex gap-2.5 items-end">
+                  <div className="flex-shrink-0 mb-1">
+                    <div 
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-lg"
+                      style={{ 
+                        backgroundColor: note.color,
+                      }}
+                    >
+                      {note.emoji}
+                    </div>
                   </div>
-                )}
-                
-                <div className="p-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    {note.emoji && (
-                      <div
-                        className="w-10 h-10 rounded-lg flex items-center justify-center text-xl"
-                        style={{ backgroundColor: note.color || '#10b981' }}
-                      >
-                        {note.emoji}
+                  
+                  <div className="flex-1 min-w-0 max-w-[85%]">
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl rounded-bl-sm shadow-sm">
+                      {note.image_url && (
+                        <img 
+                          src={note.image_url} 
+                          alt=""
+                          className="w-full h-auto max-h-64 object-cover rounded-t-2xl"
+                        />
+                      )}
+                      
+                      <div className="p-3">
+                        <p className="text-sm text-gray-900 dark:text-gray-100 leading-relaxed whitespace-pre-wrap break-words">
+                          {note.content}
+                        </p>
+                        
+                        <div className="flex items-center gap-1 mt-1.5">
+                          <span className="text-[10px] text-gray-400">
+                            {getTimeAgo(note.created_at)}
+                          </span>
+                        </div>
                       </div>
-                    )}
-                    <span className="text-xs text-gray-500">
-                      {new Date(note.created_at).toLocaleDateString('ru-RU', { 
-                        day: 'numeric', 
-                        month: 'short' 
-                      })}
-                    </span>
+                    </div>
                   </div>
-                  
-                  <h3 className="text-gray-900 font-bold text-base leading-tight mb-2 line-clamp-2 group-hover:text-green-600 transition-colors">
-                    {note.title}
-                  </h3>
-                  
-                  {note.description && (
-                    <p className="text-gray-600 text-sm line-clamp-3">
-                      {note.description}
-                    </p>
-                  )}
                 </div>
               </div>
-            </article>
-          ))}
+            );
+          })}
         </div>
 
-        <button
-          onClick={() => navigate('/youth-notes')}
-          className="lg:hidden mt-6 w-full px-4 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
-        >
-          ВСЕ ЗАМЕТКИ
-          <Icon name="ArrowRight" size={20} />
-        </button>
+        {publishedNotes.length > 4 && (
+          <div className="text-center mt-4">
+            <div className="inline-flex items-center gap-2 text-[10px] px-3 py-1.5 bg-white/50 dark:bg-gray-800/50 rounded-full text-gray-500">
+              <div className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+              </div>
+              Обновляется каждые 10 сек
+            </div>
+          </div>
+        )}
       </div>
-    </section>
+    </div>
   );
 }

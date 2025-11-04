@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +12,7 @@ interface SiteHeaderProps {
   onSearch?: (query: string) => void;
 }
 
-export const SiteHeader = ({ onSearch }: SiteHeaderProps) => {
+export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSearch }: SiteHeaderProps) => {
   const navigate = useNavigate();
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -24,67 +26,81 @@ export const SiteHeader = ({ onSearch }: SiteHeaderProps) => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-2xl border-b border-gray-200">
-      <div className="px-6 lg:px-20 py-6">
-        <div className="flex items-center justify-between">
+    <header className="sticky top-0 z-50 bg-white/95 dark:bg-background/95 backdrop-blur-sm border-b border-primary/10 dark:border-border/50 shadow-sm dark:shadow-lg">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between mb-4">
           <div 
-            className="cursor-pointer group" 
-            onClick={() => navigate('/')}
+            className="cursor-pointer" 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              navigate('/');
+            }}
           >
-            <h1 className="text-3xl lg:text-4xl font-black tracking-tight hover:text-gray-600 transition-colors">
-              Город Говорит
+            <h1 className="text-4xl font-bold text-primary font-serif">
+              Город говорит
             </h1>
-            <p className="text-sm text-gray-400 font-medium">Краснодар</p>
+            <p className="text-sm text-muted-foreground font-medium">Краснодар</p>
           </div>
-
-          <div className="flex items-center gap-3">
-            {!showSearch && (
-              <button
-                onClick={() => setShowSearch(true)}
-                className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
-              >
-                <Icon name="Search" size={20} />
-              </button>
-            )}
-            
-            <button
+          <div className="flex items-center gap-2 md:gap-4">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => setShowSearch(!showSearch)}
+            >
+              <Icon name="Search" size={20} />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm"
               onClick={() => window.location.href = '/admin'}
               title="Админка"
-              className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
             >
               <Icon name="Settings" size={20} />
-            </button>
+            </Button>
           </div>
         </div>
 
         {showSearch && (
-          <div className="mt-6 flex gap-3">
+          <div className="mb-4 flex gap-2">
             <Input
               type="text"
               placeholder="Поиск по новостям..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="flex-1 h-12 rounded-2xl border-2 border-gray-200 focus:border-black transition-colors"
+              className="flex-1"
               autoFocus
             />
-            <button
-              onClick={handleSearch}
-              disabled={!searchQuery.trim()}
-              className="px-6 h-12 bg-black text-white font-semibold rounded-2xl hover:bg-gray-800 disabled:opacity-50 transition-colors"
-            >
+            <Button onClick={handleSearch} disabled={!searchQuery.trim()}>
+              <Icon name="Search" size={16} className="mr-2" />
               Найти
-            </button>
-            <button
-              onClick={() => {
-                setShowSearch(false);
-                setSearchQuery('');
-              }}
-              className="w-12 h-12 flex items-center justify-center border-2 border-gray-200 rounded-2xl hover:bg-gray-100 transition-colors"
-            >
-              <Icon name="X" size={20} />
-            </button>
+            </Button>
+            <Button variant="outline" onClick={() => {
+              setShowSearch(false);
+              setSearchQuery('');
+            }}>
+              <Icon name="X" size={16} />
+            </Button>
           </div>
+        )}
+        
+        {sections.length > 0 && (
+          <nav className="flex gap-6 overflow-x-auto pb-2 scrollbar-hide">
+            {sections.map((section) => (
+              <button
+                key={section}
+                onClick={() => onSectionChange?.(section)}
+                className={`text-sm font-medium whitespace-nowrap transition-all ${
+                  activeSection === section
+                    ? 'text-primary dark:text-primary border-b-2 border-primary pb-2'
+                    : 'text-muted-foreground hover:text-foreground dark:hover:text-foreground'
+                }`}
+              >
+                {section}
+              </button>
+            ))}
+          </nav>
         )}
       </div>
     </header>
