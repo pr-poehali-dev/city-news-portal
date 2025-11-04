@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
@@ -26,85 +25,105 @@ export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSe
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-background border-b-4 border-primary">
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex items-center justify-between mb-4">
-          <div 
-            className="cursor-pointer" 
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              navigate('/');
-            }}
-          >
-            <h1 className="text-4xl lg:text-5xl font-black tracking-tighter">
-              ГОРОД<br/>
-              <span className="text-accent">ГОВОРИТ</span>
-            </h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => setShowSearch(!showSearch)}
-              className="hover:bg-primary hover:text-primary-foreground transition-colors"
+    <header className="sticky top-0 z-50 bg-white border-b-4 border-primary shadow-[0_4px_0px_0px_rgba(0,0,0,0.1)]">
+      <div className="border-b-4 border-primary bg-accent">
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex items-center justify-between">
+            <div 
+              className="cursor-pointer group" 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                navigate('/');
+              }}
             >
-              <Icon name="Search" size={24} />
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => window.location.href = '/admin'}
-              title="Админка"
-              className="hover:bg-primary hover:text-primary-foreground transition-colors"
-            >
-              <Icon name="Settings" size={24} />
-            </Button>
+              <div className="flex items-baseline gap-3">
+                <h1 className="text-6xl lg:text-8xl font-black text-white uppercase leading-[0.8] tracking-tighter group-hover:scale-105 transition-transform">
+                  ГОРОД
+                </h1>
+                <div className="bg-white px-4 py-2 rotate-[-2deg] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                  <span className="text-2xl lg:text-4xl font-black text-accent uppercase tracking-tighter">
+                    ГОВОРИТ
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setShowSearch(!showSearch)}
+                className="hover:bg-white hover:text-accent transition-all w-12 h-12 rounded-none border-2 border-white hover:scale-110"
+              >
+                <Icon name="Search" size={24} className="text-white hover:text-accent" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => window.location.href = '/admin'}
+                title="Админка"
+                className="hover:bg-white hover:text-accent transition-all w-12 h-12 rounded-none border-2 border-white hover:scale-110"
+              >
+                <Icon name="Settings" size={24} className="text-white hover:text-accent" />
+              </Button>
+            </div>
           </div>
         </div>
+      </div>
 
-        {showSearch && (
-          <div className="mb-4 flex gap-2">
+      {showSearch && (
+        <div className="container mx-auto px-6 py-4 bg-black border-b-4 border-primary">
+          <div className="flex gap-3">
             <Input
               type="text"
-              placeholder="Поиск по новостям..."
+              placeholder="ПОИСК ПО НОВОСТЯМ..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="flex-1"
+              className="flex-1 text-lg font-bold uppercase border-4 border-white bg-black text-white placeholder:text-white/50 focus:border-accent rounded-none"
               autoFocus
             />
-            <Button onClick={handleSearch} disabled={!searchQuery.trim()}>
-              <Icon name="Search" size={16} className="mr-2" />
+            <Button 
+              onClick={handleSearch} 
+              disabled={!searchQuery.trim()}
+              className="bg-accent hover:bg-accent/90 text-white font-black uppercase px-8 rounded-none border-4 border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:shadow-none transition-all"
+            >
+              <Icon name="Search" size={20} className="mr-2" />
               Найти
             </Button>
-            <Button variant="outline" onClick={() => {
-              setShowSearch(false);
-              setSearchQuery('');
-            }}>
-              <Icon name="X" size={16} />
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setShowSearch(false);
+                setSearchQuery('');
+              }}
+              className="bg-white hover:bg-black hover:text-white border-4 border-white font-black rounded-none"
+            >
+              <Icon name="X" size={20} />
             </Button>
           </div>
-        )}
-        
-        {sections.length > 0 && (
-          <nav className="flex gap-1 overflow-x-auto pb-2 scrollbar-hide border-t-2 border-border pt-4">
+        </div>
+      )}
+      
+      {sections.length > 0 && (
+        <nav className="container mx-auto px-6">
+          <div className="flex gap-0 overflow-x-auto scrollbar-hide">
             {sections.map((section) => (
               <button
                 key={section}
                 onClick={() => onSectionChange?.(section)}
-                className={`px-4 py-2 text-sm font-black whitespace-nowrap uppercase tracking-wider transition-colors ${
+                className={`px-6 py-4 text-sm font-black whitespace-nowrap uppercase tracking-wider transition-all border-r-2 border-primary last:border-r-0 ${
                   activeSection === section
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                    ? 'bg-accent text-white'
+                    : 'bg-white text-black hover:bg-black hover:text-white'
                 }`}
               >
                 {section}
               </button>
             ))}
-          </nav>
-        )}
-      </div>
+          </div>
+        </nav>
+      )}
     </header>
   );
 };

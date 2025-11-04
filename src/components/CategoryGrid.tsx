@@ -9,7 +9,7 @@ interface CategoryGridProps {
 
 export const CategoryGrid = ({ categories, articles, onNewsClick, onCategoryClick }: CategoryGridProps) => {
   const getCategoryNews = (category: string) => {
-    return articles.filter(a => a.category === category).slice(0, 4);
+    return articles.filter(a => a.category === category).slice(0, 3);
   };
 
   const categoryIcons: { [key: string]: string } = {
@@ -21,69 +21,91 @@ export const CategoryGrid = ({ categories, articles, onNewsClick, onCategoryClic
   };
 
   const categoryColors: { [key: string]: string } = {
-    'Политика': 'bg-blue-600',
-    'Экономика': 'bg-emerald-600',
-    'Культура': 'bg-purple-600',
-    'Спорт': 'bg-red-600',
-    'События': 'bg-amber-600',
+    'Политика': '#000000',
+    'Экономика': '#000000',
+    'Культура': '#000000',
+    'Спорт': '#000000',
+    'События': '#000000',
+  };
+
+  const categoryAccents: { [key: string]: string } = {
+    'Политика': '#FF4136',
+    'Экономика': '#2ECC40',
+    'Культура': '#B10DC9',
+    'Спорт': '#FF851B',
+    'События': '#0074D9',
   };
 
   return (
-    <section className="mb-20">
-      <div className="mb-12">
-        <h2 className="text-5xl lg:text-6xl font-black mb-2 tracking-tight">РУБРИКИ</h2>
-        <div className="h-1 w-32 bg-accent"></div>
-      </div>
-      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-px bg-border">
-        {categories.map((category) => {
+    <section className="mb-0 border-t-4 border-primary">
+      <div className="grid md:grid-cols-2 gap-0">
+        {categories.map((category, catIndex) => {
           const categoryNews = getCategoryNews(category);
           if (categoryNews.length === 0) return null;
 
+          const bgColor = categoryColors[category] || '#000000';
+          const accentColor = categoryAccents[category] || '#FF6B35';
+
           return (
-            <div key={category} className="group bg-background overflow-hidden hover:scale-[1.02] transition-transform">
+            <div 
+              key={category} 
+              className={`relative border-b-4 border-primary ${
+                catIndex % 2 === 0 ? 'md:border-r-4' : ''
+              }`}
+              style={{ backgroundColor: bgColor }}
+            >
               <div 
-                className={`${categoryColors[category] || 'bg-accent'} px-6 py-8 cursor-pointer hover:opacity-90 transition-opacity`}
+                className="cursor-pointer px-8 py-12 hover:opacity-90 transition-opacity"
                 onClick={() => onCategoryClick(category)}
               >
-                <div className="flex items-center justify-between text-white">
-                  <div className="flex items-center gap-4">
-                    <Icon name={categoryIcons[category] || 'Sparkles'} size={32} className="text-white" />
-                    <h3 className="text-3xl font-black tracking-tight uppercase">
+                <div className="flex items-start justify-between mb-8">
+                  <div className="flex-1">
+                    <div 
+                      className="inline-block px-6 py-3 mb-4 rotate-[-1deg] shadow-[6px_6px_0px_0px_rgba(255,107,53,1)]"
+                      style={{ backgroundColor: accentColor }}
+                    >
+                      <Icon name={categoryIcons[category] || 'Sparkles'} size={32} className="text-white" />
+                    </div>
+                    <h2 className="text-6xl lg:text-7xl font-black text-white uppercase leading-[0.9] tracking-tighter mb-4">
                       {category}
-                    </h3>
+                    </h2>
+                    <div className="h-2 w-24" style={{ backgroundColor: accentColor }}></div>
                   </div>
-                  <Icon name="ArrowRight" size={28} className="text-white/80 group-hover:translate-x-2 transition-transform" />
+                  <Icon name="ArrowUpRight" size={40} className="text-white/60 mt-2" />
                 </div>
-              </div>
-              <div className="p-6 space-y-4">
-                {categoryNews.map((news, idx) => (
-                  <div
-                    key={news.id}
-                    className={`cursor-pointer group/item ${idx !== categoryNews.length - 1 ? 'border-b-2 border-border pb-4' : ''}`}
-                    onClick={() => onNewsClick(news.id)}
-                  >
-                    <div className="flex gap-4 items-start">
-                      {news.image_url && (
-                        <div className="relative w-24 h-24 flex-shrink-0 overflow-hidden bg-black">
-                          <img
-                            src={news.image_url}
-                            alt={news.title}
-                            className="w-full h-full object-cover group-hover/item:scale-110 group-hover/item:opacity-80 transition-all duration-500"
-                          />
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-black text-base leading-tight line-clamp-2 group-hover/item:underline mb-2 tracking-tight">
-                          {news.title}
-                        </h4>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-wider font-bold">
-                          <Icon name="Calendar" size={12} />
-                          <span>{new Date(news.created_at).toLocaleDateString('ru-RU')}</span>
+
+                <div className="space-y-6">
+                  {categoryNews.map((news, idx) => (
+                    <div
+                      key={news.id}
+                      className="group/item cursor-pointer border-l-4 border-white/20 pl-4 hover:border-white transition-all"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onNewsClick(news.id);
+                      }}
+                    >
+                      <div className="flex gap-4">
+                        {news.image_url && (
+                          <div className="w-20 h-20 flex-shrink-0 overflow-hidden bg-white/10">
+                            <img
+                              src={news.image_url}
+                              alt={news.title}
+                              className="w-full h-full object-cover grayscale group-hover/item:grayscale-0 transition-all duration-500"
+                            />
+                          </div>
+                        )}
+                        <div className="flex-1">
+                          <h4 className="text-white font-black text-lg leading-tight line-clamp-2 uppercase tracking-tight group-hover/item:text-accent transition-colors">
+                            {news.title}
+                          </h4>
+                          <p className="text-white/50 text-xs uppercase tracking-wider font-bold mt-2">
+                            {new Date(news.created_at).toLocaleDateString('ru-RU')}
+                          </p>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           );

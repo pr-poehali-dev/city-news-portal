@@ -7,7 +7,7 @@ interface LatestNewsGridProps {
   limit?: number;
 }
 
-export const LatestNewsGrid = ({ news, onNewsClick, limit = 6 }: LatestNewsGridProps) => {
+export const LatestNewsGrid = ({ news, onNewsClick, limit = 9 }: LatestNewsGridProps) => {
   const displayNews = news.slice(0, limit);
 
   const stripHtml = (html: string) => {
@@ -36,61 +36,82 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 6 }: LatestNewsGridP
   };
 
   return (
-    <section className="mb-20">
-      <div className="mb-12">
-        <h2 className="text-5xl lg:text-6xl font-black mb-2 tracking-tight">ПОСЛЕДНИЕ НОВОСТИ</h2>
-        <div className="h-1 w-32 bg-accent"></div>
+    <section className="mb-0 border-t-4 border-primary">
+      <div className="bg-accent px-8 py-12 border-b-4 border-primary">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-6xl lg:text-8xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-4">
+              СЕЙЧАС
+            </h2>
+            <div className="h-2 w-32 bg-white"></div>
+          </div>
+          <Icon name="Zap" size={64} className="text-white/30" />
+        </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
-        {displayNews.map((item) => (
-          <article
-            key={item.id}
-            className="group relative bg-background cursor-pointer overflow-hidden transition-all duration-300 hover:z-10 hover:scale-[1.02]"
-            onClick={() => onNewsClick(item.id)}
-          >
-            <div className="aspect-[4/3] relative overflow-hidden bg-black">
-              {item.image_url ? (
-                <img
-                  src={item.image_url}
-                  alt={item.title}
-                  className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105 group-hover:opacity-80"
-                />
-              ) : (
-                <div className="w-full h-full bg-secondary flex items-center justify-center">
-                  <Icon name="FileText" size={48} className="text-muted-foreground" />
-                </div>
-              )}
-              
-              <div className="absolute top-4 left-4">
-                <Badge className="bg-accent text-white font-black px-3 py-1 text-xs uppercase tracking-widest border-0">
-                  {item.category}
-                </Badge>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+        {displayNews.map((item, index) => {
+          const isLarge = index === 0;
+          const accentColors = ['#FF4136', '#2ECC40', '#B10DC9', '#FF851B', '#0074D9'];
+          const itemAccent = accentColors[index % accentColors.length];
+          
+          return (
+            <article
+              key={item.id}
+              className={`group relative cursor-pointer overflow-hidden bg-white border-b-4 border-primary transition-all hover:z-10 ${
+                isLarge ? 'md:col-span-3 md:row-span-1' : 'md:border-r-4 last:border-r-0'
+              }`}
+              onClick={() => onNewsClick(item.id)}
+            >
+              <div className={`${isLarge ? 'aspect-[21/9]' : 'aspect-[4/3]'} relative overflow-hidden bg-black`}>
+                {item.image_url ? (
+                  <img
+                    src={item.image_url}
+                    alt={item.title}
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                    <Icon name="FileText" size={64} className="text-gray-400" />
+                  </div>
+                )}
+                
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
               </div>
-            </div>
-            
-            <div className="p-6 bg-background">
-              <h3 className="font-black text-xl mb-3 leading-tight line-clamp-2 tracking-tight group-hover:underline">
-                {item.title}
-              </h3>
               
-              <p className="text-muted-foreground text-sm mb-4 line-clamp-2 leading-relaxed">
-                {stripHtml(item.excerpt || item.content)}
-              </p>
+              <div className="absolute top-6 left-6">
+                <div 
+                  className="px-4 py-2 rotate-[-2deg] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                  style={{ backgroundColor: itemAccent }}
+                >
+                  <span className="text-white font-black text-xs uppercase tracking-[0.2em]">
+                    {item.category}
+                  </span>
+                </div>
+              </div>
               
-              <div className="flex items-center justify-between text-xs text-muted-foreground uppercase tracking-wider font-bold">
-                <div className="flex items-center gap-2">
-                  <Icon name="Calendar" size={14} />
+              <div className={`absolute bottom-0 left-0 right-0 p-6 ${isLarge ? 'lg:p-12' : ''}`}>
+                <h3 className={`text-white font-black uppercase leading-tight tracking-tighter mb-3 group-hover:text-accent transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)] ${
+                  isLarge ? 'text-4xl lg:text-5xl line-clamp-2' : 'text-2xl line-clamp-3'
+                }`}>
+                  {item.title}
+                </h3>
+                
+                {isLarge && (
+                  <p className="text-white/80 text-lg mb-4 line-clamp-2 max-w-4xl">
+                    {stripHtml(item.excerpt || item.content)}
+                  </p>
+                )}
+                
+                <div className="flex items-center gap-4 text-white/60 text-xs uppercase tracking-wider font-bold">
                   <span>{new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Icon name="Eye" size={14} />
-                  <span>{item.views || 0}</span>
+                  <span className="w-1 h-1 bg-accent rounded-full"></span>
+                  <span>{item.author_name || 'Редакция'}</span>
                 </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </div>
     </section>
   );
