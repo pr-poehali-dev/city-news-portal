@@ -52,7 +52,7 @@ export default function YouthNotes() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <SiteHeader 
         sections={['Главная', 'СВО', 'Политика', 'Экономика', 'Культура', 'Спорт', 'События', 'О портале', 'Контакты']}
         activeSection=""
@@ -65,69 +65,78 @@ export default function YouthNotes() {
         onSearch={() => {}}
       />
 
-      <main className="px-4 lg:px-20 py-20 mt-20">
-        <div className="max-w-6xl mx-auto">
-          <button
-            className="mb-12 text-gray-500 hover:text-black transition-colors flex items-center gap-2"
+      <main className="container mx-auto px-4 py-8 mt-20">
+        <div className="max-w-3xl mx-auto">
+          <Button 
+            variant="ghost" 
+            className="mb-6 gap-2" 
             onClick={() => navigate('/')}
           >
-            <Icon name="ArrowLeft" size={20} />
-            <span>На главную</span>
-          </button>
+            <Icon name="ArrowLeft" size={16} />
+            На главную
+          </Button>
 
-          <div className="mb-16">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-4xl">
-                📱
-              </div>
-              <h1 className="text-4xl lg:text-5xl font-bold tracking-tight">Пульс города</h1>
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="text-5xl">📱</div>
+              <h1 className="text-4xl font-bold">Пульс города</h1>
             </div>
-            <p className="text-gray-600 text-lg">
-              Короткие заметки от редакции для молодёжи
+            <p className="text-muted-foreground text-lg">
+              Все короткие заметки от редакции для молодёжи
             </p>
           </div>
 
           {loading ? (
-            <div className="text-center py-20">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-black"></div>
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             </div>
           ) : notes.length === 0 ? (
-            <div className="text-center py-20">
-              <Icon name="MessageCircle" size={48} className="mx-auto mb-4 text-gray-300" />
-              <p className="text-gray-500 text-lg">Пока нет заметок</p>
+            <div className="text-center py-12 text-muted-foreground">
+              <Icon name="MessageCircle" size={48} className="mx-auto mb-4 opacity-20" />
+              <p>Пока нет заметок</p>
             </div>
           ) : (
-            <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
-              {notes.map((note) => (
+            <div className="space-y-3 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-gray-800 rounded-3xl p-6 border border-purple-100 dark:border-purple-900/30">
+              {notes.map((note, index) => (
                 <div
                   key={note.id}
-                  className="break-inside-avoid mb-6"
+                  className="animate-in fade-in slide-in-from-left-4 duration-500"
+                  style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'backwards' }}
                 >
-                  <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow">
-                    {note.image_url && (
-                      <img 
-                        src={note.image_url} 
-                        alt=""
-                        className="w-full h-auto object-cover"
-                      />
-                    )}
-                    
-                    <div className="p-6">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div 
-                          className="w-10 h-10 rounded-full flex items-center justify-center text-xl"
-                          style={{ backgroundColor: note.color }}
-                        >
-                          {note.emoji}
-                        </div>
-                        <span className="text-xs text-gray-400">
-                          {getTimeAgo(note.created_at)}
-                        </span>
+                  <div className="flex gap-2.5 items-end">
+                    <div className="flex-shrink-0 mb-1">
+                      <div 
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-lg"
+                        style={{ 
+                          backgroundColor: note.color,
+                        }}
+                      >
+                        {note.emoji}
                       </div>
-                      
-                      <p className="text-base leading-relaxed whitespace-pre-wrap break-words">
-                        {note.content}
-                      </p>
+                    </div>
+                    
+                    <div className="flex-1 min-w-0 max-w-[85%]">
+                      <div className="bg-white dark:bg-gray-800 rounded-2xl rounded-bl-sm shadow-sm">
+                        {note.image_url && (
+                          <img 
+                            src={note.image_url} 
+                            alt=""
+                            className="w-full h-auto max-h-64 object-cover rounded-t-2xl"
+                          />
+                        )}
+                        
+                        <div className="p-3">
+                          <p className="text-sm text-gray-900 dark:text-gray-100 leading-relaxed whitespace-pre-wrap break-words">
+                            {note.content}
+                          </p>
+                          
+                          <div className="flex items-center gap-1 mt-1.5">
+                            <span className="text-[10px] text-gray-400">
+                              {getTimeAgo(note.created_at)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

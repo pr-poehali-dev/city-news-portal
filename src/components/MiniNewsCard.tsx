@@ -35,20 +35,23 @@ export const MiniNewsCard = ({ news, onClick, onLike, hasLiked = false }: MiniNe
           <h4 className="font-bold text-base line-clamp-2 group-hover:text-primary transition-colors mb-1.5 leading-snug">
             {news.title}
           </h4>
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <Icon name="User" size={12} />
-              <span className="font-medium">{news.author_name || 'Редакция'}</span>
-            </div>
-            <span>•</span>
-            <div className="flex items-center gap-1">
-              <Icon name="Calendar" size={12} />
-              <span className="font-medium">{new Date(news.created_at).toLocaleDateString('ru-RU')}</span>
-            </div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Icon name="Calendar" size={12} />
+            <span className="font-medium">{new Date(news.created_at).toLocaleDateString('ru-RU')}</span>
           </div>
         </div>
       </div>
-
+      {onLike && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onLike}
+          className={`gap-1.5 h-auto px-3 rounded-full hover:bg-primary/10 transition-all ${hasLiked ? 'text-red-500' : ''}`}
+        >
+          <Icon name="Heart" size={16} className={hasLiked ? 'fill-current' : ''} />
+          <span className="text-sm font-semibold">{news.likes || 0}</span>
+        </Button>
+      )}
     </div>
   );
 };
