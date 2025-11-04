@@ -268,53 +268,47 @@ export const NewsPage = () => {
         }} 
       />
 
-      <main className="pt-20">
+      <main className="pt-16">
+        <div className="container mx-auto px-4 py-1">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate(-1)}
+            className="-ml-3"
+          >
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            Назад
+          </Button>
+        </div>
+
         <article>
-          <div className="relative h-[60vh] min-h-[500px] mb-12">
-            <img 
-              src={article.image_url} 
-              alt={article.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-            
-            <div className="absolute bottom-0 left-0 right-0 px-4 lg:px-20 pb-16">
-              <div className="max-w-4xl mx-auto">
-                <button
-                  onClick={() => navigate(-1)}
-                  className="mb-8 text-white/80 hover:text-white transition-colors flex items-center gap-2"
-                >
-                  <Icon name="ArrowLeft" size={20} />
-                  <span>Назад</span>
-                </button>
-                
-                <span className="inline-block text-xs font-semibold text-white/80 uppercase tracking-wider mb-4">
-                  {article.section}
-                </span>
-                
-                <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight break-words">
-                  {article.title}
-                </h1>
-                
-                <div className="flex items-center gap-6 text-white/60 text-sm">
-                  <span className="flex items-center gap-2">
-                    <Icon name="User" size={16} />
-                    {article.author}
-                  </span>
-                  <div className="w-1 h-1 rounded-full bg-white/40"></div>
-                  <span className="flex items-center gap-2">
-                    <Icon name="Calendar" size={16} />
-                    {new Date(article.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}
-                  </span>
-                </div>
-              </div>
+          <div className="container mx-auto px-4 mb-3 max-w-4xl">
+            <span className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm mb-3">
+              {article.section}
+            </span>
+            <h1 className="text-2xl md:text-4xl font-bold mb-3 break-words">{article.title}</h1>
+            <div className="flex items-center gap-4 text-muted-foreground">
+              <span className="flex items-center gap-2">
+                <Icon name="User" size={16} />
+                {article.author}
+              </span>
+              <span className="flex items-center gap-2">
+                <Icon name="Calendar" size={16} />
+                {article.date}
+              </span>
             </div>
           </div>
 
-          <div className="px-4 lg:px-20 max-w-4xl mx-auto">
+          <div className="container mx-auto px-4 max-w-4xl mb-8">
+            <img 
+              src={article.image_url} 
+              alt={article.title}
+              className="w-full h-auto rounded-lg object-contain max-h-[500px]"
+            />
+          </div>
+
+          <div className="container mx-auto px-4 max-w-4xl">
             <div 
-              className="prose prose-lg max-w-none mb-12 leading-relaxed"
-              style={{ fontSize: '1.125rem', lineHeight: '1.8' }}
+              className="prose prose-sm md:prose-lg max-w-none mb-12 text-foreground"
               dangerouslySetInnerHTML={{ __html: article.content }}
             />
 
