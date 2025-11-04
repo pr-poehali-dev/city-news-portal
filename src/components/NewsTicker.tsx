@@ -8,15 +8,22 @@ export const NewsTicker = ({ latestNews }: NewsTickerProps) => {
   if (latestNews.length === 0) return null;
 
   return (
-    <div className="bg-primary dark:bg-primary/90 text-white overflow-hidden">
-      <div className="animate-marquee whitespace-nowrap py-2">
-        {latestNews.map((news, i) => (
-          <span key={news.id} className="inline-block mx-8">
-            <Icon name="Circle" size={6} className="inline mr-2" />
-            {news.title}
-            {i < latestNews.length - 1 && <span className="mx-4">•</span>}
-          </span>
-        ))}
+    <div className="bg-black text-white overflow-hidden border-y-4 border-primary max-w-full">
+      <div className="flex items-center min-w-0">
+        <div className="bg-accent px-2 md:px-4 py-3 md:py-4 flex items-center gap-1 md:gap-2 flex-shrink-0 border-r-4 border-primary">
+          <Icon name="Zap" size={12} className="text-white md:w-3.5 md:h-3.5" />
+          <span className="font-black uppercase tracking-widest text-[9px] md:text-xs">МЫ В СЕТИ</span>
+        </div>
+        <div className="flex-1 overflow-hidden py-3 md:py-4">
+          <div className="animate-marquee whitespace-nowrap inline-block pl-4">
+            {latestNews.concat(latestNews).map((news, i) => (
+              <span key={`${news.id}-${i}`} className="inline-flex items-center mx-6 md:mx-8">
+                <span className="font-black uppercase tracking-wider text-xs md:text-base">{news.title}</span>
+                <span className="mx-6 md:mx-8 text-accent">●</span>
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

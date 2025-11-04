@@ -101,7 +101,7 @@ export const FeaturedNews = ({
               {news.title}
             </h2>
             <div className="text-muted-foreground text-sm leading-relaxed mb-4">
-              <p className="line-clamp-3">
+              <p className="line-clamp-2">
                 {stripHtml(news.excerpt || news.content || '')}
               </p>
               <span className="text-primary font-medium text-sm mt-2 inline-block cursor-pointer hover:underline">
@@ -143,29 +143,31 @@ export const FeaturedNews = ({
           {otherNews.map((item, idx) => (
             <Card 
               key={item.id}
-              className="overflow-hidden cursor-pointer hover:shadow-lg transition-all border-2 hover:border-primary/40"
+              className="overflow-hidden cursor-pointer hover:shadow-md transition-all border-0 shadow-sm hover:bg-muted/30"
               onClick={() => onNewsClick?.(item.id)}
             >
-              <div className="relative overflow-hidden group">
-                {item.image_url ? (
-                  <img
-                    src={item.image_url}
-                    alt={item.title}
-                    className="w-full h-[150px] object-cover transition-transform group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="w-full h-[150px] bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center">
-                    <Icon name="FileText" size={32} className="text-primary/30" />
-                  </div>
-                )}
-              </div>
-              <div className="p-3">
-                <Badge className="w-fit mb-1.5 text-xs">
-                  {item.category}
-                </Badge>
-                <h3 className="text-sm font-semibold leading-tight line-clamp-2">
-                  {item.title}
-                </h3>
+              <div className="flex gap-3 p-3">
+                <div className="relative overflow-hidden group flex-shrink-0">
+                  {item.image_url ? (
+                    <img
+                      src={item.image_url}
+                      alt={item.title}
+                      className="w-24 h-24 object-cover rounded-sm transition-transform group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-24 h-24 bg-muted rounded-sm flex items-center justify-center">
+                      <Icon name="FileText" size={28} className="text-muted-foreground/30" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <Badge variant="outline" className="mb-1.5 text-xs font-semibold uppercase tracking-wide">
+                    {item.category}
+                  </Badge>
+                  <h3 className="text-sm font-serif font-bold leading-tight line-clamp-2 tracking-tighter">
+                    {item.title}
+                  </h3>
+                </div>
               </div>
             </Card>
           ))}

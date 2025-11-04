@@ -1,7 +1,5 @@
 import { Link } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useState, useEffect } from 'react';
 
@@ -13,6 +11,8 @@ interface News {
   category: string;
   published_at: string;
   read_time: string;
+  created_at: string;
+  author_name: string;
 }
 
 export const ShowbizSection = () => {
@@ -22,7 +22,7 @@ export const ShowbizSection = () => {
   useEffect(() => {
     const fetchShowbizNews = async () => {
       try {
-        const response = await fetch('https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe?is_showbiz=true&limit=3');
+        const response = await fetch('https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe?is_showbiz=true&limit=4');
         const data = await response.json();
         setNews(Array.isArray(data) ? data : []);
       } catch (error) {
@@ -35,113 +35,69 @@ export const ShowbizSection = () => {
     fetchShowbizNews();
   }, []);
 
-  if (loading) {
-    return (
-      <section className="py-12 bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center">Загрузка...</div>
-        </div>
-      </section>
-    );
-  }
+  if (loading || news.length === 0) return null;
 
-  if (news.length === 0) return null;
 
-  const [mainNews, ...sideNews] = news;
 
   return (
-    <section className="py-12 md:py-16 bg-gradient-to-br from-background via-muted/30 to-background relative overflow-hidden border-y">
-      <div className="absolute inset-0">
-        <div className="absolute top-10 right-20 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 left-20 w-72 h-72 bg-pink-500/5 rounded-full blur-3xl" />
-      </div>
-      
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="flex items-center justify-between mb-8 md:mb-10">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg shadow-lg">
-                <Icon name="Sparkles" size={20} className="text-white" />
-              </div>
-              <h2 className="text-2xl md:text-4xl font-bold">
-                Город говорит о шоубизе
-              </h2>
-            </div>
-            <p className="text-muted-foreground text-sm md:text-base ml-14">
-              Звёзды, премьеры и светская жизнь глазами Краснодара
-            </p>
+    <section className="mb-0 border-t-4 border-primary max-w-full overflow-hidden">
+      <div className="bg-[#B10DC9] px-4 md:px-8 py-6 md:py-8 border-b-4 border-primary">
+        <div className="flex items-center justify-between gap-4">
+          <div className="min-w-0">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-2 md:mb-3">
+              ШОУБИЗ
+            </h2>
+            <div className="h-1 w-16 md:w-24 bg-white"></div>
           </div>
           <Link to="/showbiz" className="hidden md:block">
-            <Button variant="outline" className="gap-2">
-              Все новости
-              <Icon name="ArrowRight" size={16} />
-            </Button>
+            <Icon name="ArrowUpRight" size={32} className="text-white/30 flex-shrink-0 md:w-12 md:h-12 hover:text-white transition-colors" />
           </Link>
         </div>
+      </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-          {mainNews && (
-            <Link to={`/news/${mainNews.id}`} className="md:col-span-2 lg:col-span-2 group">
-              <Card className="overflow-hidden h-full hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-purple-500/20">
-                <div className="relative h-[300px] md:h-[420px]">
-                  <img
-                    src={mainNews.image_url}
-                    alt={mainNews.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                  <Badge className="absolute top-4 left-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 px-3 py-1.5 shadow-lg">
-                    <Icon name="Star" size={12} className="mr-1.5" />
-                    {mainNews.category}
-                  </Badge>
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="text-white text-xl md:text-3xl font-bold mb-2 group-hover:text-purple-300 transition-colors">
-                      {mainNews.title}
-                    </h3>
-                    <p className="text-white/90 text-sm md:text-base line-clamp-2">
-                      {mainNews.excerpt}
-                    </p>
-                  </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0">
+        {news.map((item, index) => (
+          <Link
+            key={item.id}
+            to={`/news/${item.id}`}
+            className={`group relative cursor-pointer overflow-hidden bg-white border-b-4 ${
+              index < news.length - 1 ? 'md:border-r-4' : ''
+            } ${index === 2 ? 'lg:border-r-4' : ''} border-primary transition-all hover:z-10`}
+          >
+            <div className="aspect-[3/4] relative overflow-hidden bg-black">
+              <img
+                src={item.image_url}
+                alt={item.title}
+                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+              
+              <div className="absolute top-3 left-3">
+                <div className="bg-[#B10DC9] px-3 py-1.5 border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                  <span className="text-white font-black text-[10px] uppercase tracking-wider">
+                    <Icon name="Star" size={12} className="inline mr-1" />
+                    Шоубиз
+                  </span>
                 </div>
-              </Card>
-            </Link>
-          )}
+              </div>
 
-          <div className="space-y-4 md:space-y-6">
-            {sideNews.slice(0, 2).map((item, idx) => (
-              <Link key={item.id} to={`/news/${item.id}`} className="group block">
-                <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 border hover:border-purple-500/30">
-                  <div className="relative h-40 md:h-48 overflow-hidden">
-                    <img
-                      src={item.image_url}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                    <Badge className="absolute top-3 right-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 text-xs shadow-md">
-                      <Icon name="Sparkles" size={10} className="mr-1" />
-                      {item.category}
-                    </Badge>
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <h4 className="font-bold text-white text-base md:text-lg line-clamp-2 group-hover:text-purple-300 transition-colors">
-                        {item.title}
-                      </h4>
-                    </div>
-                  </div>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div className="text-center mt-8 md:hidden">
-          <Link to="/showbiz">
-            <Button variant="outline" className="gap-2 w-full">
-              Все новости шоубизнеса
-              <Icon name="ArrowRight" size={16} />
-            </Button>
+              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 bg-gradient-to-t from-black via-black/95 to-transparent">
+                <h4 className="text-white text-base md:text-lg font-black leading-[1.2] line-clamp-3 group-hover:text-[#B10DC9] transition-colors">
+                  {item.title}
+                </h4>
+              </div>
+            </div>
           </Link>
-        </div>
+        ))}
+      </div>
+
+      <div className="md:hidden bg-white border-b-4 border-primary p-4">
+        <Link to="/showbiz">
+          <div className="flex items-center justify-center gap-2 text-black font-black uppercase text-sm hover:text-[#B10DC9] transition-colors">
+            Все новости
+            <Icon name="ArrowRight" size={16} />
+          </div>
+        </Link>
       </div>
     </section>
   );

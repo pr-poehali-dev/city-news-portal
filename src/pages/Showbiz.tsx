@@ -78,20 +78,20 @@ const Showbiz = () => {
         onSectionChange={handleSectionChange}
       />
       
-      <main className="flex-1 pt-24 pb-16">
-        <div className="relative bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 text-white py-16 mb-12">
+      <main className="flex-1 pt-8 md:pt-24 pb-16 max-w-full overflow-x-hidden">
+        <div className="relative bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 text-white py-8 md:py-16 mb-8 md:mb-12 max-w-full">
           <div className="absolute inset-0 bg-[url('/images/stars-pattern.svg')] opacity-10" />
           <div className="container mx-auto px-4 relative z-10">
-            <div className="flex items-center gap-4 mb-4">
-              <Icon name="Star" size={48} className="text-yellow-300" />
-              <h1 className="text-4xl md:text-5xl font-bold">
+            <div className="flex items-center gap-2 md:gap-4 mb-4">
+              <Icon name="Star" size={32} className="text-yellow-300 md:w-12 md:h-12" />
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold">
                 Город говорит о шоубизе
               </h1>
             </div>
-            <p className="text-xl text-white/90 max-w-2xl">
+            <p className="text-sm md:text-xl text-white/90 max-w-2xl">
               Звёзды, премьеры, скандалы и светская жизнь — всё самое яркое из мира шоу-бизнеса глазами Краснодара
             </p>
-            <div className="flex gap-4 mt-6">
+            <div className="flex gap-2 md:gap-4 mt-4 md:mt-6 flex-wrap">
               <Badge className="bg-white/20 hover:bg-white/30 text-white text-sm px-4 py-2">
                 <Icon name="Sparkles" size={14} className="mr-2" />
                 Эксклюзив
