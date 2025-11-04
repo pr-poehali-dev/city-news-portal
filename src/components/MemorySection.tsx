@@ -36,17 +36,30 @@ export function MemorySection({ articles, onArticleClick }: MemorySectionProps) 
   };
 
   return (
-    <div className="mb-12">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-3xl font-bold mb-2">Город помнит</h2>
-          <p className="text-muted-foreground">Историческая хроника городских событий</p>
+    <div className="mb-20 relative">
+      <div className="absolute top-10 left-10 w-72 h-72 bg-amber-500/5 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-10 right-10 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl"></div>
+      
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-10">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <Icon name="Clock" size={24} className="text-white" />
+              </div>
+              <h2 className="text-4xl font-bold font-serif">Город помнит</h2>
+            </div>
+            <div className="h-1 w-24 bg-gradient-to-r from-amber-600 to-orange-600 rounded-full mb-2"></div>
+            <p className="text-muted-foreground font-medium">Историческая хроника городских событий</p>
+          </div>
+          <Button 
+            className="gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl px-6 py-6" 
+            onClick={handleViewAll}
+          >
+            <span className="font-semibold">Все статьи</span>
+            <Icon name="ArrowRight" size={18} />
+          </Button>
         </div>
-        <Button variant="outline" className="gap-2" onClick={handleViewAll}>
-          Все статьи
-          <Icon name="Clock" size={16} />
-        </Button>
-      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card 
