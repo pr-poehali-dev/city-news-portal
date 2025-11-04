@@ -1,4 +1,4 @@
-import { Badge } from '@/components/ui/badge';
+import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 
 interface HeroSectionProps {
@@ -8,100 +8,134 @@ interface HeroSectionProps {
 }
 
 export const HeroSection = ({ mainNews, sideNews, onNewsClick }: HeroSectionProps) => {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
   if (!mainNews) return null;
 
   const stripHtml = (html: string) => {
     if (!html) return '';
-    let text = html;
-    text = text.replace(/<[^>]+>/g, '');
-    text = text.replace(/&nbsp;/gi, ' ');
-    text = text.replace(/&mdash;/gi, '-');
-    text = text.replace(/&ndash;/gi, '-');
-    text = text.replace(/&[a-z]+;/gi, ' ');
-    text = text.replace(/[\u00a0\u202f\u2009\u2000-\u200b]/g, ' ');
-    text = text.replace(/[\u2011-\u2015]/g, '-');
-    text = text.replace(/\s+/g, ' ');
-    return text.trim();
+    return html.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, ' ').trim();
   };
 
   return (
-    <section className="mb-16">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <section className="relative min-h-screen bg-black">
+      <div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-3">
         <div 
-          className="lg:col-span-8 group cursor-pointer relative overflow-hidden rounded-3xl"
+          className="relative group cursor-pointer overflow-hidden lg:col-span-2"
           onClick={() => onNewsClick(mainNews.id)}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
+          <img
+            src={mainNews.image_url || mainNews.image || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
+            alt={mainNews.title}
+            className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
           
-          <div className="aspect-[16/9] lg:aspect-[16/10] relative overflow-hidden">
-            <img
-              src={mainNews.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
-              alt={mainNews.title}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+          <div className="absolute top-8 left-8 lg:top-16 lg:left-16 z-10">
+            <div className="inline-flex items-center gap-3 bg-red-600 px-5 py-2.5 text-white font-bold text-xs uppercase tracking-widest">
+              <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+              Главная новость
+            </div>
           </div>
-          
-          <div className="absolute top-6 left-6 z-20">
-            <Badge className="bg-gradient-to-r from-accent to-purple-600 text-white font-semibold px-4 py-2 text-xs rounded-full shadow-lg shadow-accent/50 border-0">
+
+          <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-16 z-10">
+            <span className="inline-block text-xs text-red-500 font-bold uppercase tracking-widest mb-4">
               {mainNews.category}
-            </Badge>
-          </div>
-          
-          <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10 z-20">
-            <h1 className="text-white text-3xl lg:text-5xl font-display font-bold mb-4 leading-tight">
+            </span>
+            
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-black leading-[1.1] text-white mb-6 lg:mb-8 tracking-tight">
               {mainNews.title}
             </h1>
             
-            <p className="text-white/80 text-base lg:text-lg mb-6 line-clamp-2 max-w-3xl leading-relaxed">
+            <p className="text-lg lg:text-2xl text-gray-300 mb-6 lg:mb-8 max-w-4xl leading-relaxed line-clamp-2 lg:line-clamp-3">
               {stripHtml(mainNews.excerpt || mainNews.content)}
             </p>
-            
-            <div className="flex items-center gap-6 text-white/60 text-sm font-medium">
-              <div className="flex items-center gap-2">
-                <Icon name="Calendar" size={16} />
-                <span>{new Date(mainNews.created_at).toLocaleDateString('ru-RU')}</span>
-              </div>
+
+            <div className="flex items-center gap-6 text-gray-400 text-sm">
               <div className="flex items-center gap-2">
                 <Icon name="User" size={16} />
                 <span>{mainNews.author_name}</span>
+              </div>
+              <div className="w-1 h-1 rounded-full bg-gray-600"></div>
+              <div className="flex items-center gap-2">
+                <Icon name="Calendar" size={16} />
+                <span>
+                  {new Date(mainNews.created_at).toLocaleDateString('ru-RU', { 
+                    day: 'numeric', 
+                    month: 'long'
+                  })}
+                </span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="lg:col-span-4 flex flex-col gap-6">
-          {sideNews.slice(0, 2).map((news, index) => (
+        <div className="hidden lg:flex flex-col">
+          {sideNews.slice(0, 3).map((news, index) => (
             <div
               key={news.id}
-              className="group relative cursor-pointer overflow-hidden rounded-3xl flex-1"
+              className="relative flex-1 group cursor-pointer overflow-hidden border-b border-black last:border-0"
               onClick={() => onNewsClick(news.id)}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
+              <img
+                src={news.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
+                alt={news.title}
+                className={`w-full h-full object-cover transition-all duration-[1500ms] ${
+                  hoveredIndex === index ? 'scale-110 brightness-110' : 'scale-100 brightness-75'
+                }`}
+              />
+              <div className={`absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent transition-opacity duration-500 ${
+                hoveredIndex === index ? 'opacity-90' : 'opacity-100'
+              }`}></div>
               
-              <div className="h-full relative overflow-hidden">
-                {news.image_url ? (
-                  <img
-                    src={news.image_url}
-                    alt={news.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                    <Icon name="Newspaper" size={48} className="text-gray-400" />
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-              </div>
-              
-              <div className="absolute inset-0 p-6 flex flex-col justify-end z-20">
-                <Badge className="bg-gradient-to-r from-accent to-purple-600 text-white font-semibold px-3 py-1.5 text-xs rounded-full shadow-lg shadow-accent/50 border-0 mb-3 w-fit">
+              <div className="absolute inset-0 p-8 flex flex-col justify-end">
+                <span className="text-xs text-red-500 font-bold uppercase tracking-widest mb-3">
                   {news.category}
-                </Badge>
-                
-                <h3 className="text-white text-xl lg:text-2xl font-display font-bold leading-tight line-clamp-3">
+                </span>
+                <h3 className={`text-xl font-bold text-white leading-tight transition-all duration-300 ${
+                  hoveredIndex === index ? 'text-2xl mb-4' : 'mb-3'
+                }`}>
                   {news.title}
                 </h3>
+                
+                <div className={`flex items-center gap-2 text-gray-400 text-xs transition-opacity duration-300 ${
+                  hoveredIndex === index ? 'opacity-100' : 'opacity-70'
+                }`}>
+                  <Icon name="Calendar" size={12} />
+                  <span>{new Date(news.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="lg:hidden relative z-10 pt-[100vh] bg-black">
+        <div className="px-6 py-12 space-y-6">
+          {sideNews.slice(0, 3).map((news) => (
+            <div
+              key={news.id}
+              className="relative group cursor-pointer overflow-hidden rounded-2xl"
+              onClick={() => onNewsClick(news.id)}
+            >
+              <div className="aspect-[16/9] relative">
+                <img
+                  src={news.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
+                  alt={news.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <span className="text-xs text-red-500 font-bold uppercase tracking-widest mb-2 block">
+                    {news.category}
+                  </span>
+                  <h3 className="text-xl font-bold text-white leading-tight">
+                    {news.title}
+                  </h3>
+                </div>
               </div>
             </div>
           ))}

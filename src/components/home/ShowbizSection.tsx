@@ -1,7 +1,4 @@
-import { Link } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Link, useNavigate } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { useState, useEffect } from 'react';
 
@@ -16,13 +13,15 @@ interface News {
 }
 
 export const ShowbizSection = () => {
+  const navigate = useNavigate();
   const [news, setNews] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchShowbizNews = async () => {
       try {
-        const response = await fetch('https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe?is_showbiz=true&limit=3');
+        const response = await fetch('https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe?is_showbiz=true&limit=4');
         const data = await response.json();
         setNews(Array.isArray(data) ? data : []);
       } catch (error) {
@@ -37,9 +36,11 @@ export const ShowbizSection = () => {
 
   if (loading) {
     return (
-      <section className="py-12 bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center">Загрузка...</div>
+      <section className="bg-gradient-to-br from-purple-900 via-pink-900 to-purple-900">
+        <div className="max-w-[1800px] mx-auto px-6 lg:px-20 py-20 lg:py-32">
+          <div className="text-center">
+            <div className="animate-spin w-12 h-12 border-4 border-white/20 border-t-white rounded-full mx-auto"></div>
+          </div>
         </div>
       </section>
     );
@@ -47,100 +48,86 @@ export const ShowbizSection = () => {
 
   if (news.length === 0) return null;
 
-  const [mainNews, ...sideNews] = news;
-
   return (
-    <section className="py-12 md:py-16 bg-gradient-to-br from-background via-muted/30 to-background relative overflow-hidden border-y">
-      <div className="absolute inset-0">
-        <div className="absolute top-10 right-20 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 left-20 w-72 h-72 bg-pink-500/5 rounded-full blur-3xl" />
-      </div>
-      
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="flex items-center justify-between mb-8 md:mb-10">
+    <section className="bg-gradient-to-br from-purple-900 via-pink-900 to-purple-900">
+      <div className="max-w-[1800px] mx-auto px-6 lg:px-20 py-20 lg:py-32">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12 lg:mb-16 gap-6">
           <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg shadow-lg">
-                <Icon name="Sparkles" size={20} className="text-white" />
-              </div>
-              <h2 className="text-2xl md:text-4xl font-bold">
-                Город говорит о шоубизе
-              </h2>
-            </div>
-            <p className="text-muted-foreground text-sm md:text-base ml-14">
-              Звёзды, премьеры и светская жизнь глазами Краснодара
-            </p>
+            <h2 className="text-4xl lg:text-6xl font-black text-white tracking-tight mb-2">
+              Шоу-бизнес
+            </h2>
+            <div className="w-20 h-1 bg-white"></div>
           </div>
-          <Link to="/showbiz" className="hidden md:block">
-            <Button variant="outline" className="gap-2">
-              Все новости
-              <Icon name="ArrowRight" size={16} />
-            </Button>
+          
+          <Link 
+            to="/showbiz"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-white text-purple-900 font-black hover:bg-gray-200 transition-colors"
+          >
+            <span className="tracking-wider">ВСЕ СТАТЬИ</span>
+            <Icon name="ArrowRight" size={20} />
           </Link>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-          {mainNews && (
-            <Link to={`/news/${mainNews.id}`} className="md:col-span-2 lg:col-span-2 group">
-              <Card className="overflow-hidden h-full hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-purple-500/20">
-                <div className="relative h-[300px] md:h-[420px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          {news.map((item, index) => {
+            const isLarge = index === 0;
+            const isHovered = hoveredId === item.id;
+            
+            return (
+              <article
+                key={item.id}
+                className={`group relative cursor-pointer overflow-hidden ${
+                  isLarge ? 'md:row-span-2' : ''
+                }`}
+                onClick={() => navigate(`/news/${item.id}`)}
+                onMouseEnter={() => setHoveredId(item.id)}
+                onMouseLeave={() => setHoveredId(null)}
+              >
+                <div className={`relative overflow-hidden ${
+                  isLarge ? 'aspect-[3/4]' : 'aspect-[16/10]'
+                }`}>
                   <img
-                    src={mainNews.image_url}
-                    alt={mainNews.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    src={item.image_url || "https://cdn.poehali.dev/projects/518f1174-a284-4a3c-8688-e7dee3a55931/files/59b006b6-44bf-4196-8142-5bb0337f0659.jpg"}
+                    alt={item.title}
+                    className={`w-full h-full object-cover transition-all duration-[1500ms] ${
+                      isHovered ? 'scale-110 brightness-90' : 'scale-100'
+                    }`}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                  <Badge className="absolute top-4 left-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 px-3 py-1.5 shadow-lg">
-                    <Icon name="Star" size={12} className="mr-1.5" />
-                    {mainNews.category}
-                  </Badge>
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="text-white text-xl md:text-3xl font-bold mb-2 group-hover:text-purple-300 transition-colors">
-                      {mainNews.title}
-                    </h3>
-                    <p className="text-white/90 text-sm md:text-base line-clamp-2">
-                      {mainNews.excerpt}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            </Link>
-          )}
+                  
+                  <div className={`absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent transition-opacity duration-500 ${
+                    isHovered ? 'opacity-100' : 'opacity-80'
+                  }`}></div>
 
-          <div className="space-y-4 md:space-y-6">
-            {sideNews.slice(0, 2).map((item, idx) => (
-              <Link key={item.id} to={`/news/${item.id}`} className="group block">
-                <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 border hover:border-purple-500/30">
-                  <div className="relative h-40 md:h-48 overflow-hidden">
-                    <img
-                      src={item.image_url}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                    <Badge className="absolute top-3 right-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 text-xs shadow-md">
-                      <Icon name="Sparkles" size={10} className="mr-1" />
+                  <div className="absolute top-6 left-6 z-10">
+                    <span className={`inline-block px-4 py-2 bg-white/10 backdrop-blur-md text-white text-xs font-bold uppercase tracking-widest transition-all duration-300 ${
+                      isHovered ? 'bg-purple-600 backdrop-blur-none' : ''
+                    }`}>
                       {item.category}
-                    </Badge>
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <h4 className="font-bold text-white text-base md:text-lg line-clamp-2 group-hover:text-purple-300 transition-colors">
-                        {item.title}
-                      </h4>
+                    </span>
+                  </div>
+
+                  <div className={`absolute bottom-0 left-0 right-0 p-6 lg:p-8 transition-all duration-500 ${
+                    isLarge ? 'lg:p-12' : ''
+                  } ${
+                    isHovered ? 'translate-y-0' : 'translate-y-2'
+                  }`}>
+                    <h3 className={`text-white font-black leading-tight mb-4 transition-all duration-300 ${
+                      isLarge ? 'text-2xl lg:text-4xl' : 'text-xl lg:text-2xl'
+                    }`}>
+                      {item.title}
+                    </h3>
+                    
+                    <div className={`flex items-center gap-3 text-gray-400 text-sm transition-all duration-300 ${
+                      isHovered ? 'opacity-100' : 'opacity-70'
+                    }`}>
+                      <Icon name="Calendar" size={14} />
+                      <span>{new Date(item.published_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}</span>
                     </div>
                   </div>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div className="text-center mt-8 md:hidden">
-          <Link to="/showbiz">
-            <Button variant="outline" className="gap-2 w-full">
-              Все новости шоубизнеса
-              <Icon name="ArrowRight" size={16} />
-            </Button>
-          </Link>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>

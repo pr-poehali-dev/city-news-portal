@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 
 interface Event {
@@ -21,27 +19,12 @@ interface EventsSectionProps {
   events: Event[];
 }
 
-const capitalizeFirst = (str: string): string => {
-  if (!str) return str;
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
-
 export const EventsSection = ({ events }: EventsSectionProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  useEffect(() => {
-    if (events.length === 0) return;
-    
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev === events.length - 1 ? 0 : prev + 1));
-    }, 5000);
+  if (events.length === 0) return null;
 
-    return () => clearInterval(interval);
-  }, [events.length]);
-
-  if (events.length === 0) {
-    return null;
-  }
+  const currentEvent = events[currentIndex];
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? events.length - 1 : prev - 1));
@@ -51,228 +34,141 @@ export const EventsSection = ({ events }: EventsSectionProps) => {
     setCurrentIndex((prev) => (prev === events.length - 1 ? 0 : prev + 1));
   };
 
-  const currentEvent = events[currentIndex];
-
   return (
-    <div className="py-20 bg-gradient-to-br from-primary/5 via-accent/5 to-background relative overflow-hidden">
-      <div className="absolute top-20 right-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-20 left-20 w-96 h-96 bg-accent/10 rounded-full blur-3xl"></div>
-      
-      <div className="container mx-auto relative z-10">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center shadow-lg">
-              <Icon name="Calendar" size={24} className="text-white" />
-            </div>
-            <h2 className="text-4xl font-bold font-serif">Афиша Краснодара</h2>
-          </div>
-          <div className="h-1 w-24 bg-gradient-to-r from-primary to-accent rounded-full mx-auto mb-4"></div>
-          <div className="flex items-center justify-center gap-2">
-            <Badge className="gap-1.5 bg-primary/10 text-primary border-0 px-3 py-1 rounded-full">
-              <Icon name="Sparkles" size={14} />
-              <span className="font-semibold">KudaGo</span>
-            </Badge>
-            <span className="text-sm text-muted-foreground">• Лучшие события города</span>
-          </div>
+    <section className="relative min-h-screen bg-black overflow-hidden">
+      <div className="absolute inset-0">
+        <img
+          key={currentEvent.id}
+          src={currentEvent.image_url}
+          alt={currentEvent.title}
+          className="w-full h-full object-cover transition-all duration-1000 ease-in-out"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30"></div>
+      </div>
+
+      <div className="relative z-10 min-h-screen flex flex-col">
+        <div className="px-6 lg:px-20 py-12 lg:py-16">
+          <h2 className="text-4xl lg:text-6xl font-black text-white tracking-tight mb-2">
+            Афиша
+          </h2>
+          <div className="w-20 h-1 bg-white"></div>
         </div>
 
-        <div className="relative max-w-4xl mx-auto mb-12">
-          <a
-            href={currentEvent.kudago_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block group"
-          >
-            <div 
-              className="relative rounded-lg shadow-xl hover:shadow-2xl transition-all duration-500 overflow-visible"
-              style={{
-                transform: 'perspective(1000px) rotateY(-1deg)',
-                transition: 'all 0.5s ease'
-              }}
-            >
-              <div 
-                className="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-5 bg-background rounded-full -ml-2.5 z-20"
-                style={{
-                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.1)'
-                }}
-              />
-              <div 
-                className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 bg-background rounded-full -mr-2.5 z-20"
-                style={{
-                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.1)'
-                }}
-              />
+        <div className="flex-1 flex items-end pb-12 lg:pb-20">
+          <div className="w-full px-6 lg:px-20">
+            <div className="max-w-5xl">
+              {currentEvent.is_free && (
+                <div className="inline-flex items-center gap-2 bg-green-500 text-black px-6 py-3 font-black text-sm uppercase tracking-wider mb-6">
+                  <Icon name="Ticket" size={16} />
+                  Бесплатно
+                </div>
+              )}
 
-              <div 
-                className="flex flex-col md:flex-row min-h-[220px] rounded-lg overflow-hidden bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950/40 dark:via-orange-950/40 dark:to-yellow-950/40"
-                style={{
-                  boxShadow: '0 10px 40px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.5)'
-                }}
+              <a
+                href={currentEvent.kudago_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block"
               >
-                {currentEvent.image_url && (
-                  <div className="relative w-full md:w-48 h-48 md:h-auto flex-shrink-0">
-                    <img 
-                      src={currentEvent.image_url}
-                      alt={capitalizeFirst(currentEvent.title)}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent" />
-                    
-                    {currentEvent.is_free && (
-                      <div className="absolute top-3 left-3 rotate-12">
-                        <Badge className="bg-green-600 text-white border-0 px-2 py-1 text-[10px] font-bold shadow-lg">
-                          БЕСПЛАТНО
-                        </Badge>
-                      </div>
-                    )}
-                    
-                    <div className="absolute bottom-3 left-3 right-3">
-                      <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm rounded px-2 py-1 inline-block">
-                        <div className="text-[9px] text-muted-foreground uppercase tracking-wider">Событие</div>
-                        <div className="text-lg font-bold text-primary">{currentIndex + 1}<span className="text-xs text-muted-foreground">/{events.length}</span></div>
+                <h3 className="text-4xl md:text-5xl lg:text-7xl font-black text-white leading-[1.1] mb-8 lg:mb-12 group-hover:text-gray-300 transition-colors">
+                  {currentEvent.title}
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-10 lg:mb-16">
+                  <div className="flex gap-4 items-start">
+                    <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center flex-shrink-0">
+                      <Icon name="MapPin" size={20} className="text-white" />
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">Место</div>
+                      <div className="text-lg lg:text-xl text-white font-medium">
+                        {currentEvent.location}
                       </div>
                     </div>
                   </div>
-                )}
-                
-                <div className="p-5 flex flex-col justify-center relative flex-1">
-                  <div className="absolute top-4 right-4 text-[10px] text-primary/30 uppercase tracking-widest font-mono">
-                    TICKET-{currentEvent.id}
-                  </div>
-                  
-                  <div className="mb-4">
-                    <div className="inline-block mb-1.5 px-1.5 py-0.5 bg-primary/5 border border-primary/20 rounded text-[9px] text-primary uppercase tracking-wider font-bold">
-                      Краснодар
-                    </div>
-                    <h3 className="text-lg sm:text-xl font-bold mb-1.5 leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                      {capitalizeFirst(currentEvent.title)}
-                    </h3>
-                    
-                    {currentEvent.description && (
-                      <p className="text-muted-foreground text-xs leading-relaxed line-clamp-1">
-                        {currentEvent.description}
-                      </p>
-                    )}
-                  </div>
 
-                  <div className="space-y-2 mb-3 p-3 bg-primary/[0.02] dark:bg-primary/5 rounded-md border border-primary/10 dark:border-primary/20">
-                    {(currentEvent.event_date || currentEvent.event_date_display) && (
-                      <div className="flex items-start gap-2">
-                        <div className="w-7 h-7 rounded bg-white/80 dark:bg-slate-800/80 flex items-center justify-center flex-shrink-0 border border-primary/20 shadow-sm">
-                          <Icon name="Clock" size={14} className="text-primary" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="text-[9px] text-primary/60 uppercase tracking-widest mb-0.5 font-bold">Когда</div>
-                          <div className="text-xs font-semibold text-foreground">
-                            {currentEvent.event_date_display || new Date(currentEvent.event_date!).toLocaleDateString('ru-RU', {
-                              day: 'numeric',
-                              month: 'long',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </div>
-                        </div>
+                  {currentEvent.event_date_display && (
+                    <div className="flex gap-4 items-start">
+                      <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center flex-shrink-0">
+                        <Icon name="Clock" size={20} className="text-white" />
                       </div>
-                    )}
-                    
-                    {currentEvent.location && (
-                      <div className="flex items-start gap-2 pt-1.5 border-t border-primary/10">
-                        <div className="w-7 h-7 rounded bg-white/80 dark:bg-slate-800/80 flex items-center justify-center flex-shrink-0 border border-primary/20 shadow-sm">
-                          <Icon name="MapPin" size={14} className="text-primary" />
+                      <div>
+                        <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">Дата</div>
+                        <div className="text-lg lg:text-xl text-white font-medium">
+                          {currentEvent.event_date_display}
                         </div>
-                        <div className="flex-1">
-                          <div className="text-[9px] text-primary/60 uppercase tracking-widest mb-0.5 font-bold">Где</div>
-                          <div className="text-xs font-semibold text-foreground line-clamp-1">{currentEvent.location}</div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex items-start justify-between pt-2 border-t-2 border-dashed border-primary/20 gap-2">
-                    <div className="flex flex-col gap-2 flex-1">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        {currentEvent.price && !currentEvent.is_free && (
-                          <div className="px-2 py-0.5 bg-white/60 border border-primary/30 rounded text-[10px] font-bold text-primary shadow-sm">
-                            {currentEvent.price}
-                          </div>
-                        )}
-                        {currentEvent.age_restriction && (
-                          <div className="px-1.5 py-0.5 bg-white/60 border border-primary/20 rounded text-[10px] font-semibold text-muted-foreground">
-                            {currentEvent.age_restriction}+
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className="flex items-center gap-1 text-[10px] font-semibold text-primary group-hover:gap-1.5 transition-all">
-                        <span>Подробнее</span>
-                        <Icon name="ExternalLink" size={10} className="opacity-60" />
                       </div>
                     </div>
+                  )}
 
-                    {currentEvent.image_url && (
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded overflow-hidden shadow-xl border-3 border-white/80 dark:border-gray-800/80 rotate-2 group-hover:rotate-0 group-hover:scale-105 transition-all duration-300 flex-shrink-0">
-                        <img 
-                          src={currentEvent.image_url}
-                          alt={capitalizeFirst(currentEvent.title)}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 ring-1 ring-inset ring-black/5" />
+                  {!currentEvent.is_free && currentEvent.price && (
+                    <div className="flex gap-4 items-start">
+                      <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center flex-shrink-0">
+                        <Icon name="Ticket" size={20} className="text-white" />
                       </div>
-                    )}
+                      <div>
+                        <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">Цена</div>
+                        <div className="text-lg lg:text-xl text-white font-medium">
+                          {currentEvent.price}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex gap-4 items-start">
+                    <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center flex-shrink-0">
+                      <Icon name="Info" size={20} className="text-white" />
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">Возраст</div>
+                      <div className="text-lg lg:text-xl text-white font-medium">
+                        {currentEvent.age_restriction}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+
+                <div className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-black uppercase tracking-wider group-hover:bg-gray-200 transition-colors">
+                  Подробнее
+                  <Icon name="ArrowRight" size={20} />
+                </div>
+              </a>
             </div>
-          </a>
-
-          <Button
-            variant="outline"
-            size="icon"
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-16 w-12 h-12 rounded-full shadow-lg bg-card hover:bg-primary hover:text-primary-foreground border-primary/30 hover:border-primary transition-all"
-            onClick={handlePrev}
-          >
-            <Icon name="ChevronLeft" size={24} />
-          </Button>
-
-          <Button
-            variant="outline"
-            size="icon"
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-16 w-12 h-12 rounded-full shadow-lg bg-card hover:bg-primary hover:text-primary-foreground border-primary/30 hover:border-primary transition-all"
-            onClick={handleNext}
-          >
-            <Icon name="ChevronRight" size={24} />
-          </Button>
+          </div>
         </div>
 
-        <div className="flex justify-center gap-2 mb-8">
-          {events.slice(0, 5).map((_, index) => (
+        <div className="px-6 lg:px-20 pb-12 lg:pb-16">
+          <div className="flex items-center gap-6">
             <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`h-2 rounded-full transition-all ${
-                index === currentIndex 
-                  ? 'w-8 bg-primary' 
-                  : 'w-2 bg-primary/30 hover:bg-primary/50'
-              }`}
-              aria-label={`Перейти к событию ${index + 1}`}
-            />
-          ))}
-        </div>
+              onClick={handlePrev}
+              className="w-14 h-14 rounded-full border-2 border-white/20 hover:bg-white hover:text-black transition-all flex items-center justify-center backdrop-blur-md"
+            >
+              <Icon name="ChevronLeft" size={24} />
+            </button>
 
-        <div className="text-center">
-          <a
-            href="https://krd.kudago.com/events/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Button variant="outline" size="lg" className="gap-2 border-primary/30 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
-              <Icon name="Calendar" size={18} />
-              Все события на KudaGo
-              <Icon name="ExternalLink" size={14} />
-            </Button>
-          </a>
+            <div className="flex gap-3">
+              {events.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`transition-all ${
+                    index === currentIndex
+                      ? 'w-12 h-2 bg-white'
+                      : 'w-2 h-2 bg-white/30 hover:bg-white/50'
+                  }`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={handleNext}
+              className="w-14 h-14 rounded-full border-2 border-white/20 hover:bg-white hover:text-black transition-all flex items-center justify-center backdrop-blur-md"
+            >
+              <Icon name="ChevronRight" size={24} />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
