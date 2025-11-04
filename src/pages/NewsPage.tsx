@@ -186,7 +186,7 @@ export const NewsPage = () => {
   const pageKeywords = article?.keywords || `новости Краснодара, ${article?.section || 'события'}, ${article?.title?.substring(0, 50) || ''}`;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
@@ -211,7 +211,9 @@ export const NewsPage = () => {
         <script async src="https://yandex.ru/ads/system/context.js"></script>
       </Helmet>
 
-      <SiteHeader />
+      <div className="sticky top-0 z-50">
+        <SiteHeader />
+      </div>
 
       <div className="bg-white">
         <div className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-8">
@@ -231,11 +233,11 @@ export const NewsPage = () => {
                 </span>
               </div>
 
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-black uppercase leading-tight tracking-tighter">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-black uppercase leading-tight tracking-tighter text-black">
                 {article.title}
               </h1>
 
-              <div className="flex items-center gap-4 text-sm text-muted-foreground font-bold uppercase">
+              <div className="flex items-center gap-4 text-sm text-black/60 font-bold uppercase">
                 <div className="flex items-center gap-2">
                   <Icon name="User" size={16} />
                   {article.author}
@@ -258,11 +260,11 @@ export const NewsPage = () => {
 
             <div 
               className="prose prose-lg max-w-none
-                prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight
-                prose-p:text-foreground prose-p:leading-relaxed
+                prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight prose-headings:text-black
+                prose-p:text-black prose-p:leading-relaxed
                 prose-a:text-accent prose-a:font-bold prose-a:no-underline hover:prose-a:underline
-                prose-strong:font-black prose-strong:text-foreground
-                prose-ul:list-none prose-ul:pl-0 prose-li:pl-6 prose-li:relative prose-li:before:content-['▪'] prose-li:before:absolute prose-li:before:left-0 prose-li:before:text-accent prose-li:before:font-black"
+                prose-strong:font-black prose-strong:text-black
+                prose-ul:list-none prose-ul:pl-0 prose-li:pl-6 prose-li:relative prose-li:before:content-['▪'] prose-li:before:absolute prose-li:before:left-0 prose-li:before:text-accent prose-li:before:font-black prose-li:text-black"
               dangerouslySetInnerHTML={{ __html: article.content }}
             />
 
