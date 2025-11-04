@@ -89,6 +89,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
     
     except urllib.error.HTTPError as e:
+        error_msg = f'OpenWeatherMap API error {e.code}'
+        if e.code == 401:
+            error_msg = 'Invalid or expired API key. Please update WEATHER_API_KEY secret'
+        print(f'Weather API Error: {error_msg}')
         return {
             'statusCode': 200,
             'headers': {
@@ -103,12 +107,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'wind_speed': 3.5,
                 'city': 'Краснодар',
                 'mock': True,
-                'error': f'API error: {e.code}'
+                'error': error_msg
             }),
             'isBase64Encoded': False
         }
     
     except Exception as e:
+        print(f'Weather function error: {str(e)}')
         return {
             'statusCode': 200,
             'headers': {
