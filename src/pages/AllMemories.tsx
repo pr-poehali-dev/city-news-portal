@@ -25,7 +25,6 @@ const AllMemories = () => {
   const [articles, setArticles] = useState<MemoryArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [sections, setSections] = useState<string[]>([]);
-  const [weather, setWeather] = useState<any>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -35,12 +34,6 @@ const AllMemories = () => {
           const data = await response.json();
           const published = data.filter((a: MemoryArticle) => a.is_published);
           setArticles(published);
-        }
-
-        const weatherResponse = await fetch(FUNCTIONS_URL.weather);
-        if (weatherResponse.ok) {
-          const weatherData = await weatherResponse.json();
-          setWeather(weatherData);
         }
 
         const allSections = ['Главная', 'Спорт', 'Культура', 'Экономика', 'Политика', 'Общество'];
@@ -88,7 +81,6 @@ const AllMemories = () => {
       </Helmet>
 
       <SiteHeader 
-        weather={weather}
         sections={sections}
         activeSection=""
         onSectionChange={handleSectionChange}

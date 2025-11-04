@@ -6,14 +6,13 @@ import Icon from '@/components/ui/icon';
 import { useNavigate } from 'react-router-dom';
 
 interface SiteHeaderProps {
-  weather?: any;
   sections?: string[];
   activeSection?: string;
   onSectionChange?: (section: string) => void;
   onSearch?: (query: string) => void;
 }
 
-export const SiteHeader = ({ weather, sections = [], activeSection, onSectionChange, onSearch }: SiteHeaderProps) => {
+export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSearch }: SiteHeaderProps) => {
   const navigate = useNavigate();
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -44,21 +43,6 @@ export const SiteHeader = ({ weather, sections = [], activeSection, onSectionCha
             <p className="text-sm text-muted-foreground font-medium">Краснодар</p>
           </div>
           <div className="flex items-center gap-2 md:gap-4">
-            {weather && (
-              <Card className="bg-primary/5 dark:bg-primary/10 border-primary/20 dark:border-primary/30 hidden sm:block">
-                <CardContent className="p-2 md:p-3 flex items-center gap-2">
-                  <img 
-                    src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
-                    alt={weather.description}
-                    className="w-10 h-10 md:w-12 md:h-12"
-                  />
-                  <div>
-                    <div className="text-xl md:text-2xl font-bold">{weather.temp}°C</div>
-                    <div className="text-xs text-muted-foreground capitalize">{weather.description}</div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
             <Button 
               variant="ghost" 
               size="sm"

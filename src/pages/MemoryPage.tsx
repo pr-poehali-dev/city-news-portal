@@ -27,7 +27,6 @@ const MemoryPage = () => {
   const [article, setArticle] = useState<MemoryArticle | null>(null);
   const [loading, setLoading] = useState(true);
   const [sections, setSections] = useState<string[]>([]);
-  const [weather, setWeather] = useState<any>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -39,11 +38,7 @@ const MemoryPage = () => {
           setArticle(currentArticle || null);
         }
 
-        const weatherResponse = await fetch(FUNCTIONS_URL.weather);
-        if (weatherResponse.ok) {
-          const weatherData = await weatherResponse.json();
-          setWeather(weatherData);
-        }
+
 
         const allSections = ['Главная', 'Спорт', 'Культура', 'Экономика', 'Политика', 'Общество'];
         setSections(allSections);
@@ -134,7 +129,6 @@ const MemoryPage = () => {
       </Helmet>
 
       <SiteHeader 
-        weather={weather}
         sections={sections}
         activeSection=""
         onSectionChange={handleSectionChange}

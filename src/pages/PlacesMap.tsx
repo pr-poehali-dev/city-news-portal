@@ -27,7 +27,6 @@ export default function PlacesMap() {
   const [cityPlaces, setCityPlaces] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [weather, setWeather] = useState<any>(null);
   const [activeSection, setActiveSection] = useState('Главная');
   const [selectedPlaceId, setSelectedPlaceId] = useState<number | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -45,7 +44,6 @@ export default function PlacesMap() {
 
   useEffect(() => {
     loadCityPlaces();
-    loadWeather();
   }, []);
 
   const loadCityPlaces = async () => {
@@ -58,15 +56,7 @@ export default function PlacesMap() {
     }
   };
 
-  const loadWeather = async () => {
-    try {
-      const response = await fetch(FUNCTIONS_URL.weather);
-      const data = await response.json();
-      setWeather(data);
-    } catch (error) {
-      console.error('Failed to load weather:', error);
-    }
-  };
+
 
   const handleSectionChange = (section: string) => {
     if (section === 'Главная') {
@@ -107,7 +97,6 @@ export default function PlacesMap() {
       </Helmet>
 
       <SiteHeader
-        weather={weather}
         sections={sections}
         activeSection={activeSection}
         onSectionChange={handleSectionChange}

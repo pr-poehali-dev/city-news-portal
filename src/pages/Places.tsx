@@ -22,7 +22,6 @@ const categoryColors = {
 const Places = () => {
   const navigate = useNavigate();
   const [cityPlaces, setCityPlaces] = useState<any[]>([]);
-  const [weather, setWeather] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState('Город говорит');
   const [selectedPlace, setSelectedPlace] = useState<any>(null);
@@ -41,7 +40,6 @@ const Places = () => {
 
   useEffect(() => {
     loadCityPlaces();
-    loadWeather();
   }, []);
 
   const loadCityPlaces = async () => {
@@ -54,15 +52,7 @@ const Places = () => {
     }
   };
 
-  const loadWeather = async () => {
-    try {
-      const response = await fetch(FUNCTIONS_URL.weather);
-      const data = await response.json();
-      setWeather(data);
-    } catch (error) {
-      console.error('Failed to load weather:', error);
-    }
-  };
+
 
   const categories = Array.from(new Set(cityPlaces.map(p => p.category)));
   const filteredPlaces = selectedCategory
@@ -75,7 +65,6 @@ const Places = () => {
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader 
-        weather={weather}
         sections={sections}
         activeSection={activeSection}
         onSectionChange={(section) => {

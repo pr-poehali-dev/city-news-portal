@@ -48,7 +48,6 @@ const Index = () => {
   const [youthNotes, setYouthNotes] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showAllPlaces, setShowAllPlaces] = useState(false);
-  const [weather, setWeather] = useState<any>(null);
   const [activeSection, setActiveSection] = useState('Главная');
   const [likedArticles, setLikedArticles] = useState<Set<number>>(new Set());
   const [topThreeNews, setTopThreeNews] = useState<any[]>([]);
@@ -88,7 +87,6 @@ const Index = () => {
     loadSVONews();
     syncKudagoEvents();
     loadEvents();
-    loadWeather();
     loadLatestForTicker();
     loadCityPlaces();
     loadMemoryArticles();
@@ -103,13 +101,8 @@ const Index = () => {
       loadLatestForTicker();
     }, 5 * 60 * 1000);
 
-    const weatherInterval = setInterval(() => {
-      loadWeather();
-    }, 15 * 60 * 1000);
-
     return () => {
       clearInterval(tickerInterval);
-      clearInterval(weatherInterval);
     };
   }, []);
 
@@ -284,17 +277,7 @@ const Index = () => {
     }
   };
 
-  const loadWeather = async () => {
-    try {
-      const response = await fetch(FUNCTIONS_URL.weather);
-      if (!response.ok) return;
-      const data = await response.json();
-      setWeather(data);
-    } catch (error) {
-      console.error('Failed to load weather:', error);
-      setWeather(null);
-    }
-  };
+
 
   const handleArticleClick = (newsId: number) => {
     navigate(`/news/${newsId}`);
@@ -414,7 +397,6 @@ const Index = () => {
       </Helmet>
 
       <SiteHeader 
-        weather={weather}
         sections={sections}
         activeSection={activeSection === 'Поиск' ? 'Главная' : activeSection}
         onSectionChange={handleSectionChange}
