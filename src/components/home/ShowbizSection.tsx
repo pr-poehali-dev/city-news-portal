@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import { useState, useEffect } from 'react';
 
@@ -22,7 +21,7 @@ export const ShowbizSection = () => {
   useEffect(() => {
     const fetchShowbizNews = async () => {
       try {
-        const response = await fetch('https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe?is_showbiz=true&limit=4');
+        const response = await fetch('https://functions.poehali.dev/337d71bc-62a6-4d6d-bb49-7543546870fe?is_showbiz=true&limit=6');
         const data = await response.json();
         setNews(Array.isArray(data) ? data : []);
       } catch (error) {
@@ -37,70 +36,68 @@ export const ShowbizSection = () => {
 
   if (loading || news.length === 0) return null;
 
-
-
   return (
-    <section className="mb-0 border-t-4 border-primary max-w-full overflow-hidden">
-      <div className="bg-[#B10DC9] px-4 md:px-8 py-6 md:py-8 border-b-4 border-primary">
-        <div className="flex items-center justify-between gap-4">
-          <div className="min-w-0">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-2 md:mb-3">
-              ШОУБИЗ
-            </h2>
-            <div className="h-1 w-16 md:w-24 bg-white"></div>
+    <section className="mb-0 border-t-4 border-purple-600 max-w-full overflow-hidden">
+      <div className="bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 px-6 md:px-12 py-8 md:py-12 border-b-4 border-purple-600">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <Icon name="Star" size={32} className="text-yellow-400 flex-shrink-0 md:w-12 md:h-12" />
+            <div className="min-w-0">
+              <h2 className="text-3xl md:text-5xl lg:text-7xl font-black text-white uppercase leading-[0.9] tracking-tighter">
+                ШОУБИЗ
+              </h2>
+            </div>
           </div>
           <Link to="/showbiz" className="hidden md:block">
-            <Icon name="ArrowUpRight" size={32} className="text-white/30 flex-shrink-0 md:w-12 md:h-12 hover:text-white transition-colors" />
+            <Icon name="ArrowUpRight" size={32} className="text-white/30 hover:text-white transition-colors" />
           </Link>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0">
-        {news.map((item, index) => (
+      <div className="bg-white divide-y-2 divide-purple-200 border-b-4 border-purple-600">
+        {news.map((item) => (
           <Link
             key={item.id}
             to={`/news/${item.id}`}
-            className={`group relative cursor-pointer overflow-hidden bg-white border-b-4 ${
-              index < news.length - 1 ? 'md:border-r-4' : ''
-            } ${index === 2 ? 'lg:border-r-4' : ''} border-primary transition-all hover:z-10`}
+            className="group cursor-pointer flex gap-3 p-4 hover:bg-purple-50 transition-colors block"
           >
-            <div className="relative overflow-hidden bg-black">
-              <div className="aspect-[4/3] relative overflow-hidden">
+            <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 relative overflow-hidden bg-black rounded-lg">
+              {item.image_url ? (
                 <img
                   src={item.image_url}
                   alt={item.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent"></div>
-                
-                <div className="absolute top-3 left-3">
-                  <div className="bg-[#B10DC9] px-3 py-1.5 border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                    <span className="text-white font-black text-[10px] uppercase tracking-wider">
-                      <Icon name="Star" size={12} className="inline mr-1" />
-                      Шоубиз
-                    </span>
-                  </div>
+              ) : (
+                <div className="w-full h-full bg-purple-100 flex items-center justify-center">
+                  <Icon name="Star" size={24} className="text-purple-400" />
                 </div>
+              )}
+            </div>
+            
+            <div className="flex-1 min-w-0 flex flex-col justify-center">
+              <div className="inline-block px-2 py-0.5 bg-purple-600 w-fit mb-2">
+                <span className="text-white font-bold text-[9px] md:text-[10px] uppercase tracking-wide">
+                  {item.category}
+                </span>
               </div>
-
-              <div className="p-4 md:p-5 bg-black">
-                <h4 className="text-white text-lg md:text-xl font-black uppercase leading-tight tracking-tighter line-clamp-3 group-hover:text-[#B10DC9] transition-colors">
-                  {item.title}
-                </h4>
-                {item.excerpt && (
-                  <p className="text-white/60 text-xs md:text-sm mt-2 line-clamp-2">
-                    {item.excerpt}
-                  </p>
-                )}
+              
+              <h3 className="text-foreground font-bold leading-tight mb-1 text-sm md:text-base line-clamp-2 group-hover:text-purple-600 transition-colors">
+                {item.title}
+              </h3>
+              
+              <div className="flex items-center gap-2 text-muted-foreground text-[10px] md:text-xs mt-1">
+                <Icon name="Clock" size={12} />
+                <span>{new Date(item.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</span>
               </div>
             </div>
           </Link>
         ))}
       </div>
 
-      <div className="md:hidden bg-white border-b-4 border-primary p-4">
+      <div className="md:hidden bg-white border-b-4 border-purple-600 p-4">
         <Link to="/showbiz">
-          <div className="flex items-center justify-center gap-2 text-black font-black uppercase text-sm hover:text-[#B10DC9] transition-colors">
+          <div className="flex items-center justify-center gap-2 text-purple-600 font-black uppercase text-sm hover:text-purple-700 transition-colors">
             Все новости
             <Icon name="ArrowRight" size={16} />
           </div>
