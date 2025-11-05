@@ -154,6 +154,7 @@ const Showbiz = () => {
                 </article>
               ))}
             </div>
+          )}
 
           {hasMore && (
             <div className="text-center py-6 bg-white border-t-2 border-purple-200">
