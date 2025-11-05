@@ -29,9 +29,9 @@ export function MemorySection({ articles, onArticleClick }: MemorySectionProps) 
   const otherArticles = publishedArticles.slice(1, 3);
 
   return (
-    <section className="mb-12 md:mb-16 border-t-4 border-primary max-w-full overflow-hidden">
+    <section className="mb-0 md:mb-0 border-t-4 border-primary w-screen relative left-[50%] right-[50%] -mx-[50vw]">
       <div className="bg-primary px-6 md:px-12 py-12 md:py-16 border-b-4 border-primary">
-        <div className="flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div className="min-w-0">
             <h2 className="text-5xl md:text-7xl lg:text-9xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-4 md:mb-6">
               ПАМЯТЬ
@@ -47,9 +47,9 @@ export function MemorySection({ articles, onArticleClick }: MemorySectionProps) 
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-0 max-w-full">
         <Card 
-          className="md:col-span-2 group relative cursor-pointer overflow-hidden bg-white border-b-4 md:border-b-0 md:border-r-4 border-primary transition-all hover:z-10 rounded-none"
+          className="md:col-span-2 group relative cursor-pointer overflow-hidden bg-white border-b-4 border-primary md:border-b-4 md:border-r-4 transition-all hover:z-10 rounded-none"
           onClick={() => onArticleClick(latestArticle.id)}
         >
           <div className="aspect-[16/9] md:aspect-[21/9] relative overflow-hidden bg-black">
