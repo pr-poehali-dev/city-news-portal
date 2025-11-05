@@ -50,20 +50,17 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 10 }: LatestNewsGrid
       </div>
       
       <div className="bg-white">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-0">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-0">
           {displayNews.map((item, index) => {
-            const hasDescription = index % 3 === 0;
-            const isLarge = index === 0 || index === 5;
+            const hasDescription = index === 0 || index === 3 || index === 6 || index === 9;
             
             return (
               <article
                 key={item.id}
-                className={`group cursor-pointer overflow-hidden bg-white border-b-4 border-r-4 ${
-                  isLarge ? 'md:col-span-2' : ''
-                } last:border-r-0 md:last:border-r-4 md:[&:nth-child(5n)]:border-r-0 lg:[&:nth-child(5n)]:border-r-0 border-primary transition-all hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:z-10`}
+                className="group cursor-pointer overflow-hidden bg-white border-b-4 border-r-4 last:border-r-0 md:last:border-r-4 md:[&:nth-child(3n)]:border-r-0 border-primary transition-all hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:z-10"
                 onClick={() => onNewsClick(item.id)}
               >
-                <div className={`${isLarge ? 'aspect-[16/9]' : 'aspect-square'} relative overflow-hidden bg-black`}>
+                <div className="aspect-square relative overflow-hidden bg-black">
                   {item.image_url ? (
                     <img
                       src={item.image_url}
@@ -86,19 +83,17 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 10 }: LatestNewsGrid
                   </div>
                   
                   <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <h3 className={`text-white font-black uppercase leading-[1.1] tracking-tight ${
-                      isLarge ? 'text-sm md:text-base line-clamp-2' : 'text-xs md:text-sm line-clamp-3'
-                    } group-hover:text-accent transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)]`}>
+                    <h3 className="text-white font-black uppercase leading-[1.1] tracking-tight text-xs md:text-sm line-clamp-3 group-hover:text-accent transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)]">
                       {item.title}
                     </h3>
                     
                     {hasDescription && (
-                      <p className="text-white/70 text-[10px] md:text-xs line-clamp-1 mt-1 hidden md:block">
+                      <p className="text-white/70 text-[10px] md:text-xs line-clamp-2 mt-2 leading-relaxed">
                         {stripHtml(item.excerpt || item.content)}
                       </p>
                     )}
                     
-                    <div className="flex items-center gap-1.5 text-white/80 text-[9px] uppercase tracking-wider font-bold mt-2">
+                    <div className={`flex items-center gap-1.5 text-white/80 text-[9px] uppercase tracking-wider font-bold ${hasDescription ? 'mt-2' : 'mt-2'}`}>
                       <Icon name="Clock" size={10} />
                       <span>{new Date(item.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</span>
                     </div>

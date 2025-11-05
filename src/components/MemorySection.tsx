@@ -133,16 +133,14 @@ export function MemorySection({ articles, onArticleClick }: MemorySectionProps) 
         </div>
       </div>
 
-      <div className="md:hidden bg-white border-b-4 border-primary p-4">
-        <div 
+      <div className="bg-white border-b-4 border-primary p-6 text-center">
+        <button
           onClick={() => navigate('/memory')}
-          className="cursor-pointer"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent/90 text-white font-black uppercase text-sm transition-all border-4 border-primary shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5"
         >
-          <div className="flex items-center justify-center gap-2 text-black font-black uppercase text-sm hover:text-[#FF851B] transition-colors">
-            Все статьи
-            <Icon name="ArrowRight" size={16} />
-          </div>
-        </div>
+          Все статьи памяти
+          <Icon name="ArrowRight" size={18} />
+        </button>
       </div>
     </section>
   );

@@ -158,14 +158,7 @@ export function YouthNotesSection({ notes }: YouthNotesSectionProps) {
         )}
       </div>
 
-      <div className="md:hidden bg-white border-b-4 border-primary p-4">
-        <Link to="/youth-notes">
-          <div className="flex items-center justify-center gap-2 text-black font-black uppercase text-sm hover:text-[#2ECC40] transition-colors">
-            Все заметки
-            <Icon name="ArrowRight" size={16} />
-          </div>
-        </Link>
-      </div>
+
     </section>
   );
 }
