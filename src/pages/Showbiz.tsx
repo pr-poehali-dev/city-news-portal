@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { SiteHeader } from '@/components/SiteHeader';
@@ -11,11 +10,14 @@ interface News {
   id: number;
   title: string;
   excerpt: string;
+  content: string;
   image_url: string;
   category: string;
   published_at: string;
+  created_at: string;
   read_time: string;
   views: number;
+  author_name?: string;
 }
 
 const Showbiz = () => {
@@ -70,6 +72,20 @@ const Showbiz = () => {
     loadNews(nextPage);
   };
 
+  const stripHtml = (html: string) => {
+    if (!html) return '';
+    let text = html;
+    text = text.replace(/<[^>]+>/g, '');
+    text = text.replace(/&nbsp;/gi, ' ');
+    text = text.replace(/&mdash;/gi, '-');
+    text = text.replace(/&[a-z]+;/gi, ' ');
+    text = text.replace(/\s+/g, ' ');
+    return text.trim();
+  };
+
+  const firstNews = news[0];
+  const remainingNews = news.slice(1);
+
   return (
     <div className="min-h-screen flex flex-col">
       <SiteHeader
@@ -79,97 +95,138 @@ const Showbiz = () => {
       />
       
       <main className="flex-1 pt-8 md:pt-24 pb-16 max-w-full overflow-x-hidden">
-        <div className="relative bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 text-white py-8 md:py-16 mb-8 md:mb-12 max-w-full">
-          <div className="absolute inset-0 bg-[url('/images/stars-pattern.svg')] opacity-10" />
-          <div className="container mx-auto px-4 relative z-10">
-            <div className="flex items-center gap-2 md:gap-4 mb-4">
-              <Icon name="Star" size={32} className="text-yellow-300 md:w-12 md:h-12" />
-              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold">
-                Город говорит о шоубизе
-              </h1>
-            </div>
-            <p className="text-sm md:text-xl text-white/90 max-w-2xl">
-              Звёзды, премьеры, скандалы и светская жизнь — всё самое яркое из мира шоу-бизнеса глазами Краснодара
-            </p>
-            <div className="flex gap-2 md:gap-4 mt-4 md:mt-6 flex-wrap">
-              <Badge className="bg-white/20 hover:bg-white/30 text-white text-sm px-4 py-2">
-                <Icon name="Sparkles" size={14} className="mr-2" />
-                Эксклюзив
-              </Badge>
-              <Badge className="bg-white/20 hover:bg-white/30 text-white text-sm px-4 py-2">
-                <Icon name="Camera" size={14} className="mr-2" />
-                Фото
-              </Badge>
-              <Badge className="bg-white/20 hover:bg-white/30 text-white text-sm px-4 py-2">
-                <Icon name="Mic" size={14} className="mr-2" />
-                Интервью
-              </Badge>
+        <section className="border-t-4 border-purple-600 mb-8 md:mb-12 max-w-full overflow-hidden">
+          <div className="bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 px-6 md:px-12 py-12 md:py-16 border-b-4 border-purple-600">
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <h1 className="text-5xl md:text-7xl lg:text-9xl font-black text-white uppercase leading-[0.85] tracking-tighter mb-4 md:mb-6">
+                  ШОУБИЗ
+                </h1>
+                <div className="h-2 md:h-3 w-24 md:w-40 bg-yellow-400"></div>
+              </div>
+              <Icon name="Star" size={48} className="text-white/20 flex-shrink-0 md:w-20 md:h-20" />
             </div>
           </div>
-        </div>
 
-        <div className="container mx-auto px-4">
           {loading && page === 1 ? (
-            <div className="text-center py-12">
+            <div className="text-center py-12 bg-white">
               <Icon name="Loader" size={32} className="animate-spin mx-auto text-purple-600" />
               <p className="mt-4 text-muted-foreground">Загружаем звёздные новости...</p>
             </div>
           ) : news.length === 0 ? (
-            <div className="text-center py-12">
+            <div className="text-center py-12 bg-white">
               <Icon name="Star" size={48} className="mx-auto text-muted-foreground mb-4" />
               <h3 className="text-xl font-semibold mb-2">Пока нет новостей</h3>
               <p className="text-muted-foreground">Звёздные истории скоро появятся здесь</p>
             </div>
           ) : (
-            <>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                {news.map((item) => (
-                  <Link key={item.id} to={`/news/${item.id}`} className="group">
-                    <Card className="overflow-hidden h-full hover:shadow-xl transition-all duration-300 border-purple-100 hover:border-purple-400">
-                      <div className="relative h-56">
-                        <img
-                          src={item.image_url}
-                          alt={item.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                        <Badge className="absolute top-3 right-3 bg-purple-600 hover:bg-purple-700 text-white">
-                          <Icon name="Star" size={12} className="mr-1" />
-                          {item.category}
-                        </Badge>
-                        <div className="absolute bottom-3 left-3 right-3">
-                          <div className="flex items-center gap-3 text-white/80 text-xs">
-                            <div className="flex items-center gap-1">
-                              <Icon name="Eye" size={12} />
-                              <span>{item.views || 0}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Icon name="Clock" size={12} />
-                              <span>{item.read_time}</span>
-                            </div>
+            <div className="bg-white">
+              {firstNews && (
+                <article
+                  className="group cursor-pointer overflow-hidden bg-white border-b-4 border-purple-600 transition-all hover:shadow-[8px_8px_0px_0px_rgba(147,51,234,0.3)] md:flex md:flex-row"
+                  onClick={() => navigate(`/news/${firstNews.id}`)}
+                >
+                  <div className="md:w-1/2 aspect-[16/9] md:aspect-auto relative overflow-hidden bg-black md:border-r-4 border-purple-600">
+                    {firstNews.image_url ? (
+                      <img
+                        src={firstNews.image_url}
+                        alt={firstNews.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <Icon name="Star" size={64} className="text-gray-400" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent md:bg-none"></div>
+                    
+                    <div className="absolute top-3 left-3">
+                      <div className="inline-block px-4 py-2 bg-yellow-400 border-2 border-purple-600 shadow-[2px_2px_0px_0px_rgba(147,51,234,1)]">
+                        <span className="text-purple-900 font-black text-xs uppercase tracking-wider">
+                          ⭐ Главное
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="md:w-1/2 p-6 md:p-8 flex flex-col justify-center">
+                    <div className="inline-block px-3 py-1.5 bg-purple-600 w-fit mb-4">
+                      <span className="text-white font-black text-xs uppercase tracking-wider">
+                        {firstNews.category}
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-foreground font-black uppercase leading-[1.1] tracking-tight mb-4 text-xl md:text-2xl lg:text-3xl group-hover:text-purple-600 transition-colors">
+                      {firstNews.title}
+                    </h3>
+                    
+                    <p className="text-muted-foreground text-sm md:text-base mb-4 line-clamp-2 leading-relaxed hidden md:block">
+                      {stripHtml(firstNews.excerpt || firstNews.content)}
+                    </p>
+                    
+                    <div className="flex items-center gap-3 text-muted-foreground text-xs uppercase tracking-wider font-bold">
+                      <Icon name="Clock" size={14} />
+                      <span>{new Date(firstNews.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}</span>
+                      <span className="w-1 h-1 bg-purple-600 rounded-full"></span>
+                      <span className="truncate">{firstNews.author_name || 'Редакция'}</span>
+                    </div>
+                  </div>
+                </article>
+              )}
+
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-0">
+                {remainingNews.map((item, index) => {
+                  return (
+                    <article
+                      key={item.id}
+                      className="group cursor-pointer overflow-hidden bg-white border-b-4 border-r-4 last:border-r-0 md:last:border-r-4 md:[&:nth-child(3n)]:border-r-0 border-purple-600 transition-all hover:shadow-[8px_8px_0px_0px_rgba(147,51,234,0.3)] hover:z-10"
+                      onClick={() => navigate(`/news/${item.id}`)}
+                    >
+                      <div className="aspect-square relative overflow-hidden bg-black">
+                        {item.image_url ? (
+                          <img
+                            src={item.image_url}
+                            alt={item.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                            <Icon name="Star" size={32} className="text-gray-400" />
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+                        
+                        <div className="absolute top-2 left-2">
+                          <div className="inline-block px-2 py-1 bg-purple-600">
+                            <span className="text-white font-black text-[9px] md:text-[10px] uppercase tracking-wider">
+                              {item.category}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div className="absolute bottom-0 left-0 right-0 p-3">
+                          <h3 className="text-white font-black uppercase leading-[1.1] tracking-tight text-xs md:text-sm line-clamp-3 group-hover:text-yellow-300 transition-colors [text-shadow:_2px_2px_0_rgb(0_0_0_/_100%)]">
+                            {item.title}
+                          </h3>
+                          
+                          <div className="flex items-center gap-1.5 text-white/80 text-[9px] uppercase tracking-wider font-bold mt-2">
+                            <Icon name="Clock" size={10} />
+                            <span>{new Date(item.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</span>
                           </div>
                         </div>
                       </div>
-                      <div className="p-5">
-                        <h3 className="font-bold text-lg mb-2 line-clamp-2 group-hover:text-purple-700 transition-colors">
-                          {item.title}
-                        </h3>
-                        <p className="text-muted-foreground text-sm line-clamp-3">
-                          {item.excerpt}
-                        </p>
-                      </div>
-                    </Card>
-                  </Link>
-                ))}
+                    </article>
+                  );
+                })}
               </div>
 
               {hasMore && (
-                <div className="text-center">
+                <div className="text-center py-8 bg-white border-b-4 border-purple-600">
                   <Button
                     onClick={handleLoadMore}
                     disabled={loading}
                     size="lg"
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                    className="bg-purple-600 hover:bg-purple-700 text-white font-black uppercase border-2 border-purple-900 shadow-[4px_4px_0px_0px_rgba(147,51,234,1)] hover:shadow-none transition-all"
                   >
                     {loading ? (
                       <>
@@ -185,9 +242,9 @@ const Showbiz = () => {
                   </Button>
                 </div>
               )}
-            </>
+            </div>
           )}
-        </div>
+        </section>
       </main>
 
       <Footer />
