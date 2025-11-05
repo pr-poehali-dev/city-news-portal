@@ -219,9 +219,8 @@ export const NewsPage = () => {
         <SiteHeader />
       </div>
 
-      <div id="yandex_rtb_R-A-17651616-3"></div>
-
       <div className="bg-white">
+        <div id="yandex_rtb_R-A-17651616-3" className="w-full min-h-[90px] bg-gray-50"></div>
         <div className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-8">
           <Link 
             to="/" 

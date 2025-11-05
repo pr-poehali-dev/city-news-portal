@@ -61,10 +61,6 @@ const MemoryPage = () => {
           window.yaContextCb.push(() => {
             if (window.Ya?.Context?.AdvManager) {
               window.Ya.Context.AdvManager.render({
-                blockId: "R-A-17651616-3",
-                type: "topAd"
-              });
-              window.Ya.Context.AdvManager.render({
                 blockId: "R-A-17651616-1",
                 renderTo: "yandex_rtb_R-A-17651616-1",
                 type: "feed"
@@ -160,8 +156,6 @@ const MemoryPage = () => {
         activeSection=""
         onSectionChange={handleSectionChange}
       />
-
-      <div id="yandex_rtb_R-A-17651616-3"></div>
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <Button 
