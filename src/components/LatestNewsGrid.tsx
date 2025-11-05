@@ -49,16 +49,16 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 9 }: LatestNewsGridP
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 p-6 md:p-12 bg-white">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-0 bg-white">
         {displayNews.map((item, index) => {
           
           return (
             <article
               key={item.id}
-              className="group cursor-pointer overflow-hidden bg-white border-4 border-primary transition-all hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1"
+              className="group cursor-pointer overflow-hidden bg-white border-b-4 md:border-r-4 last:md:border-r-0 border-primary transition-all hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:z-10"
               onClick={() => onNewsClick(item.id)}
             >
-              <div className="aspect-[16/9] relative overflow-hidden bg-black">
+              <div className="aspect-[4/3] relative overflow-hidden bg-black">
                 {item.image_url ? (
                   <img
                     src={item.image_url}
@@ -67,28 +67,28 @@ export const LatestNewsGrid = ({ news, onNewsClick, limit = 9 }: LatestNewsGridP
                   />
                 ) : (
                   <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <Icon name="FileText" size={64} className="text-gray-400" />
+                    <Icon name="FileText" size={48} className="text-gray-400" />
                   </div>
                 )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                
+                <div className="absolute top-3 left-3">
+                  <div className="inline-block px-3 py-1.5 bg-primary border-2 border-primary shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    <span className="text-white font-black text-xs uppercase tracking-wider">
+                      {item.category}
+                    </span>
+                  </div>
+                </div>
               </div>
               
-              <div className="p-6 md:p-8">
-                <div className="inline-block px-4 py-1.5 mb-4 bg-primary">
-                  <span className="text-white font-black text-xs uppercase tracking-wider">
-                    {item.category}
-                  </span>
-                </div>
-                
-                <h3 className="text-foreground font-black uppercase leading-[1.1] tracking-tight mb-4 text-xl md:text-2xl group-hover:text-accent transition-colors">
+              <div className="p-4 md:p-6">
+                <h3 className="text-foreground font-black uppercase leading-[1.1] tracking-tight mb-2 text-base md:text-lg line-clamp-2 group-hover:text-accent transition-colors">
                   {item.title}
                 </h3>
                 
-                <p className="text-muted-foreground text-base md:text-lg mb-6 line-clamp-3 leading-relaxed">
-                  {stripHtml(item.excerpt || item.content)}
-                </p>
-                
-                <div className="flex items-center gap-3 text-muted-foreground text-xs uppercase tracking-wider font-bold">
-                  <span>{new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
+                <div className="flex items-center gap-2 text-muted-foreground text-[10px] md:text-xs uppercase tracking-wider font-bold mt-3">
+                  <Icon name="Clock" size={12} />
+                  <span>{new Date(item.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</span>
                   <span className="w-1 h-1 bg-accent rounded-full"></span>
                   <span className="truncate">{item.author_name || 'Редакция'}</span>
                 </div>

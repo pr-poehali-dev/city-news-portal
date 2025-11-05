@@ -58,6 +58,7 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
       )}
 
       {displayNews.length > 0 && (
+        <>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0">
           {displayNews.map((item, index) => (
             <Card
@@ -106,6 +107,18 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
             </Card>
           ))}
         </div>
+        {news && news.length > 4 && (
+          <div className="bg-white p-6 md:p-8 text-center border-b-4 border-primary">
+            <button
+              onClick={() => window.location.href = '/svo'}
+              className="px-8 py-4 bg-accent hover:bg-accent/90 text-white font-black uppercase text-sm md:text-base transition-all border-4 border-primary shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 inline-flex items-center gap-3"
+            >
+              <Icon name="ArrowRight" size={20} />
+              Все статьи СВО
+            </button>
+          </div>
+        )}
+        </>
       )}
     </section>
   );
