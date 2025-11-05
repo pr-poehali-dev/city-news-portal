@@ -99,6 +99,10 @@ export const NewsPage = () => {
           window.yaContextCb.push(() => {
             if (window.Ya?.Context?.AdvManager) {
               window.Ya.Context.AdvManager.render({
+                blockId: "R-A-17651616-3",
+                type: "topAd"
+              });
+              window.Ya.Context.AdvManager.render({
                 blockId: "R-A-17651616-1",
                 renderTo: "yandex_rtb_R-A-17651616-1",
                 type: "feed"
@@ -214,6 +218,8 @@ export const NewsPage = () => {
       <div className="sticky top-0 z-50">
         <SiteHeader />
       </div>
+
+      <div id="yandex_rtb_R-A-17651616-3"></div>
 
       <div className="bg-white">
         <div className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-8">
