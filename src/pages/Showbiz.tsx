@@ -178,8 +178,6 @@ const Showbiz = () => {
               </Button>
             </div>
           )}
-            </div>
-          )}
         </section>
       </main>
 
