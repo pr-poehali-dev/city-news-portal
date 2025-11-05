@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { SiteHeader } from '@/components/SiteHeader';
@@ -27,12 +27,10 @@ const MemoryPage = () => {
   const [article, setArticle] = useState<MemoryArticle | null>(null);
   const [loading, setLoading] = useState(true);
   const [sections, setSections] = useState<string[]>([]);
-  const adRenderedRef = useRef(false);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        adRenderedRef.current = false;
         const response = await fetch(FUNCTIONS_URL.memory);
         if (response.ok) {
           const data = await response.json();
@@ -53,27 +51,6 @@ const MemoryPage = () => {
 
     loadData();
   }, [id]);
-
-  useEffect(() => {
-    if (!loading && article && !adRenderedRef.current) {
-      const timer = setTimeout(() => {
-        if (window.yaContextCb && !adRenderedRef.current) {
-          window.yaContextCb.push(() => {
-            if (window.Ya?.Context?.AdvManager) {
-              window.Ya.Context.AdvManager.render({
-                blockId: "R-A-17651616-1",
-                renderTo: "yandex_rtb_R-A-17651616-1",
-                type: "feed"
-              });
-              adRenderedRef.current = true;
-            }
-          });
-        }
-      }, 500);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [loading, article]);
 
   const handleSectionChange = (section: string) => {
     navigate('/');

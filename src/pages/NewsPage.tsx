@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { SiteHeader } from '@/components/SiteHeader';
 import { Footer } from '@/components/Footer';
@@ -41,7 +41,6 @@ export const NewsPage = () => {
   const [commentName, setCommentName] = useState('');
   const [commentText, setCommentText] = useState('');
   const [loading, setLoading] = useState(true);
-  const adRenderedRef = useRef(false);
 
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return 'Дата не указана';
@@ -57,7 +56,6 @@ export const NewsPage = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        adRenderedRef.current = false;
         const articleResponse = await fetch(`${FUNCTIONS_URL.news}?id=${id}&increment_views=true`);
         const currentArticle = await articleResponse.json();
         
@@ -92,30 +90,7 @@ export const NewsPage = () => {
     loadData();
   }, [id]);
 
-  useEffect(() => {
-    if (!loading && article && !adRenderedRef.current) {
-      const timer = setTimeout(() => {
-        if (window.yaContextCb && !adRenderedRef.current) {
-          window.yaContextCb.push(() => {
-            if (window.Ya?.Context?.AdvManager) {
-              window.Ya.Context.AdvManager.render({
-                blockId: "R-A-17651616-3",
-                type: "topAd"
-              });
-              window.Ya.Context.AdvManager.render({
-                blockId: "R-A-17651616-1",
-                renderTo: "yandex_rtb_R-A-17651616-1",
-                type: "feed"
-              });
-              adRenderedRef.current = true;
-            }
-          });
-        }
-      }, 500);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [loading, article]);
+
 
   const handleAddComment = async () => {
     if (commentName.trim() && commentText.trim() && id) {
@@ -211,8 +186,6 @@ export const NewsPage = () => {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={pageImage} />
-        
-        <script async src="https://yandex.ru/ads/system/context.js"></script>
       </Helmet>
 
       <div className="sticky top-0 z-50">
@@ -220,7 +193,6 @@ export const NewsPage = () => {
       </div>
 
       <div className="bg-white">
-        <div id="yandex_rtb_R-A-17651616-3" className="w-full min-h-[90px] bg-gray-50"></div>
         <div className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-8">
           <Link 
             to="/" 
