@@ -90,7 +90,7 @@ export const CategoryGrid = ({ categories, articles, onNewsClick, onCategoryClic
                             <img
                               src={news.image_url}
                               alt={news.title}
-                              className="w-full h-full object-cover grayscale group-hover/item:grayscale-0 transition-all duration-500"
+                              className="w-full h-full object-cover group-hover/item:scale-110 transition-all duration-500"
                             />
                           </div>
                         )}
