@@ -56,51 +56,65 @@ export const SVOSection = ({ news, onNewsClick }: SVOSectionProps) => {
       )}
 
       {displayNews.length > 0 && (
-        <div className="bg-white divide-y-2 divide-gray-200 border-b-4 border-primary">
-          {displayNews.slice(0, 6).map((item) => (
-            <article
-              key={item.id}
-              className="group cursor-pointer flex gap-3 p-4 hover:bg-accent/5 transition-colors"
-              onClick={() => onNewsClick(item.id)}
-            >
-              <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 relative overflow-hidden bg-black rounded-lg">
-                {item.image_url ? (
-                  <img
-                    src={item.image_url}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-accent/20 flex items-center justify-center">
-                    <Icon name="Shield" size={24} className="text-accent" />
+        <>
+          <div className="bg-white divide-y-2 divide-gray-200 border-b-4 border-primary">
+            {displayNews.slice(0, 6).map((item) => (
+              <article
+                key={item.id}
+                className="group cursor-pointer flex gap-3 p-4 hover:bg-accent/5 transition-colors"
+                onClick={() => onNewsClick(item.id)}
+              >
+                <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 relative overflow-hidden bg-black rounded-lg">
+                  {item.image_url ? (
+                    <img
+                      src={item.image_url}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-accent/20 flex items-center justify-center">
+                      <Icon name="Shield" size={24} className="text-accent" />
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                  <div className="inline-block px-2 py-0.5 bg-accent w-fit mb-2">
+                    <span className="text-white font-bold text-[9px] md:text-[10px] uppercase tracking-wide flex items-center gap-1">
+                      <Icon name="AlertCircle" size={10} />
+                      Важно
+                    </span>
                   </div>
-                )}
-              </div>
-              
-              <div className="flex-1 min-w-0 flex flex-col justify-center">
-                <div className="inline-block px-2 py-0.5 bg-accent w-fit mb-2">
-                  <span className="text-white font-bold text-[9px] md:text-[10px] uppercase tracking-wide flex items-center gap-1">
-                    <Icon name="AlertCircle" size={10} />
-                    Важно
-                  </span>
+                  
+                  <h4 className="text-foreground font-bold leading-tight mb-1 text-sm md:text-base line-clamp-2 group-hover:text-accent transition-colors">
+                    {item.title}
+                  </h4>
+                  
+                  <p className="text-muted-foreground text-[10px] md:text-xs line-clamp-1 leading-relaxed hidden md:block">
+                    {item.excerpt}
+                  </p>
+                  
+                  <div className="flex items-center gap-2 text-muted-foreground text-[10px] md:text-xs mt-1">
+                    <Icon name="Clock" size={12} />
+                    <span>{new Date(item.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</span>
+                  </div>
                 </div>
-                
-                <h4 className="text-foreground font-bold leading-tight mb-1 text-sm md:text-base line-clamp-2 group-hover:text-accent transition-colors">
-                  {item.title}
-                </h4>
-                
-                <p className="text-muted-foreground text-[10px] md:text-xs line-clamp-1 leading-relaxed hidden md:block">
-                  {item.excerpt}
-                </p>
-                
-                <div className="flex items-center gap-2 text-muted-foreground text-[10px] md:text-xs mt-1">
-                  <Icon name="Clock" size={12} />
-                  <span>{new Date(item.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</span>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
+              </article>
+            ))}
+          </div>
+          
+          {news && news.length > 6 && (
+            <div className="bg-white border-b-4 border-primary p-6 text-center">
+              <button
+                onClick={() => window.location.href = '/svo'}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent/90 text-white font-black uppercase text-sm transition-all border-4 border-primary shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5"
+              >
+                Все статьи СВО
+                <Icon name="ArrowRight" size={18} />
+              </button>
+            </div>
+          )}
+        </>
       )}
     </section>
   );
