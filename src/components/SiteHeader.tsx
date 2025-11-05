@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { useNavigate } from 'react-router-dom';
+import { YandexRTBTopAd } from '@/components/YandexRTBTopAd';
 
 interface SiteHeaderProps {
   sections?: string[];
@@ -68,6 +69,7 @@ export const SiteHeader = ({ sections = [], activeSection, onSectionChange, onSe
         </div>
       </div>
 
+      <YandexRTBTopAd />
       
       {sections.length > 0 && (
         <nav className="container mx-auto px-0 md:px-6">
