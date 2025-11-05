@@ -37,11 +37,11 @@ export const ShowbizSection = () => {
   if (loading || news.length === 0) return null;
 
   return (
-    <section className="mb-0 border-t-4 border-purple-600 max-w-full overflow-hidden">
-      <div className="bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 px-6 md:px-12 py-8 md:py-12 border-b-4 border-purple-600">
+    <section className="mb-0 border-t-4 border-primary max-w-full overflow-hidden">
+      <div className="bg-primary px-6 md:px-12 py-8 md:py-12 border-b-4 border-primary">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <Icon name="Star" size={32} className="text-yellow-400 flex-shrink-0 md:w-12 md:h-12" />
+            <Icon name="Star" size={32} className="text-accent flex-shrink-0 md:w-12 md:h-12" />
             <div className="min-w-0">
               <h2 className="text-3xl md:text-5xl lg:text-7xl font-black text-white uppercase leading-[0.9] tracking-tighter">
                 ШОУБИЗ
@@ -54,12 +54,12 @@ export const ShowbizSection = () => {
         </div>
       </div>
 
-      <div className="bg-white divide-y-2 divide-purple-200 border-b-4 border-purple-600">
+      <div className="bg-white divide-y-2 divide-gray-200 border-b-4 border-primary">
         {news.map((item) => (
           <Link
             key={item.id}
             to={`/news/${item.id}`}
-            className="group cursor-pointer flex gap-3 p-4 hover:bg-purple-50 transition-colors block"
+            className="group cursor-pointer flex gap-3 p-4 hover:bg-gray-50 transition-colors block"
           >
             <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 relative overflow-hidden bg-black rounded-lg">
               {item.image_url ? (
@@ -69,20 +69,20 @@ export const ShowbizSection = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
                 />
               ) : (
-                <div className="w-full h-full bg-purple-100 flex items-center justify-center">
-                  <Icon name="Star" size={24} className="text-purple-400" />
+                <div className="w-full h-full bg-accent/10 flex items-center justify-center">
+                  <Icon name="Star" size={24} className="text-accent" />
                 </div>
               )}
             </div>
             
             <div className="flex-1 min-w-0 flex flex-col justify-center">
-              <div className="inline-block px-2 py-0.5 bg-purple-600 w-fit mb-2">
+              <div className="inline-block px-2 py-0.5 bg-accent w-fit mb-2">
                 <span className="text-white font-bold text-[9px] md:text-[10px] uppercase tracking-wide">
                   {item.category}
                 </span>
               </div>
               
-              <h3 className="text-foreground font-bold leading-tight mb-1 text-sm md:text-base line-clamp-2 group-hover:text-purple-600 transition-colors">
+              <h3 className="text-foreground font-bold leading-tight mb-1 text-sm md:text-base line-clamp-2 group-hover:text-accent transition-colors">
                 {item.title}
               </h3>
               
@@ -95,9 +95,9 @@ export const ShowbizSection = () => {
         ))}
       </div>
 
-      <div className="md:hidden bg-white border-b-4 border-purple-600 p-4">
+      <div className="md:hidden bg-white border-b-4 border-primary p-4">
         <Link to="/showbiz">
-          <div className="flex items-center justify-center gap-2 text-purple-600 font-black uppercase text-sm hover:text-purple-700 transition-colors">
+          <div className="flex items-center justify-center gap-2 text-accent font-black uppercase text-sm hover:text-accent/80 transition-colors">
             Все новости
             <Icon name="ArrowRight" size={16} />
           </div>

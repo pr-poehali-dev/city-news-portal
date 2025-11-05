@@ -92,10 +92,10 @@ const Showbiz = () => {
       />
       
       <main className="flex-1 pt-8 md:pt-24 pb-16 max-w-full overflow-x-hidden">
-        <section className="border-t-4 border-purple-600 mb-8 md:mb-12 max-w-full overflow-hidden">
-          <div className="bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 px-6 md:px-12 py-8 md:py-12 border-b-4 border-purple-600">
+        <section className="border-t-4 border-primary mb-8 md:mb-12 max-w-full overflow-hidden">
+          <div className="bg-primary px-6 md:px-12 py-8 md:py-12 border-b-4 border-primary">
             <div className="flex items-center gap-3">
-              <Icon name="Star" size={32} className="text-yellow-400 flex-shrink-0 md:w-12 md:h-12" />
+              <Icon name="Star" size={32} className="text-accent flex-shrink-0 md:w-12 md:h-12" />
               <div className="min-w-0">
                 <h1 className="text-3xl md:text-5xl lg:text-7xl font-black text-white uppercase leading-[0.9] tracking-tighter">
                   ШОУБИЗ
@@ -114,11 +114,11 @@ const Showbiz = () => {
               <p className="text-muted-foreground text-sm">Пока нет новостей</p>
             </div>
           ) : (
-            <div className="bg-white divide-y-2 divide-purple-200">
+            <div className="bg-white divide-y-2 divide-gray-200">
               {news.map((item, index) => (
                 <article
                   key={item.id}
-                  className="group cursor-pointer flex gap-3 p-4 hover:bg-purple-50 transition-colors"
+                  className="group cursor-pointer flex gap-3 p-4 hover:bg-gray-50 transition-colors"
                   onClick={() => navigate(`/news/${item.id}`)}
                 >
                   <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 relative overflow-hidden bg-black rounded-lg">
@@ -129,20 +129,20 @@ const Showbiz = () => {
                         className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
                       />
                     ) : (
-                      <div className="w-full h-full bg-purple-100 flex items-center justify-center">
-                        <Icon name="Star" size={24} className="text-purple-400" />
+                      <div className="w-full h-full bg-accent/10 flex items-center justify-center">
+                        <Icon name="Star" size={24} className="text-accent" />
                       </div>
                     )}
                   </div>
                   
                   <div className="flex-1 min-w-0 flex flex-col justify-center">
-                    <div className="inline-block px-2 py-0.5 bg-purple-600 w-fit mb-2">
+                    <div className="inline-block px-2 py-0.5 bg-accent w-fit mb-2">
                       <span className="text-white font-bold text-[9px] md:text-[10px] uppercase tracking-wide">
                         {item.category}
                       </span>
                     </div>
                     
-                    <h3 className="text-foreground font-bold leading-tight mb-1 text-sm md:text-base line-clamp-2 group-hover:text-purple-600 transition-colors">
+                    <h3 className="text-foreground font-bold leading-tight mb-1 text-sm md:text-base line-clamp-2 group-hover:text-accent transition-colors">
                       {item.title}
                     </h3>
                     
@@ -157,12 +157,12 @@ const Showbiz = () => {
           )}
 
           {hasMore && (
-            <div className="text-center py-6 bg-white border-t-2 border-purple-200">
+            <div className="text-center py-6 bg-white border-t-2 border-gray-200">
               <Button
                 onClick={handleLoadMore}
                 disabled={loading}
                 variant="outline"
-                className="border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white font-bold"
+                className="border-accent text-accent hover:bg-accent hover:text-white font-bold"
               >
                 {loading ? (
                   <>
